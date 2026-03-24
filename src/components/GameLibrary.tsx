@@ -39,6 +39,12 @@ export default function GameLibrary({ games }: GameLibraryProps) {
             <div className="absolute inset-0 z-0">
               {game.appid ? (
                 <SteamBanner appid={game.appid} name={game.name} />
+              ) : game.icon ? (
+                  <img 
+                  src={game.icon} 
+                  alt={game.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90"
+                />
               ) : (
                 <div className="w-full h-full bg-primary/5 flex items-center justify-center">
                   <Gamepad2 className="w-12 h-12 text-primary/20" />

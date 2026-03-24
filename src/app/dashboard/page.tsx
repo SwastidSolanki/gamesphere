@@ -129,12 +129,14 @@ function DashboardContent() {
   }))];
 
   if (riotAccount) {
+    // Better estimate: Matches * ~35 mins. Base 120 mins.
+    const estimatedPlaytime = ((riotLeague?.wins || 0) + (riotLeague?.losses || 0)) * 35 + 120;
     unifiedLibrary.unshift({
       name: "Valorant",
-      playtime: 742, // Better estimated record
+      playtime: estimatedPlaytime,
       platform: "riot" as const,
       appid: undefined,
-      icon: "https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt724d262174c05e1a/60368940804c7c470a2f4da8/VALORANT_Logo_Text_White.png"
+      icon: "https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt90cd899f8d5cf486/660c681284d72d6226fc965f/VAL_Header.jpg"
     });
   }
 
