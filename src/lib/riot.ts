@@ -19,15 +19,29 @@ export async function getLeagueBySummonerId(summonerId: string, region: string =
 }
 
 export async function getMatchIdsByPuuid(puuid: string, region: string = "americas", count: number = 10) {
-  const url = `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${count}&api_key=${RIOT_API_KEY}`;
-  const response = await fetch(url);
+  const response = await fetch(`/api/riot?endpoint=match-ids&puuid=${puuid}&region=${region}&count=${count}`);
   const data = await response.json();
   return data;
 }
 
 export async function getMatchDetails(matchId: string, region: string = "americas") {
-  const url = `https://${region}.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${RIOT_API_KEY}`;
-  const response = await fetch(url);
+  const response = await fetch(`/api/riot?endpoint=match-details&matchId=${matchId}&region=${region}`);
   const data = await response.json();
   return data;
+}
+
+export async function getRecentRivals(puuid: string, region: string = "americas") {
+  const matchIds = await getMatchIdsByPuuid(puuid, region, 1);
+  if (!matchIds || matchIds.length === 0) return [];
+  
+  const match = await getMatchDetails(matchIds[0], region);
+  if (!match || !match.info) return [];
+
+  return match.info.participants.map((p: any) => ({
+    name: `${p.riotIdGameName}#${p.riotIdTagline}`,
+    rank: p.championName, // Use champion as a temporary sub-label
+    puuid: p.puuid,
+    teamId: p.teamId,
+    win: p.win
+  }));
 }

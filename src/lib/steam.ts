@@ -19,6 +19,18 @@ export async function getSteamStats(steamId: string, appId: number) {
   const data = await response.json();
   return data.playerstats;
 }
+export async function getSteamFriends(steamId: string) {
+  const response = await fetch(`/api/steam?endpoint=friends&steamid=${steamId}`);
+  const data = await response.json();
+  const friends = data.response.friendslist.friends;
+  
+  // Fetch summaries for all friends
+  const friendIds = friends.map((f: any) => f.steamid).join(",");
+  const summariesResponse = await fetch(`/api/steam?endpoint=summaries&steamids=${friendIds}`);
+  const summariesData = await summariesResponse.json();
+  return summariesData.response.players;
+}
+
 export async function resolveSteamVanityURL(vanityUrl: string) {
   const response = await fetch(`/api/steam?endpoint=vanity&vanityurl=${vanityUrl}`);
   const data = await response.json();

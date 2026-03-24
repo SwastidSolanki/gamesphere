@@ -13,6 +13,11 @@ export async function GET(request: Request) {
 
   if (endpoint === "profile") {
     url = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v0002/?key=${API_KEY}&steamids=${steamid}`;
+  } else if (endpoint === "summaries") {
+    const steamids = searchParams.get("steamids");
+    url = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v0002/?key=${API_KEY}&steamids=${steamids}`;
+  } else if (endpoint === "friends") {
+    url = `${STEAM_API_BASE}/ISteamUser/GetFriendList/v0001/?key=${API_KEY}&steamid=${steamid}&relationship=friend`;
   } else if (endpoint === "owned-games") {
     // include_played_free_games=1 ensures CS2 and other F2P games show up
     url = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${API_KEY}&steamid=${steamid}&format=json&include_appinfo=1&include_played_free_games=1`;

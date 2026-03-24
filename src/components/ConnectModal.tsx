@@ -133,7 +133,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         <button 
                             onClick={handleVerify}
                             disabled={isLoading || !identifier}
-                            className="px-10 bg-white text-black font-heading tracking-[0.2em] hover:bg-primary transition-all disabled:opacity-50 flex items-center justify-center"
+                            className="px-10 bg-white text-black font-heading text-sm tracking-[0.2em] hover:bg-primary transition-all disabled:opacity-50 flex items-center justify-center h-full min-w-[140px]"
                         >
                             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "SEARCH"}
                         </button>

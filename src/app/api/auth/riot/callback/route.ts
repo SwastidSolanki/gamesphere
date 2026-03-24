@@ -45,6 +45,7 @@ export async function GET(request: NextRequest) {
     dashboardUrl.searchParams.set('riot_auth', 'success');
     dashboardUrl.searchParams.set('riot_name', account.gameName);
     dashboardUrl.searchParams.set('riot_tag', account.tagLine);
+    dashboardUrl.searchParams.set('riot_puuid', account.puuid);
     
     return NextResponse.redirect(dashboardUrl.toString());
 

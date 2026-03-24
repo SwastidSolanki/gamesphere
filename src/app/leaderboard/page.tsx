@@ -1,152 +1,198 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
 import { 
   Trophy, 
   Search, 
   Filter, 
-  ChevronRight,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Clock,
-  Gamepad2
+  ChevronRight, 
+  TrendingUp, 
+  TrendingDown, 
+  Minus, 
+  Clock, 
+  Gamepad2,
+  Loader2,
+  Target,
+  User
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const LEADERBOARD_DATA = [
-  { rank: 1, name: "AcePlayer", score: 9840, tier: "Legend", trend: "up", platform: "Steam", hours: 4250, games: 142, achievements: 856 },
-  { rank: 2, name: "ValorantGod", score: 9720, tier: "Legend", trend: "down", platform: "Riot", hours: 3120, games: 4, achievements: 142 },
-  { rank: 3, name: "Swastid_Solanki", score: 8420, tier: "Elite", trend: "up", platform: "Steam", hours: 1240, games: 85, achievements: 412 },
-  { rank: 4, name: "ShadowNinja", score: 8100, tier: "Elite", trend: "stable", platform: "Riot", hours: 2100, games: 2, achievements: 98 },
-  { rank: 5, name: "GamerPro", score: 7950, tier: "Elite", trend: "up", platform: "Steam", hours: 940, games: 112, achievements: 654 },
-  { rank: 6, name: "Striker", score: 7600, tier: "Elite", trend: "down", platform: "Riot", hours: 1560, games: 1, achievements: 56 },
-  { rank: 7, name: "Phoenix", score: 6800, tier: "Pro", trend: "stable", platform: "Steam", hours: 820, games: 45, achievements: 210 },
-  { rank: 8, name: "Zeus", score: 6500, tier: "Pro", trend: "up", platform: "Riot", hours: 1100, games: 3, achievements: 88 },
-];
+import { fetchLeaderboardData } from "@/lib/dataFetcher";
 
 export default function LeaderboardPage() {
+  const [platform, setPlatform] = useState<"steam" | "riot" | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [players, setPlayers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (platform) {
+      loadLeaderboard();
+    }
+  }, [platform]);
+
+  async function loadLeaderboard() {
+    setIsLoading(true);
+    setPlayers([]);
+    try {
+      const identifier = platform === "steam" 
+        ? localStorage.getItem("gamesphere_steam_id") 
+        : localStorage.getItem("gamesphere_riot_puuid"); // Use PUUID for Riot friends/rivals
+        
+      if (!identifier) {
+          // Handle no account
+          return;
+      }
+
+      const data = await fetchLeaderboardData(platform!, identifier);
+      setPlayers(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="pt-32 pb-24 px-6 max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
         <div>
-          <h2 className="text-xs font-heading font-bold text-primary tracking-[0.3em] mb-2 uppercase opacity-60">Global Ranking</h2>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">PLATFORM_LADDER</h1>
+          <div className="flex items-center gap-3 mb-6 opacity-30">
+            <span className="w-12 h-[1px] bg-primary"></span>
+            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading font-mono">GLOBAL_RANKING</h2>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">
+              {platform === "steam" ? "VALHALLA_LADDER" : platform === "riot" ? "NEXUS_LADDER" : "PLATFORM_LADDER"}
+          </h1>
         </div>
         
-        <div className="flex gap-4">
-            <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-12">
-                <div className="flex items-center pl-5">
-                    <Search className="w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
+        {platform && (
+            <div className="flex gap-4">
+                <button 
+                    onClick={() => setPlatform(null)}
+                    className="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black tracking-widest hover:bg-white hover:text-black transition-all"
+                >
+                    SWITCH_PLATFORM
+                </button>
+                <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-12">
+                    <div className="flex items-center pl-5">
+                        <Search className="w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
+                    </div>
+                    <input 
+                        type="text" 
+                        placeholder="Search Players..." 
+                        className="bg-transparent py-2 pl-4 pr-6 text-sm focus:outline-none w-48 focus:w-64 transition-all text-white placeholder:text-zinc-600"
+                    />
                 </div>
-                <input 
-                    type="text" 
-                    placeholder="Search Players..." 
-                    className="bg-transparent py-2 pl-4 pr-6 text-sm focus:outline-none w-48 focus:w-64 transition-all text-white placeholder:text-zinc-600"
-                />
             </div>
-            <button className="bg-white/5 border border-white/10 rounded-full w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-all">
-                <Filter className="w-4 h-4 text-zinc-500" />
-            </button>
-        </div>
+        )}
       </div>
 
-      <div className="space-y-4">
-        {LEADERBOARD_DATA.map((player, index) => (
-          <motion.div
-            key={player.name}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <GlassCard className={cn(
-                "p-4 flex items-center justify-between group",
-                player.name === "Swastid_Solanki" && "border-primary/30 bg-primary/5"
-            )}>
-              <div className="flex items-center gap-6">
-                <div className="w-8 text-center font-heading font-bold text-xl text-zinc-600 group-hover:text-primary transition-colors">
-                    {player.rank.toString().padStart(2, '0')}
-                </div>
-                
-                <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-white/5 flex items-center justify-center">
-                        <UserIcon className="w-6 h-6 text-zinc-600" />
+      {!platform ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-10">
+              <PlatformChoiceCard 
+                title="STEAM_Vanguard"
+                desc="Ascend among your VALHALLA allies. Focus on playtime and library depth."
+                icon={<Gamepad2 className="w-12 h-12" />}
+                onClick={() => setPlatform("steam")}
+                color="primary"
+              />
+              <PlatformChoiceCard 
+                title="RIOT_Incursion"
+                desc="Dominate the Nexus. Focus on rank, victories, and battle prowess."
+                icon={<Target className="w-12 h-12" />}
+                onClick={() => setPlatform("riot")}
+                color="secondary"
+              />
+          </div>
+      ) : (
+        <div className="space-y-4">
+          {isLoading ? (
+            <div className="py-20 text-center">
+              <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+              <p className="font-heading tracking-[0.4em] text-primary/60 text-xs text-primary animate-pulse">ARCHIVING_BATTLE_RECORDS...</p>
+            </div>
+          ) : players.length === 0 ? (
+            <div className="py-20 text-center border border-white/5 bg-white/5 rounded-sm">
+              <p className="font-heading tracking-[0.4em] text-zinc-600 text-xs">NO_WARRIORS_DETECTED_IN_THIS_REALM</p>
+            </div>
+          ) : (
+            players.map((player) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={player.name}
+              >
+                <GlassCard className="p-6 flex items-center justify-between group hover:border-white/20 transition-all">
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 rounded-sm bg-black border border-white/10 overflow-hidden relative">
+                      {player.avatar ? (
+                          <img src={player.avatar} alt="Avatar" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                      ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-zinc-900">
+                              <User className="w-5 h-5 text-zinc-600" />
+                          </div>
+                      )}
                     </div>
                     <div>
-                        <h4 className="font-bold text-white group-hover:text-primary transition-colors">{player.name}</h4>
-                        <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">{player.platform}</span>
+                      <h3 className="font-heading font-bold tracking-widest text-lg">{player.name}</h3>
+                      <p className="text-[8px] font-black text-zinc-500 tracking-widest uppercase">{player.platform} // {player.status}</p>
                     </div>
-                </div>
-              </div>
+                  </div>
 
-              <div className="flex items-center gap-16">
-                {/* Detailed Stats */}
-                <div className="hidden lg:flex items-center gap-10">
-                    <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-zinc-600" />
-                        <span className="text-xs font-bold text-zinc-400">{player.hours.toLocaleString()}h</span>
+                  <div className="flex items-center gap-12">
+                    <div className="text-right">
+                      <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Power Score</p>
+                      <p className="font-heading font-bold text-xl text-primary">{player.score.toLocaleString()}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Gamepad2 className="w-3.5 h-3.5 text-zinc-600" />
-                        <span className="text-xs font-bold text-zinc-400">{player.games} Games</span>
+                    <div className="w-10 h-10 flex items-center justify-center">
+                        {player.trend === "up" ? (
+                            <TrendingUp className="w-5 h-5 text-green-500" />
+                        ) : player.trend === "down" ? (
+                            <TrendingDown className="w-5 h-5 text-red-500" />
+                        ) : (
+                            <Minus className="w-5 h-5 text-zinc-700" />
+                        )}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Trophy className="w-3.5 h-3.5 text-zinc-600" />
-                        <span className="text-xs font-bold text-zinc-400">{player.achievements}</span>
-                    </div>
-                </div>
-
-                <div className="text-right min-w-[100px]">
-                    <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Power Score</p>
-                    <p className="font-heading font-bold text-lg">{player.score.toLocaleString()}</p>
-                </div>
-
-                <div className="w-24 text-center">
-                    <span className={cn(
-                        "text-[10px] font-bold px-3 py-1 rounded-full border",
-                        player.tier === "Legend" ? "border-primary/50 text-primary bg-primary/10" : 
-                        player.tier === "Elite" ? "border-secondary/50 text-secondary bg-secondary/10" :
-                        "border-white/10 text-zinc-400 bg-white/5"
-                    )}>
-                        {player.tier}
-                    </span>
-                </div>
-
-                <div className="w-8 flex justify-center">
-                    {player.trend === "up" && <TrendingUp className="w-4 h-4 text-green-500" />}
-                    {player.trend === "down" && <TrendingDown className="w-4 h-4 text-red-500" />}
-                    {player.trend === "stable" && <Minus className="w-4 h-4 text-zinc-600" />}
-                </div>
-
-                <button className={cn(
-                    "p-2 rounded-full bg-white/5 border border-white/5 hover:border-primary/50 hover:bg-primary/10 transition-all",
-                    player.name === "Swastid_Solanki" && "bg-primary/20 border-primary"
-                )}>
-                    <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-function UserIcon({ className }: { className?: string }) {
+function PlatformChoiceCard({ title, desc, icon, onClick, color }: any) {
     return (
-      <svg 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="1.5" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className={className}
-      >
-        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
+        <div 
+            className="group relative cursor-pointer"
+            onClick={onClick}
+        >
+            <GlassCard className={cn(
+                "p-12 border-white/5 hover:border-white/20 transition-all text-center h-full",
+                color === "secondary" && "hover:border-[#d13639]/40"
+            )}>
+                <div className={cn(
+                    "w-24 h-24 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(0,0,0,0.5)]",
+                    color === "secondary" ? "text-[#d13639]" : "text-primary"
+                )}>
+                    {icon}
+                </div>
+                <h2 className={cn(
+                    "text-3xl font-heading font-black tracking-widest mb-4",
+                    color === "secondary" ? "text-white" : "text-primary"
+                )}>{title}</h2>
+                <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.3em] leading-relaxed max-w-xs mx-auto mb-8">{desc}</p>
+                <div className={cn(
+                    "inline-block px-10 py-3 border border-white/10 rounded-full text-[10px] font-black tracking-[0.5em] group-hover:bg-white group-hover:text-black transition-all",
+                    color === "secondary" && "group-hover:bg-[#d13639] group-hover:border-[#d13639] group-hover:text-white"
+                )}>
+                    INITIATE_VIEW
+                </div>
+            </GlassCard>
+        </div>
     );
 }

@@ -71,12 +71,15 @@ function DashboardContent() {
         }
 
         // Handle Riot Identity Callback
-        const riotAuth = searchParams.get('riot_auth');
+        const riotAuthStatus = searchParams.get('riot_auth');
         const riotNameParam = searchParams.get('riot_name');
         const riotTagParam = searchParams.get('riot_tag');
-        if (riotAuth === 'success' && riotNameParam && riotTagParam) {
+        const riotPuuidParam = searchParams.get('riot_puuid');
+
+        if (riotAuthStatus === 'success' && riotNameParam && riotTagParam) {
             localStorage.setItem('gamesphere_riot_id', `${riotNameParam}#${riotTagParam}`);
-            // Clean URL
+            if (riotPuuidParam) localStorage.setItem('gamesphere_riot_puuid', riotPuuidParam);
+            // Clear params
             const newUrl = window.location.pathname;
             window.history.replaceState({}, '', newUrl);
             window.location.reload();
@@ -183,17 +186,6 @@ function DashboardContent() {
                 </div>
             </div>
             <div className="flex gap-4">
-                <button 
-                    onClick={() => {
-                        localStorage.setItem('gamesphere_riot_id', 'SWIFT#FORGED');
-                        const newUrl = window.location.pathname;
-                        window.history.replaceState({}, '', newUrl);
-                        window.location.reload();
-                    }}
-                    className="px-6 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/20 text-primary text-[10px] font-black tracking-widest uppercase transition-all"
-                >
-                    FORGE_MOCK_IDENTITY
-                </button>
                 <button 
                     onClick={() => {
                         const newUrl = window.location.pathname;
