@@ -32,16 +32,16 @@ export default function ComparePage() {
       <Navbar />
       
       <div className="text-center mb-16">
-        <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">Military Intelligence</h2>
-        <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-widest text-white mb-8">COMBAT_COMPARISON</h1>
-        <p className="text-zinc-500 max-w-xl mx-auto font-serif italic text-lg opacity-80">
-          Measure thy strength against thy peers. Bound by data, judged by skill.
+        <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">WAR_INTELLIGENCE</h2>
+        <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-widest text-white mb-8">SKILL_COMPARISON</h1>
+        <p className="text-zinc-500 max-w-xl mx-auto font-heading text-sm opacity-80 uppercase tracking-widest">
+          Measure thy strength against thy peers. Bound by fate, judged by steel.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <GlassCard className="p-8">
-          <label className="text-[10px] font-bold text-primary/60 tracking-widest block mb-4 uppercase font-mono">Warrior I (Current or Steam ID)</label>
+          <label className="text-[10px] font-bold text-primary/60 tracking-widest block mb-4 uppercase font-heading">SPARTAN_I (Current ID)</label>
           <div className="relative">
             <input 
               type="text" 
@@ -72,7 +72,7 @@ export default function ComparePage() {
       <button 
         onClick={handleCompare}
         disabled={loading}
-        className="w-full py-6 bg-primary/10 border border-primary/40 text-primary font-serif font-bold tracking-[0.4em] mb-16 hover:bg-primary hover:text-background transition-all flex items-center justify-center gap-4 disabled:opacity-50"
+        className="w-full py-6 bg-primary/10 border border-primary/40 text-primary font-heading font-bold tracking-[0.4em] mb-16 hover:bg-white hover:text-black transition-all flex items-center justify-center gap-4 disabled:opacity-50"
       >
         {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "EXECUTE_COMPARISON"}
       </button>
@@ -113,8 +113,8 @@ function PlayerCompareCard({ player }: { player: any }) {
           <img src={profile.avatarfull} className="w-full h-full object-cover" />
         </div>
         <div>
-          <h3 className="text-2xl font-serif font-bold leading-tight">{profile.personaname}</h3>
-          <p className="text-[10px] font-mono text-primary/40 tracking-[0.4em] uppercase mt-2">
+          <h3 className="text-2xl font-heading font-bold leading-tight">{profile.personaname}</h3>
+          <p className="text-[10px] font-heading text-primary/40 tracking-[0.4em] uppercase mt-2">
             Status: {profile.personastate === 1 ? "ONLINE" : "OFFLINE"}
           </p>
           <div className="flex items-center gap-2 mt-3">
@@ -134,11 +134,11 @@ function MetricComp({ label, val1, val2, unit = "" }: { label: string, val1: num
     <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/5">
       <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-4">{label}</p>
       <div className="flex items-center justify-between gap-8 px-4">
-        <span className={cn("text-2xl font-serif font-bold", diff > 0 && "text-primary")}>{Math.round(val1)}{unit}</span>
+        <span className={cn("text-2xl font-heading font-bold", diff > 0 && "text-primary")}>{Math.round(val1)}{unit}</span>
         <div className="h-px flex-1 bg-white/10 relative">
           <div className={cn("absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]", diff > 0 ? "bg-primary left-0" : "bg-zinc-500 right-0")} />
         </div>
-        <span className={cn("text-2xl font-serif font-bold", diff < 0 && "text-primary")}>{Math.round(val2)}{unit}</span>
+        <span className={cn("text-2xl font-heading font-bold", diff < 0 && "text-primary")}>{Math.round(val2)}{unit}</span>
       </div>
     </div>
   );

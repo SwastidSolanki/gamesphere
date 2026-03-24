@@ -74,7 +74,7 @@ export default function GameLibrary({ games }: GameLibraryProps) {
 
       {sortedGames.length === 0 && (
         <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-3xl">
-          <p className="text-zinc-500 font-serif italic">No combat records found.</p>
+          <p className="text-zinc-500 font-heading tracking-widest uppercase text-xs">No war records found.</p>
         </div>
       )}
     </div>
