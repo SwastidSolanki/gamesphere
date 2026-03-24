@@ -89,7 +89,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
           >
             <div className="p-10">
               <div className="flex justify-between items-center mb-10">
-                <h2 className="text-4xl font-heading">ACCOUNT_UPLINK</h2>
+                <h2 className="text-4xl font-heading tracking-widest">ACCOUNT UPLINK</h2>
                 <button onClick={onClose} className="p-2 hover:bg-white/5 transition-colors">
                   <X className="w-6 h-6" />
                 </button>
@@ -101,20 +101,20 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     <button
                       onClick={() => { setActiveTab("steam"); setError(null); }}
                       className={cn(
-                        "flex-1 py-4 font-heading tracking-widest transition-all",
+                        "flex-1 py-4 font-heading tracking-[0.3em] transition-all",
                         activeTab === "steam" ? "bg-white text-black" : "text-zinc-500 hover:text-white"
                       )}
                     >
-                      STEAM_NODE
+                      STEAM NODE
                     </button>
                     <button
                       onClick={() => { setActiveTab("riot"); setError(null); }}
                       className={cn(
-                        "flex-1 py-4 font-heading tracking-widest transition-all",
+                        "flex-1 py-4 font-heading tracking-[0.3em] transition-all",
                         activeTab === "riot" ? "bg-white text-black" : "text-zinc-500 hover:text-white"
                       )}
                     >
-                      RIOT_NODE
+                      RIOT NODE
                     </button>
                   </div>
 
@@ -151,10 +151,10 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         onClick={() => {
                             window.location.href = "/api/auth/steam";
                         }}
-                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                        className="w-full py-8 bg-[#171a21] text-white font-heading text-2xl tracking-[0.2em] hover:bg-[#2a475e] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                       >
                         <span className="font-black">LOGIN WITH STEAM</span>
-                        <img src="https://community.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=96bea98" alt="Steam" className="w-12 h-12 opacity-80 group-hover:opacity-100 transition-opacity" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam" className="w-14 h-14 opacity-80 group-hover:opacity-100 transition-opacity filter invert" />
                       </button>
                     </>
                   )}
@@ -189,7 +189,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                   className="space-y-10"
                 >
                   <div className="text-center">
-                    <h3 className="text-xl font-heading mb-2 tracking-widest text-primary">SELECT_IDENTITY</h3>
+                    <h3 className="text-xl font-heading mb-2 tracking-widest text-primary">SELECT IDENTITY</h3>
                     <p className="text-[10px] font-black opacity-40 uppercase tracking-[0.4em]">Search: {identifier.toUpperCase()}</p>
                   </div>
 
@@ -208,7 +208,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                       </div>
                       <div className="flex-1 text-left">
                         <p className="font-heading text-lg group-hover:text-primary transition-colors">{preview.name.toUpperCase()}</p>
-                        <p className="text-[8px] font-black tracking-widest opacity-40 uppercase">{activeTab === "steam" ? `STEAM_ARCHIVE: ${preview.id}` : `RIOT_ACCOUNT: #${preview.tag}`}</p>
+                        <p className="text-[8px] font-black tracking-widest opacity-40 uppercase">{activeTab === "steam" ? `STEAM ARCHIVE: ${preview.id}` : `RIOT ACCOUNT: #${preview.tag}`}</p>
                       </div>
                       <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <CheckCircle2 className="w-4 h-4 text-primary" />
@@ -221,17 +221,17 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                             <User className="w-6 h-6 text-white/20" />
                         </div>
                         <div className="flex-1 text-left">
-                           <p className="font-heading text-sm opacity-60">ADDITIONAL_RECORDS...</p>
-                           <p className="text-[8px] font-black tracking-widest">ENCRYPTED_ID_CONFLICT</p>
+                           <p className="font-heading text-sm opacity-60">ADDITIONAL RECORDS...</p>
+                           <p className="text-[8px] font-black tracking-widest">ENCRYPTED ID CONFLICT</p>
                         </div>
                     </div>
                   </div>
 
-                  <button
+                   <button
                     onClick={() => setPreview(null)}
                     className="w-full py-5 border border-white/10 font-heading text-xs tracking-widest hover:text-red-500 transition-all uppercase"
                   >
-                    RETURN_TO_SEARCH
+                    RETURN TO SEARCH
                   </button>
                 </motion.div>
               )}

@@ -19,7 +19,12 @@ import {
   Loader2,
   AlertCircle,
   LogOut,
-  Sword
+  Sword,
+  ShieldCheck,
+  Zap,
+  Lock,
+  Search,
+  Check
 } from "lucide-react";
 import { 
   AreaChart,
@@ -154,9 +159,53 @@ function DashboardContent() {
 
   const powerScore = Math.round((data?.steam?.totalPlaytime || 0) * 0.4 + (riotLeague?.leaguePoints || 0) * 1.5 + (riotLeague?.wins || 0) * 10);
 
+  const riotError = searchParams.get('riot_error');
+
   return (
-    <main className="min-h-screen font-body pt-32 pb-24 px-6 max-w-7xl mx-auto bg-transparent">
+    <main className="min-h-screen bg-[#0d0e12] text-white p-4 md:p-8 font-heading overflow-x-hidden relative">
       <Navbar />
+
+      {/* Warning Overlay for missing credentials */}
+      {riotError === 'CREDENTIALS_MISSING' && (
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-8 p-6 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center justify-between gap-6 backdrop-blur-xl relative z-50"
+        >
+            <div className="flex items-center gap-4">
+                <div className="p-3 bg-red-500/20 rounded-full animate-pulse">
+                    <ShieldCheck className="w-5 h-5 text-red-500" />
+                </div>
+                <div>
+                    <h3 className="text-lg font-black tracking-widest text-red-500 uppercase">CREDENTIALS_MISSING // RIOT_HANDSHAKE_HALTED</h3>
+                    <p className="text-zinc-500 text-xs uppercase font-bold tracking-tighter">Your Spartan Vault requires a RIOT_CLIENT_ID in the .env file to forge this connection.</p>
+                </div>
+            </div>
+            <div className="flex gap-4">
+                <button 
+                    onClick={() => {
+                        localStorage.setItem('gamesphere_riot_id', 'SWIFT#FORGED');
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                        window.location.reload();
+                    }}
+                    className="px-6 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/20 text-primary text-[10px] font-black tracking-widest uppercase transition-all"
+                >
+                    FORGE_MOCK_IDENTITY
+                </button>
+                <button 
+                    onClick={() => {
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                        window.location.reload();
+                    }}
+                    className="px-6 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 text-[10px] font-black tracking-widest uppercase transition-all"
+                >
+                    ACKNOWLEDGE
+                </button>
+            </div>
+        </motion.div>
+      )}
       
       {/* HUD HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
