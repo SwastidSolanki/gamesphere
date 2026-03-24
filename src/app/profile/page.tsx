@@ -38,14 +38,14 @@ export default function ProfilePage() {
         <div className="h-64 rounded-3xl overflow-hidden relative border border-white/5">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-secondary/20" />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-          <div className="absolute bottom-12 left-12 flex items-end gap-8">
-            <div className="w-32 h-32 rounded-3xl border-4 border-black bg-zinc-900 overflow-hidden shadow-2xl relative">
+          <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 flex flex-col md:flex-row items-start md:items-end gap-6 md:gap-8">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl border-4 border-black bg-zinc-900 overflow-hidden shadow-2xl relative shrink-0">
                 <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
-                    <UserIcon className="w-16 h-16 text-primary" />
+                    <UserIcon className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
             </div>
-            <div className="pb-2">
-              <h1 className="text-4xl font-heading font-bold tracking-tight mb-1 uppercase">SWASTID_SOLANKI</h1>
+            <div className="pb-1 md:pb-2">
+              <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-tight mb-1 uppercase">SWASTID_SOLANKI</h1>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold font-mono px-3 py-1 rounded-full bg-primary/20 text-primary border border-primary/20">ELITE TIER</span>
                 <span className="text-xs text-zinc-400 font-bold uppercase tracking-widest">Global Rank #1,240</span>
@@ -64,9 +64,9 @@ export default function ProfilePage() {
             </h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={SKILL_DATA}>
+                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILL_DATA}>
                   <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: "#666", fontSize: 10 }} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: "#666", fontSize: 8 }} />
                   <Radar
                     name="Swastid"
                     dataKey="A"

@@ -24,7 +24,14 @@ export default function LandingPage() {
   useLenis();
 
   const handleConnect = (platform: string, id: string) => {
-    localStorage.setItem(`gamesphere_${platform}_id`, id);
+    if (platform === "riot") {
+        // Since id is the PUUID here, we'll store it as such
+        localStorage.setItem(`gamesphere_riot_puuid`, id);
+        // We'll also store the search string if available, or just clear it so dashboard re-fetches
+        // For simplicity, the dashboard handles defaults.
+    } else {
+        localStorage.setItem(`gamesphere_${platform}_id`, id);
+    }
     router.push("/dashboard");
   };
 
@@ -60,14 +67,21 @@ export default function LandingPage() {
         >
           <div className="flex items-center justify-center gap-4 mb-12">
             <div className="h-[1px] w-12 bg-primary/40" />
-            <div className="flex items-center gap-2 px-4 py-1 border border-primary/20 bg-primary/5 rounded-full">
-                <ShieldCheck className="w-3 h-3 text-primary" />
-                <span className="text-[10px] font-black tracking-[0.5em] uppercase text-primary">ENCRYPTED_UPLINK_ACTIVE</span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/40">GAMESPHERE_VERCEL_STABLE</span>
             </div>
+            <a 
+              href="https://gamesphere-ascent.vercel.app" 
+              target="_blank"
+              className="text-[8px] font-black uppercase tracking-[0.2em] text-primary hover:text-white transition-colors"
+            >
+              UPLINK_LIVE
+            </a>
             <div className="h-[1px] w-12 bg-primary/40" />
           </div>
 
-          <h1 className="text-6xl md:text-[8rem] font-black mb-10 leading-[0.9] tracking-tighter uppercase">
+          <h1 className="text-4xl sm:text-6xl md:text-[8rem] font-black mb-10 leading-[0.9] tracking-tighter uppercase break-words">
             <span className="block text-zinc-600 opacity-50">UNIFY</span>
             <motion.span 
                 animate={{ opacity: [0.9, 1, 0.9], x: [0, 2, -2, 0] }}
@@ -78,24 +92,25 @@ export default function LandingPage() {
             </motion.span>
           </h1>
 
-          <p className="text-xs md:text-sm text-zinc-400 max-w-xl mx-auto mb-16 font-black uppercase tracking-[0.4em] leading-relaxed opacity-60">
-            The Fimbulwinter of fragmented data is over. Connect thy Steam and Riot archives 
-            into a single high-fidelity HUD. Command thy legacy.
+          <p className="text-xs md:text-sm text-zinc-500 font-heading uppercase tracking-[0.3em] mb-16 leading-relaxed px-4 text-center">
+            The fimbulwinter of fragmented data is over. <br className="hidden md:block" />
+            Connect thy Steam and Riot archives into a single high-fidelity HUD. <br className="hidden md:block" />
+            Command thy legacy.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="group relative px-16 py-7 bg-white text-black font-black hover:bg-primary transition-all active:scale-95 text-sm tracking-[0.4em] uppercase overflow-hidden"
+              className="w-full sm:w-auto group relative px-10 md:px-16 py-5 md:py-7 bg-white text-black font-black hover:bg-primary transition-all active:scale-95 text-xs md:text-sm tracking-[0.4em] uppercase overflow-hidden"
             >
-              <div className="relative z-10 flex items-center gap-4">
+              <div className="relative z-10 flex items-center justify-center gap-4">
                 BIND_IDENTITY <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </div>
               <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </button>
             <button 
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-16 py-7 bg-white/5 border border-white/10 text-white font-black hover:bg-white hover:text-black transition-all active:scale-95 text-sm tracking-[0.4em] uppercase"
+              className="w-full sm:w-auto px-10 md:px-16 py-5 md:py-7 bg-white/5 border border-white/10 text-white font-black hover:bg-white hover:text-black transition-all active:scale-95 text-xs md:text-sm tracking-[0.4em] uppercase"
             >
               EXPLORE_VAULT
             </button>

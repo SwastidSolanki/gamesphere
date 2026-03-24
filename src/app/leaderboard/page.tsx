@@ -59,11 +59,10 @@ export default function LeaderboardPage() {
         <div>
           <div className="flex items-center gap-3 mb-6 opacity-30">
             <span className="w-12 h-[1px] bg-primary"></span>
-            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading font-mono">GLOBAL_RANKING</h2>
+            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">WAR_INTELLIGENCE</h2>
           </div>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">
-              {platform === "steam" ? "VALHALLA_LADDER" : platform === "riot" ? "NEXUS_LADDER" : "PLATFORM_LADDER"}
-          </h1>
+            <h1 className="text-2xl sm:text-4xl md:text-8xl font-heading font-black tracking-widest text-white mb-2">PLATFORM_LADDER</h1>
+            <p className="text-[8px] sm:text-[10px] font-mono text-primary/40 tracking-[0.6em] uppercase">Warriors Synchronized // Real-Time Archives</p>
         </div>
         
         {platform && (
@@ -74,14 +73,14 @@ export default function LeaderboardPage() {
                 >
                     SWITCH_PLATFORM
                 </button>
-                <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-12">
-                    <div className="flex items-center pl-5">
-                        <Search className="w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
+                <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-10 items-center">
+                    <div className="pl-5">
+                        <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-primary transition-colors" />
                     </div>
                     <input 
                         type="text" 
-                        placeholder="Search Players..." 
-                        className="bg-transparent py-2 pl-4 pr-6 text-sm focus:outline-none w-48 focus:w-64 transition-all text-white placeholder:text-zinc-600"
+                        placeholder="SEARCH_WARRIOR..." 
+                        className="bg-transparent py-2 pl-3 pr-6 text-[10px] font-bold tracking-widest focus:outline-none w-32 focus:w-48 transition-all text-white placeholder:text-zinc-700 uppercase"
                     />
                 </div>
             </div>
@@ -100,7 +99,7 @@ export default function LeaderboardPage() {
               <PlatformChoiceCard 
                 title="RIOT_Incursion"
                 desc="Dominate the Nexus. Focus on rank, victories, and battle prowess."
-                icon={<Target className="w-12 h-12" />}
+                icon={<RiotFistIcon className="w-12 h-12" />}
                 onClick={() => setPlatform("riot")}
                 color="secondary"
               />
@@ -162,6 +161,14 @@ export default function LeaderboardPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function RiotFistIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M7 2v2h2v2h2v2h2V6h2V4h2V2H7zm4 8H9v2H7v2h2v2h2v2h2v-2h2v-2h2v-2h-2v-2h-2v2h-2v-2z" />
+    </svg>
   );
 }
 
