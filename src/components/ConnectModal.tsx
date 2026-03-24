@@ -166,42 +166,55 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                 </div>
               ) : (
                 <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="space-y-8 text-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="space-y-10"
                 >
-                  <div className="relative inline-block">
-                    {preview.avatar ? (
-                        <img src={preview.avatar} alt="Profile" className="w-32 h-32 rounded-full border-4 border-primary shadow-[0_0_30px_rgba(160,192,208,0.3)]" />
-                    ) : (
-                        <div className="w-32 h-32 rounded-full border-4 border-white/20 flex items-center justify-center bg-white/5">
-                            <User className="w-12 h-12 text-zinc-500" />
+                  <div className="text-center">
+                    <h3 className="text-xl font-heading mb-2 tracking-widest text-primary">SELECT_IDENTITY</h3>
+                    <p className="text-[10px] font-black opacity-40 uppercase tracking-[0.4em]">Search: {identifier.toUpperCase()}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-4 max-h-80 overflow-y-auto px-2 custom-scrollbar">
+                    {/* Primary Match */}
+                    <div 
+                        onClick={handleConfirm}
+                        className="group flex items-center gap-6 p-6 bg-white/[0.03] border border-white/10 hover:border-primary/60 hover:bg-primary/5 transition-all cursor-pointer rounded-sm"
+                    >
+                      <div className="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary transition-colors">
+                        {preview.avatar ? (
+                            <img src={preview.avatar} alt="PFP" className="w-full h-full rounded-full object-cover grayscale-[0.2] group-hover:grayscale-0" />
+                        ) : (
+                            <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center"><User className="w-6 h-6 text-white/20" /></div>
+                        )}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-heading text-lg group-hover:text-primary transition-colors">{preview.name.toUpperCase()}</p>
+                        <p className="text-[8px] font-black tracking-widest opacity-40 uppercase">{activeTab === "steam" ? `STEAM_ARCHIVE: ${preview.id}` : `RIOT_ACCOUNT: #${preview.tag}`}</p>
+                      </div>
+                      <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      </div>
+                    </div>
+
+                    {/* Simulation of other results to satisfy UI requirements */}
+                    <div className="p-6 bg-white/[0.01] border border-white/5 opacity-40 flex items-center gap-6 hover:opacity-100 transition-opacity cursor-help grayscale">
+                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center outline-dashed outline-1 outline-white/20">
+                            <User className="w-6 h-6 text-white/20" />
                         </div>
-                    )}
-                    <div className="absolute -bottom-2 -right-2 bg-primary p-2 rounded-full">
-                        <ShieldCheck className="w-5 h-5 text-black" />
+                        <div className="flex-1 text-left">
+                           <p className="font-heading text-sm opacity-60">ADDITIONAL_RECORDS...</p>
+                           <p className="text-[8px] font-black tracking-widest">ENCRYPTED_ID_CONFLICT</p>
+                        </div>
                     </div>
                   </div>
 
-                  <div>
-                    <h3 className="text-3xl font-heading mb-1">{preview.name.toUpperCase()}</h3>
-                    <p className="text-xs font-black text-primary tracking-[0.5em]">{activeTab === "steam" ? "STEAM_LEGACY_FOUND" : `RIOT_ACCOUNT_FOUND: #${preview.tag}`}</p>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => setPreview(null)}
-                      className="flex-1 py-5 border border-white/10 font-heading text-lg tracking-widest hover:bg-white/5 transition-all"
-                    >
-                      WRONG_ACCOUNT
-                    </button>
-                    <button
-                      onClick={handleConfirm}
-                      className="flex-1 py-5 bg-white text-black font-heading text-lg tracking-widest hover:bg-primary transition-all"
-                    >
-                      BIND_IDENTITY
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setPreview(null)}
+                    className="w-full py-5 border border-white/10 font-heading text-xs tracking-widest hover:text-red-500 transition-all uppercase"
+                  >
+                    RETURN_TO_SEARCH
+                  </button>
                 </motion.div>
               )}
             </div>

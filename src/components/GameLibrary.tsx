@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import SteamBanner from "./SteamBanner";
 
 interface Game {
   name: string;
