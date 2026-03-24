@@ -1,46 +1,32 @@
 @import "tailwindcss";
 
-:root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 4.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 188 100% 50%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 42 100% 50%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 188 100% 50%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 188 100% 50%;
-  --radius: 0.5rem;
-}
-
 @theme {
-  --font-heading: var(--font-heading);
-  --font-mono: var(--font-mono);
+  --color-background: #0d0e0d;
+  --color-foreground: #e3e3d3;
+  --color-primary: #a7b49e;
+  --color-primary-foreground: #0d0e0d;
+  --color-secondary: #5f6c5b;
+  --color-secondary-foreground: #e3e3d3;
+  --color-accent: #b9870c;
+  --color-accent-foreground: #ffffff;
+  --color-border: rgba(167, 180, 158, 0.1);
+  --color-input: rgba(167, 180, 158, 0.2);
+  --color-ring: #a7b49e;
   
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-primary: hsl(var(--primary));
-  --color-secondary: hsl(var(--secondary));
-  --color-card: hsl(var(--card));
-  --color-border: hsl(var(--border));
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
 }
 
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(167, 180, 158, 0.05);
   }
   body {
-    @apply bg-background text-foreground antialiased font-mono;
+    @apply bg-background text-foreground antialiased font-body;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -50,13 +36,10 @@
 
 @layer components {
   .glass-card {
-    @apply bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden;
+    @apply bg-zinc-900/10 backdrop-blur-3xl border border-white/5 rounded-2xl overflow-hidden;
   }
-  
-  /* Removed glow effects as per user request */
 }
 
-/* Custom scrollbar for gaming aesthetic */
 ::-webkit-scrollbar {
   width: 6px;
 }
