@@ -30,13 +30,7 @@ export default function LandingPage() {
       <Navbar />
       
       {/* Cinematic Background Layer */}
-      <div className="fixed inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center brightness-[0.45]" 
-          style={{ backgroundImage: `url('/elden_ring_bg.png')` }} 
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
-      </div>
+      <ThreeBackground />
 
       <section className="relative z-10 pt-48 pb-32 px-6 min-h-screen flex flex-col justify-center text-center">
         <div className="max-w-5xl mx-auto w-full">

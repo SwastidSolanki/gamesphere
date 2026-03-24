@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import GlassCard from "@/components/GlassCard";
 import { fetchUnifiedData } from "@/lib/dataFetcher";
 import { Search, Loader2, Sword, Shield, Target } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function ComparePage() {
   const [id1, setId1] = useState("");
@@ -113,7 +114,14 @@ function PlayerCompareCard({ player }: { player: any }) {
         </div>
         <div>
           <h3 className="text-2xl font-serif font-bold leading-tight">{profile.personaname}</h3>
-          <p className="text-[10px] font-mono text-zinc-600 tracking-widest mt-1">LVL {player.steam.level || "ARCHIVED"}</p>
+          <p className="text-[10px] font-mono text-primary/40 tracking-[0.4em] uppercase mt-2">
+            Status: {profile.personastate === 1 ? "ONLINE" : "OFFLINE"}
+          </p>
+          <div className="flex items-center gap-2 mt-3">
+            <div className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-primary tracking-widest uppercase">
+              LEVEL_{player.steam.level || "ARCHIVED"}
+            </div>
+          </div>
         </div>
       </div>
     </GlassCard>
@@ -126,11 +134,11 @@ function MetricComp({ label, val1, val2, unit = "" }: { label: string, val1: num
     <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/5">
       <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-4">{label}</p>
       <div className="flex items-center justify-between gap-8 px-4">
-        <span className={cn("text-2xl font-serif font-bold", diff > 0 && "text-primary")}>{val1}{unit}</span>
+        <span className={cn("text-2xl font-serif font-bold", diff > 0 && "text-primary")}>{Math.round(val1)}{unit}</span>
         <div className="h-px flex-1 bg-white/10 relative">
-          <div className={cn("absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full", diff > 0 ? "bg-primary left-0" : "bg-zinc-500 right-0")} />
+          <div className={cn("absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]", diff > 0 ? "bg-primary left-0" : "bg-zinc-500 right-0")} />
         </div>
-        <span className={cn("text-2xl font-serif font-bold", diff < 0 && "text-primary")}>{val2}{unit}</span>
+        <span className={cn("text-2xl font-serif font-bold", diff < 0 && "text-primary")}>{Math.round(val2)}{unit}</span>
       </div>
     </div>
   );

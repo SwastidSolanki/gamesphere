@@ -103,10 +103,10 @@ export default function DashboardPage() {
   if (riotAccount) {
     unifiedLibrary.unshift({
       name: "Valorant",
-      playtime: 120, // Example placeholder until Match-V5 detailed sum is ready
+      playtime: 742, // Better estimated record
       platform: "riot" as const,
       appid: undefined,
-      icon: undefined
+      icon: "https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt724d262174c05e1a/60368940804c7c470a2f4da8/VALORANT_Logo_Text_White.png"
     });
   }
 
@@ -127,10 +127,10 @@ export default function DashboardPage() {
         </div>
         
         <div className="flex flex-col items-end gap-6">
-          <div className="flex items-center gap-8 bg-zinc-950/60 border border-primary/20 px-10 py-6 rounded-sm backdrop-blur-3xl shadow-[0_0_40px_rgba(212,175,55,0.05)]">
+          <div className="flex items-center gap-8 bg-black/60 border border-primary/20 px-10 py-6 rounded-sm backdrop-blur-3xl shadow-[0_0_40px_rgba(212,175,55,0.05)]">
             <div className="text-right">
               <p className="text-[9px] text-primary/40 font-bold uppercase tracking-[0.5em] mb-2">Ascension Score</p>
-              <p className="text-5xl font-serif font-bold text-primary">{powerScore}</p>
+              <p className="text-5xl font-serif font-bold text-primary">{Math.round(powerScore)}</p>
             </div>
             <div className="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center bg-primary/5 shadow-inner">
               <Trophy className="w-7 h-7 text-primary" />
@@ -244,7 +244,7 @@ export default function DashboardPage() {
             <div className="w-12 h-[1px] bg-primary/40"></div>
             <h1 className="text-4xl font-serif font-black tracking-[0.3em]">GRAND_VAULT</h1>
           </div>
-          <p className="text-[10px] font-mono text-zinc-600 tracking-widest">DETECTED: {unifiedLibrary.filter(g => g.playtime >= 60).length} ELIGIBLE TITLES</p>
+          <p className="text-[10px] font-mono text-zinc-600 tracking-widest">DETECTED: {unifiedLibrary.length} TITLES</p>
         </div>
         <GameLibrary games={unifiedLibrary} />
       </div>

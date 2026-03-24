@@ -18,13 +18,13 @@ interface GameLibraryProps {
 }
 
 export default function GameLibrary({ games }: GameLibraryProps) {
-  // Filter games with at least 1 hour of playtime
-  const filteredGames = games.filter(game => game.playtime >= 60);
+  // Relaxed filtering to show all games as per user request
+  const sortedGames = [...games].sort((a, b) => b.playtime - a.playtime);
 
   return (
     <div className="space-y-12">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredGames.map((game, index) => (
+        {sortedGames.map((game, index) => (
           <motion.div
             key={`${game.name}-${index}`}
             initial={{ opacity: 0, scale: 0.95 }}
@@ -72,9 +72,9 @@ export default function GameLibrary({ games }: GameLibraryProps) {
         ))}
       </div>
 
-      {filteredGames.length === 0 && (
+      {sortedGames.length === 0 && (
         <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-3xl">
-          <p className="text-zinc-500 font-serif italic">No significant combat records found (Min. 1hr playtime)</p>
+          <p className="text-zinc-500 font-serif italic">No combat records found.</p>
         </div>
       )}
     </div>
