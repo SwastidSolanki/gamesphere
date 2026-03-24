@@ -1,26 +1,32 @@
-"use client";
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Zap, Target, Globe } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
-import { Canvas } from "@react-three/fiber";
-import HeroCharacter from "@/components/HeroCharacter";
+import ConnectModal from "@/components/ConnectModal";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
   useLenis();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleConnect = (platform: string, id: string) => {
+    // Store in localStorage for the dashboard to pick up
+    localStorage.setItem(`gamesphere_${platform}_id`, id);
+    router.push("/dashboard");
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center">
+      <ConnectModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onConnect={handleConnect}
+      />
+
       {/* Hero Section */}
-      <section className="relative w-full h-screen flex flex-col lg:flex-row items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0.5, 4] }}>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <HeroCharacter />
-          </Canvas>
-        </div>
+      <section className="relative w-full h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
 
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -32,9 +38,9 @@ export default function LandingPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[1.1] mb-6"
+            className="text-6xl md:text-9xl font-heading font-black tracking-tighter leading-none mb-8"
           >
-            ASCEND TO THE <br /> <span className="text-primary italic">NEXT_DIMENSION</span>
+            ASCEND TO THE <br /> <span className="text-white selection:bg-primary selection:text-black">NEXT_DIMENSION</span>
           </motion.h1>
           
           <motion.p
@@ -51,15 +57,15 @@ export default function LandingPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col md:flex-row gap-4"
+            className="flex flex-col md:flex-row gap-4 justify-center"
           >
-            <Link 
-              href="/dashboard"
-              className="bg-primary text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:bg-primary/80 transition-all group font-heading text-xs"
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-black px-12 py-5 rounded-full font-heading font-bold flex items-center gap-3 hover:bg-white transition-all group text-sm"
             >
-              CONNECT ACCOUNTS
+              ESTABLISH_CONNECTION
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </button>
             <Link 
               href="/leaderboard"
               className="bg-white/5 backdrop-blur-md border border-white/10 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-all"

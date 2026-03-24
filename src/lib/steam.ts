@@ -21,3 +21,9 @@ export async function getSteamStats(steamId: string, appId: number) {
   const data = await response.json();
   return data.playerstats;
 }
+export async function resolveSteamVanityURL(vanityUrl: string) {
+  const url = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v0001/?key=${API_KEY}&vanityurl=${vanityUrl}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.response.steamid;
+}
