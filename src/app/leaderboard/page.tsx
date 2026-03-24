@@ -9,19 +9,21 @@ import {
   ChevronRight,
   TrendingUp,
   TrendingDown,
-  Minus
+  Minus,
+  Clock,
+  Gamepad2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LEADERBOARD_DATA = [
-  { rank: 1, name: "AcePlayer", score: 9840, tier: "Legend", trend: "up", platform: "Steam" },
-  { rank: 2, name: "ValorantGod", score: 9720, tier: "Legend", trend: "down", platform: "Riot" },
-  { rank: 3, name: "Swastid_Solanki", score: 8420, tier: "Elite", trend: "up", platform: "Steam" },
-  { rank: 4, name: "ShadowNinja", score: 8100, tier: "Elite", trend: "stable", platform: "Riot" },
-  { rank: 5, name: "GamerPro", score: 7950, tier: "Elite", trend: "up", platform: "Steam" },
-  { rank: 6, name: "Striker", score: 7600, tier: "Elite", trend: "down", platform: "Riot" },
-  { rank: 7, name: "Phoenix", score: 6800, tier: "Pro", trend: "stable", platform: "Steam" },
-  { rank: 8, name: "Zeus", score: 6500, tier: "Pro", trend: "up", platform: "Riot" },
+  { rank: 1, name: "AcePlayer", score: 9840, tier: "Legend", trend: "up", platform: "Steam", hours: 4250, games: 142, achievements: 856 },
+  { rank: 2, name: "ValorantGod", score: 9720, tier: "Legend", trend: "down", platform: "Riot", hours: 3120, games: 4, achievements: 142 },
+  { rank: 3, name: "Swastid_Solanki", score: 8420, tier: "Elite", trend: "up", platform: "Steam", hours: 1240, games: 85, achievements: 412 },
+  { rank: 4, name: "ShadowNinja", score: 8100, tier: "Elite", trend: "stable", platform: "Riot", hours: 2100, games: 2, achievements: 98 },
+  { rank: 5, name: "GamerPro", score: 7950, tier: "Elite", trend: "up", platform: "Steam", hours: 940, games: 112, achievements: 654 },
+  { rank: 6, name: "Striker", score: 7600, tier: "Elite", trend: "down", platform: "Riot", hours: 1560, games: 1, achievements: 56 },
+  { rank: 7, name: "Phoenix", score: 6800, tier: "Pro", trend: "stable", platform: "Steam", hours: 820, games: 45, achievements: 210 },
+  { rank: 8, name: "Zeus", score: 6500, tier: "Pro", trend: "up", platform: "Riot", hours: 1100, games: 3, achievements: 88 },
 ];
 
 export default function LeaderboardPage() {
@@ -33,16 +35,18 @@ export default function LeaderboardPage() {
           <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">PLATFORM_LADDER</h1>
         </div>
         
-        <div className="flex gap-2">
-            <div className="relative group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
+        <div className="flex gap-4">
+            <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-12">
+                <div className="flex items-center pl-5">
+                    <Search className="w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
+                </div>
                 <input 
                     type="text" 
                     placeholder="Search Players..." 
-                    className="bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-6 text-sm focus:outline-none focus:border-primary/50 transition-all w-48 focus:w-64"
+                    className="bg-transparent py-2 pl-4 pr-6 text-sm focus:outline-none w-48 focus:w-64 transition-all text-white placeholder:text-zinc-600"
                 />
             </div>
-            <button className="bg-white/5 border border-white/10 rounded-full p-2 hover:bg-white/10 transition-all">
+            <button className="bg-white/5 border border-white/10 rounded-full w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-all">
                 <Filter className="w-4 h-4 text-zinc-500" />
             </button>
         </div>
@@ -76,10 +80,26 @@ export default function LeaderboardPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-12">
-                <div className="text-right">
+              <div className="flex items-center gap-16">
+                {/* Detailed Stats */}
+                <div className="hidden lg:flex items-center gap-10">
+                    <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-zinc-600" />
+                        <span className="text-xs font-bold text-zinc-400">{player.hours.toLocaleString()}h</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Gamepad2 className="w-3.5 h-3.5 text-zinc-600" />
+                        <span className="text-xs font-bold text-zinc-400">{player.games} Games</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Trophy className="w-3.5 h-3.5 text-zinc-600" />
+                        <span className="text-xs font-bold text-zinc-400">{player.achievements}</span>
+                    </div>
+                </div>
+
+                <div className="text-right min-w-[100px]">
                     <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Power Score</p>
-                    <p className="font-heading font-bold">{player.score}</p>
+                    <p className="font-heading font-bold text-lg">{player.score.toLocaleString()}</p>
                 </div>
 
                 <div className="w-24 text-center">

@@ -122,18 +122,18 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     <label className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">
                       IDENTIFIER ({activeTab === "steam" ? "Username, Vanity URL or ID" : "GameName#Tag"})
                     </label>
-                    <div className="flex gap-2">
+                    <div className="flex bg-black/40 border border-white/10 focus-within:border-white transition-all overflow-hidden group">
                         <input
                         type="text"
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
                         placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
-                        className="flex-1 bg-black/40 border border-white/10 py-5 px-8 text-lg focus:outline-none focus:border-white transition-all font-mono text-white"
+                        className="flex-1 bg-transparent py-5 px-8 text-lg focus:outline-none font-mono text-white placeholder:text-zinc-700"
                         />
                         <button 
                             onClick={handleVerify}
                             disabled={isLoading || !identifier}
-                            className="px-8 bg-white text-black font-heading tracking-widest hover:bg-primary transition-all disabled:opacity-50"
+                            className="px-10 bg-white text-black font-heading tracking-[0.2em] hover:bg-primary transition-all disabled:opacity-50 flex items-center justify-center"
                         >
                             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "SEARCH"}
                         </button>
@@ -144,7 +144,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     <>
                       <div className="relative py-4">
                         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
+                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL AUTH</div>
                       </div>
 
                       <button
@@ -163,17 +163,17 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     <>
                       <div className="relative py-4">
                         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
+                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL AUTH</div>
                       </div>
 
                       <button
                         onClick={() => {
                             window.location.href = "/api/auth/riot";
                         }}
-                        className="w-full py-6 bg-[#d13639] text-white font-heading text-xl tracking-widest hover:bg-[#ff4655] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                        className="w-full py-8 bg-[#d13639] text-white font-heading text-2xl tracking-[0.2em] hover:bg-[#ff4655] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                       >
-                        <span className="font-black">LOGIN WITH RIOT CLIENT</span>
-                        <img src="https://www.riotgames.com/dark-riot-logo.png" alt="Riot" className="w-10 h-10 object-contain invert brightness-0 group-hover:brightness-100 transition-all" />
+                        <span className="font-black">LOGIN WITH RIOT</span>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Riot_Games_logo_2022.svg" alt="Riot" className="w-12 h-12 object-contain opacity-80 group-hover:opacity-100 transition-all transition-opacity filter invert brightness-0" />
                       </button>
 
                       <div className="mt-4 p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed font-mono">

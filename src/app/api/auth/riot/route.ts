@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const REDIRECT_URI = `${baseUrl}/api/auth/riot/callback`;
   
   if (!RIOT_CLIENT_ID) {
-    return NextResponse.redirect(`${baseUrl}/dashboard?riot_error=CREDENTIALS_MISSING`);
+    return NextResponse.redirect(`${baseUrl}/riot-mock-login`);
   }
 
   const riotAuthUrl = `https://auth.riotgames.com/authorize?client_id=${RIOT_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid+offline_access`;
