@@ -110,7 +110,7 @@ export default function DashboardPage() {
     });
   }
 
-  const powerScore = Math.round(data.steam.totalPlaytime * 0.4 + (riotLeague?.leaguePoints || 0) * 1.5 + (riotLeague?.wins || 0) * 10);
+  const powerScore = Math.round((data?.steam?.totalPlaytime || 0) * 0.4 + (riotLeague?.leaguePoints || 0) * 1.5 + (riotLeague?.wins || 0) * 10);
 
   return (
     <main className="min-h-screen font-body pt-32 pb-24 px-6 max-w-7xl mx-auto bg-transparent">
@@ -121,9 +121,9 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center gap-3 mb-6 opacity-40">
             <span className="w-12 h-[1px] bg-primary"></span>
-            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading">Sanctum of Records</h2>
+            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading">WAR_ARCHIVES</h2>
           </div>
-          <h1 className="text-5xl md:text-7xl font-heading font-black tracking-widest text-white leading-none">PLAYER_ARCHIVE</h1>
+          <h1 className="text-5xl md:text-7xl font-heading font-black tracking-widest text-white leading-none">SPARTAN_VAULT</h1>
         </div>
         
         <div className="flex flex-col items-end gap-6">
@@ -180,7 +180,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
-            <StatBox icon={<Clock className="w-4 h-4" />} label="Record Playtime" value={`${Math.round(data.steam.totalPlaytime)}h`} />
+            <StatBox icon={<Clock className="w-4 h-4" />} label="Record Playtime" value={`${Math.round(data?.steam?.totalPlaytime || 0)}h`} />
             <StatBox icon={<Gamepad2 className="w-4 h-4" />} label="Digital Arsenal" value={steamLibrary.length} />
             <StatBox icon={<Target className="w-4 h-4" />} label="Verified ID" value={steamProfile?.steamid?.slice(-8) || "ARCHIVED"} />
           </div>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <MiniStat label="Legacy Links" value="02" sub="Platforms Synchronized" />
         <MiniStat label="Battle Victories" value={(Math.round(riotLeague?.wins || 0)).toString()} sub="Live War Records" />
-        <MiniStat label="Total Playtime" value={`${Math.round(data.steam.totalPlaytime)}h`} sub="Journey Confirmed" />
+        <MiniStat label="Total Playtime" value={`${Math.round(data?.steam?.totalPlaytime || 0)}h`} sub="Journey Confirmed" />
         <MiniStat label="Order Level" value={riotLeague?.tier || "NONE"} sub="Live Ranking" />
       </div>
     </main>
