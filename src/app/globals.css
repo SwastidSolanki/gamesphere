@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0d0e0d;
-  --color-foreground: #e3e3d3;
-  --color-primary: #a7b49e;
-  --color-primary-foreground: #0d0e0d;
-  --color-secondary: #5f6c5b;
-  --color-secondary-foreground: #e3e3d3;
-  --color-accent: #b9870c;
+  --color-background: #050505;
+  --color-foreground: #f0ead6;
+  --color-primary: #d4af37;
+  --color-primary-foreground: #050505;
+  --color-secondary: #4a5d4e;
+  --color-secondary-foreground: #f0ead6;
+  --color-accent: #8b0000;
   --color-accent-foreground: #ffffff;
-  --color-border: rgba(167, 180, 158, 0.1);
-  --color-input: rgba(167, 180, 158, 0.2);
-  --color-ring: #a7b49e;
+  --color-border: rgba(212, 175, 55, 0.1);
+  --color-input: rgba(212, 175, 55, 0.2);
+  --color-ring: #d4af37;
   
-  --font-heading: "Cormorant Garamond", serif;
+  --font-heading: "Cinzel", serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
@@ -23,25 +23,25 @@
 
 @layer base {
   * {
-    border-color: rgba(167, 180, 158, 0.05);
+    border-color: rgba(212, 175, 55, 0.1);
   }
   body {
     @apply bg-background text-foreground antialiased font-body;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight capitalize;
+    @apply font-heading tracking-widest uppercase;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-zinc-900/10 backdrop-blur-3xl border border-white/5 rounded-2xl overflow-hidden;
+    @apply bg-black/40 backdrop-blur-3xl border border-primary/20 rounded-2xl overflow-hidden;
   }
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -49,5 +49,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/20 rounded-full transition-colors hover:bg-primary/40;
+  @apply bg-primary/30 rounded-full transition-colors hover:bg-primary/60;
 }

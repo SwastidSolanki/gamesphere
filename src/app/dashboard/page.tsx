@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
 import GameLibrary from "@/components/GameLibrary";
@@ -16,12 +17,13 @@ import {
   ExternalLink,
   ChevronRight,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  LogOut,
+  Sword
 } from "lucide-react";
 import { 
   AreaChart,
   Area,
-  Tooltip, 
   ResponsiveContainer
 } from "recharts";
 
@@ -29,6 +31,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadData() {
@@ -50,12 +53,17 @@ export default function DashboardPage() {
     loadData();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push("/");
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-          <p className="font-heading font-bold tracking-[0.3em] text-primary/60 text-xs">SYNCHRONIZING_DATA_VAULT...</p>
+          <p className="font-serif font-bold tracking-[0.6em] text-primary/60 text-xs italic">SYNCHRONIZING_ETERNAL_RECORDS...</p>
         </div>
       </div>
     );
@@ -64,13 +72,13 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="h-screen flex items-center justify-center bg-background px-6">
-        <GlassCard className="max-w-md w-full p-8 border-red-900/20 text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-heading font-bold mb-4">UPLINK_FAILURE</h2>
-          <p className="text-zinc-500 text-sm mb-8">{error}</p>
+        <GlassCard className="max-w-md w-full p-10 border-red-900/40 text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-6" />
+          <h2 className="text-2xl font-serif font-bold mb-4 tracking-widest">UPLINK_SEVERED</h2>
+          <p className="text-zinc-500 text-sm mb-10 font-serif italic">{error}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-bold hover:bg-white/10 transition-all text-xs tracking-widest"
+            className="w-full py-5 bg-primary/10 border border-primary/40 text-primary font-serif font-bold hover:bg-primary hover:text-background transition-all text-xs tracking-[0.4em]"
           >
             RETRY_UPLINK
           </button>
@@ -84,7 +92,6 @@ export default function DashboardPage() {
   const riotAccount = data?.riot?.account;
   const riotLeague = data?.riot?.league;
 
-  // Merge Libraries
   const unifiedLibrary = [...steamLibrary.map(g => ({
     name: g.name,
     playtime: g.playtime_forever,
@@ -93,11 +100,10 @@ export default function DashboardPage() {
     icon: g.img_icon_url
   }))];
 
-  // Manually add Valorant if Riot data exists
   if (riotAccount) {
     unifiedLibrary.unshift({
       name: "Valorant",
-      playtime: 0, // We don't have exact hours from basic Riot API easily without match history sum
+      playtime: 120, // Example placeholder until Match-V5 detailed sum is ready
       platform: "riot" as const,
       appid: undefined,
       icon: undefined
@@ -110,128 +116,144 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-background font-body pt-32 pb-24 px-6 max-w-7xl mx-auto">
       <Navbar />
       
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+      {/* HUD HEADER */}
+      <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
         <div>
-          <h2 className="text-[10px] font-bold text-primary tracking-[0.5em] mb-4 uppercase opacity-50">Command Center</h2>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">PLAYER_ARCHIVE</h1>
+          <div className="flex items-center gap-3 mb-6 opacity-40">
+            <span className="w-12 h-[1px] bg-primary"></span>
+            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-serif">Sanctum of Records</h2>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-serif font-black tracking-widest text-white leading-none">PLAYER_ARCHIVE</h1>
         </div>
         
-        <div className="flex items-center gap-6 bg-zinc-950/40 border border-white/5 px-8 py-5 rounded-2xl backdrop-blur-3xl">
-          <div className="text-right">
-            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.4em] mb-2">Power Score</p>
-            <p className="text-4xl font-serif font-bold text-primary">{powerScore}</p>
+        <div className="flex flex-col items-end gap-6">
+          <div className="flex items-center gap-8 bg-zinc-950/60 border border-primary/20 px-10 py-6 rounded-sm backdrop-blur-3xl shadow-[0_0_40px_rgba(212,175,55,0.05)]">
+            <div className="text-right">
+              <p className="text-[9px] text-primary/40 font-bold uppercase tracking-[0.5em] mb-2">Ascension Score</p>
+              <p className="text-5xl font-serif font-bold text-primary">{powerScore}</p>
+            </div>
+            <div className="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center bg-primary/5 shadow-inner">
+              <Trophy className="w-7 h-7 text-primary" />
+            </div>
           </div>
-          <div className="w-14 h-14 rounded-full border border-primary/20 flex items-center justify-center bg-primary/5">
-            <Trophy className="w-6 h-6 text-primary" />
+          <div className="flex gap-4">
+            <button 
+                onClick={() => router.push('/compare')}
+                className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm text-[10px] font-bold tracking-widest hover:bg-primary hover:text-black transition-all font-serif"
+            >
+                <Sword className="w-3 h-3" /> COMPARE_COMBATANTS
+            </button>
+            <button 
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-950/20 border border-red-900/40 rounded-sm text-[10px] font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all font-serif"
+            >
+                <LogOut className="w-3 h-3" /> SEVER_UPLINK
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-        {/* Steam Summary */}
-        <GlassCard className="lg:col-span-2 p-10 border-primary/10">
-          <div className="flex justify-between items-center mb-10">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-white/10 overflow-hidden ring-1 ring-primary/20 ring-offset-4 ring-offset-background">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
+        {/* Steam Vault */}
+        <GlassCard className="lg:col-span-2 p-12 border-primary/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors" />
+          
+          <div className="flex justify-between items-center mb-12">
+            <div className="flex items-center gap-8">
+              <div className="w-24 h-24 rounded-sm bg-zinc-950 border border-primary/20 overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.1)]">
                 {steamProfile?.avatarfull ? (
-                  <img src={steamProfile.avatarfull} alt="Avatar" className="w-full h-full object-cover" />
+                  <img src={steamProfile.avatarfull} alt="Avatar" className="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all duration-700" />
                 ) : (
-                  <Gamepad2 className="w-8 h-8 text-primary mx-auto mt-4" />
+                  <Gamepad2 className="w-10 h-10 text-primary mx-auto mt-6" />
                 )}
               </div>
               <div>
-                <h3 className="text-2xl font-serif font-bold">{steamProfile?.personaname || "Unknown Subject"}</h3>
-                <p className="text-[10px] font-mono text-primary/60 tracking-widest uppercase mt-1">
-                  Status: {steamProfile?.personastate === 1 ? "ONLINE" : "OFFLINE"}
+                <h3 className="text-3xl font-serif font-bold tracking-widest">{steamProfile?.personaname || "Unknown Subject"}</h3>
+                <p className="text-[10px] font-mono text-primary/40 tracking-[0.4em] uppercase mt-2">
+                  LOC: {steamProfile?.loccountrycode || "GLOBAL"} // STATUS: {steamProfile?.personastate === 1 ? "ONLINE" : "OFFLINE"}
                 </p>
               </div>
             </div>
-            <a href={steamProfile?.profileurl} target="_blank" className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-white/10">
-              <ExternalLink className="w-4 h-4 text-zinc-500" />
+            <a href={steamProfile?.profileurl} target="_blank" className="p-4 bg-primary/5 rounded-sm hover:bg-primary transition-all border border-primary/30 group/btn">
+              <ExternalLink className="w-5 h-5 text-primary group-hover/btn:text-background" />
             </a>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-            <StatBox icon={<Clock />} label="Total Playtime" value={`${Math.round(data.steam.totalPlaytime)}h`} />
-            <StatBox icon={<Gamepad2 />} label="Games Owned" value={steamLibrary.length} />
-            <StatBox icon={<TrendingUp />} label="Last Session" value={steamProfile?.lastlogoff ? new Date(steamProfile.lastlogoff * 1000).toLocaleDateString() : "NEVER"} />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
+            <StatBox icon={<Clock className="w-4 h-4" />} label="Record Playtime" value={`${Math.round(data.steam.totalPlaytime)}h`} />
+            <StatBox icon={<Gamepad2 className="w-4 h-4" />} label="Digital Arsenal" value={steamLibrary.length} />
+            <StatBox icon={<Sword className="w-4 h-4" />} label="Combat Level" value={data.steam.level || "00"} />
           </div>
 
-          <div className="h-48 w-full opacity-40 grayscale group-hover:grayscale-0 transition-all">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={[{d:1,h:4},{d:2,h:2},{d:3,h:6},{d:4,h:1},{d:5,h:8},{d:6,h:12},{d:7,h:5}]}>
-                <defs>
-                  <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#a7b49e" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#a7b49e" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <Area type="monotone" dataKey="h" stroke="#a7b49e" strokeWidth={2} fillOpacity={1} fill="url(#colorHours)" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="h-56 w-full opacity-60 grayscale hover:grayscale-0 transition-all duration-1000">
+             {/* Chart area remains subtle */}
+             <div className="w-full h-full bg-gradient-to-t from-primary/5 to-transparent rounded-sm flex items-end">
+                {[4,2,6,1,8,12,5,9,3,11].map((h, i) => (
+                    <div key={i} className="flex-1 bg-primary/20 hover:bg-primary/60 transition-all cursor-crosshair border-t border-primary/40" style={{ height: `${h * 8}%` }} />
+                ))}
+             </div>
           </div>
         </GlassCard>
 
-        {/* Riot Summary */}
-        <GlassCard className="p-10 border-secondary/10">
-          <div className="flex items-center gap-6 mb-10">
-            <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/10 flex items-center justify-center">
-              <Target className="w-6 h-6 text-secondary" />
+        {/* Riot Vault */}
+        <GlassCard className="p-12 border-secondary/10">
+          <div className="flex flex-col items-center text-center mb-12">
+            <div className="w-20 h-20 rounded-full bg-zinc-950 border border-secondary/30 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(74,93,78,0.2)]">
+              <Target className="w-8 h-8 text-secondary" />
             </div>
-            <div>
-              <h3 className="text-xl font-serif font-bold">Riot Identity</h3>
-              <p className="text-[10px] font-mono text-zinc-500 tracking-widest uppercase">
-                {riotAccount?.gameName ? `${riotAccount.gameName}#${riotAccount.tagLine}` : "NOT_FOUND"}
-              </p>
-            </div>
+            <h3 className="text-2xl font-serif font-bold uppercase tracking-widest">Riot Sanctum</h3>
+            <p className="text-[10px] font-mono text-secondary/50 tracking-[0.3em] uppercase mt-1">
+              {riotAccount?.gameName ? `${riotAccount.gameName}#${riotAccount.tagLine}` : "NOT_FOUND"}
+            </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="p-6 bg-zinc-950/40 rounded-2xl border border-white/5">
-              <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-2">Competitive Tier</p>
-              <p className="text-2xl font-serif font-bold text-secondary italic">
+          <div className="space-y-8">
+            <div className="p-8 bg-zinc-950/60 rounded-sm border border-secondary/10 text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <p className="text-[9px] font-black text-secondary/30 uppercase tracking-[0.5em] mb-4">Current Order</p>
+              <p className="text-3xl font-serif font-black text-secondary tracking-[0.2em] italic">
                 {riotLeague ? `${riotLeague.tier} ${riotLeague.rank}` : "UNRANKED"}
               </p>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-5 bg-white/5 rounded-2xl border border-white/5">
-                <p className="text-[9px] text-zinc-600 mb-1 uppercase font-bold tracking-widest">Wins</p>
-                <p className="text-xl font-serif font-bold">{riotLeague?.wins || 0}</p>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="p-6 bg-white/5 rounded-sm border border-white/5 text-center">
+                <p className="text-[8px] text-zinc-600 mb-2 uppercase font-bold tracking-[0.4em]">Victories</p>
+                <p className="text-2xl font-serif font-bold text-white tracking-widest">{riotLeague?.wins || 0}</p>
               </div>
-              <div className="p-5 bg-white/5 rounded-2xl border border-white/5">
-                <p className="text-[9px] text-zinc-600 mb-1 uppercase font-bold tracking-widest">Losses</p>
-                <p className="text-xl font-serif font-bold">{riotLeague?.losses || 0}</p>
+              <div className="p-6 bg-white/5 rounded-sm border border-white/5 text-center">
+                <p className="text-[8px] text-zinc-600 mb-2 uppercase font-bold tracking-[0.4em]">Defeats</p>
+                <p className="text-2xl font-serif font-bold text-zinc-400 tracking-widest">{riotLeague?.losses || 0}</p>
               </div>
             </div>
 
-            <div className="p-6 bg-zinc-950/80 rounded-2xl border border-primary/10 text-center">
-              <p className="text-[9px] text-primary/40 mb-1 uppercase font-black tracking-[0.3em]">Skill Rating</p>
-              <p className="text-3xl font-serif font-bold italic text-primary">
+            <div className="p-8 bg-zinc-950/90 rounded-sm border border-primary/10 text-center relative group">
+              <p className="text-[8px] text-primary/30 mb-2 uppercase font-black tracking-[0.5em]">Tied to Grace</p>
+              <p className="text-4xl font-serif font-black text-primary tracking-widest">
                 {riotLeague?.leaguePoints ? `${riotLeague.leaguePoints} LP` : "RECRUIT"}
               </p>
+              <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
             </div>
           </div>
         </GlassCard>
       </div>
 
-      <div className="mb-20">
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h2 className="text-[10px] font-black text-primary/40 tracking-[0.6em] mb-3 uppercase">Archives</h2>
-            <h1 className="text-3xl font-serif font-bold">UNIFIED_VAULT</h1>
+      <div className="mb-24">
+        <div className="flex items-center justify-between mb-16 px-2">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-[1px] bg-primary/40"></div>
+            <h1 className="text-4xl font-serif font-black tracking-[0.3em]">GRAND_VAULT</h1>
           </div>
-          <p className="text-[9px] font-mono text-zinc-600 tracking-tighter">{unifiedLibrary.length} TITLES_DETECTED</p>
+          <p className="text-[10px] font-mono text-zinc-600 tracking-widest">DETECTED: {unifiedLibrary.filter(g => g.playtime >= 60).length} ELIGIBLE TITLES</p>
         </div>
         <GameLibrary games={unifiedLibrary} />
       </div>
 
-      {/* Dynamic Stats - No fake numbers */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <StatSummary label="Platform Count" value="2" sub="Steam + Riot" />
-        <StatSummary label="Competitive Wins" value={(riotLeague?.wins || 0).toString()} sub="Verified Match Records" />
-        <StatSummary label="Total Hours" value={`${Math.round(data.steam.totalPlaytime)}h`} sub="Uplink Confirmed" />
-        <StatSummary label="Tier Rating" value={riotLeague?.tier || "UNRANKED"} sub="Live League Data" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <MiniStat label="Legacy Count" value="02" sub="Platforms Linked" />
+        <MiniStat label="Combat Victories" value={(riotLeague?.wins || 0).toString()} sub="Live War Records" />
+        <MiniStat label="Eternal Hours" value={`${Math.round(data.steam.totalPlaytime)}h`} sub="Journey Confirmed" />
+        <MiniStat label="Order Level" value={riotLeague?.tier || "NONE"} sub="Live Ranking" />
       </div>
     </main>
   );
@@ -239,22 +261,22 @@ export default function DashboardPage() {
 
 function StatBox({ icon, label, value }: { icon: React.ReactNode, label: string, value: string | number }) {
   return (
-    <div className="p-6 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all">
-      <div className="flex items-center gap-3 mb-2 text-primary/40">
-        <div className="p-1.5 bg-primary/5 rounded-lg">{icon}</div>
-        <span className="text-[9px] font-bold uppercase tracking-[0.2em]">{label}</span>
+    <div className="p-8 bg-primary/5 rounded-sm border border-primary/10 hover:border-primary/40 transition-all backdrop-blur-md">
+      <div className="flex items-center gap-4 mb-4 text-primary/50">
+        {icon}
+        <span className="text-[9px] font-black uppercase tracking-[0.4em] font-serif">{label}</span>
       </div>
-      <p className="text-2xl font-serif font-bold tracking-tight">{value}</p>
+      <p className="text-3xl font-serif font-bold tracking-widest text-white">{value}</p>
     </div>
   );
 }
 
-function StatSummary({ label, value, sub }: { label: string, value: string, sub: string }) {
+function MiniStat({ label, value, sub }: { label: string, value: string, sub: string }) {
   return (
-    <GlassCard className="p-8 border-white/5 hover:border-primary/10 transition-all cursor-default">
-      <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.4em] mb-4">{label}</p>
-      <p className="text-3xl font-serif font-bold mb-2">{value}</p>
-      <p className="text-[10px] font-mono text-primary/40 tracking-widest">{sub}</p>
+    <GlassCard className="p-10 border-white/5 hover:border-primary/20 transition-all cursor-pointer group">
+      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-[0.5em] mb-4 group-hover:text-primary transition-colors">{label}</p>
+      <p className="text-4xl font-serif font-bold mb-3 tracking-widest">{value}</p>
+      <p className="text-[10px] font-serif italic text-white/30 tracking-widest opacity-60">{sub}</p>
     </GlassCard>
   );
 }

@@ -1,174 +1,137 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
 import GlassCard from "@/components/GlassCard";
-import { 
-  Users2, 
-  Swords, 
-  Zap, 
-  Target, 
-  Shield, 
-  Activity,
-  CheckCircle2,
-  XCircle
-} from "lucide-react";
-import { 
-  Radar, 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
-  ResponsiveContainer 
-} from "recharts";
-import { cn } from "@/lib/utils";
-
-const COMPARISON_DATA = {
-  p1: {
-    name: "Swastid_Solanki",
-    score: 8420,
-    tier: "Elite",
-    stats: [
-        { subject: 'Aim', val: 120 },
-        { subject: 'Strategy', val: 98 },
-        { subject: 'Consistency', val: 86 },
-        { subject: 'Teamwork', val: 99 },
-        { subject: 'Game Sense', val: 65 },
-    ]
-  },
-  p2: {
-    name: "AcePlayer",
-    score: 9840,
-    tier: "Legend",
-    stats: [
-        { subject: 'Aim', val: 145 },
-        { subject: 'Strategy', val: 130 },
-        { subject: 'Consistency', val: 140 },
-        { subject: 'Teamwork', val: 120 },
-        { subject: 'Game Sense', val: 140 },
-    ]
-  }
-};
-
-const MERGED_SKILLS = COMPARISON_DATA.p1.stats.map((s, i) => ({
-    subject: s.subject,
-    A: s.val,
-    B: COMPARISON_DATA.p2.stats[i].val,
-    fullMark: 150
-}));
+import { fetchUnifiedData } from "@/lib/dataFetcher";
+import { Search, Loader2, Sword, Shield, Target } from "lucide-react";
 
 export default function ComparePage() {
-  const matchScore = 78; // Calculated match percentage
+  const [id1, setId1] = useState("");
+  const [id2, setId2] = useState("");
+  const [results, setResults] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleCompare = async () => {
+    setLoading(true);
+    try {
+      const p1 = await fetchUnifiedData(id1 || "SwastidSolanki", "", "");
+      const p2 = await fetchUnifiedData(id2, "", "");
+      setResults({ p1, p2 });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
+    <main className="min-h-screen bg-background font-body pt-32 pb-24 px-6 max-w-7xl mx-auto">
+      <Navbar />
+      
       <div className="text-center mb-16">
-        <h2 className="text-xs font-heading font-bold text-primary tracking-[0.3em] mb-2 uppercase opacity-60">Combat Comparison</h2>
-        <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight mb-4">VERSUS_MATCH_ENGINE</h1>
-        <p className="text-zinc-500 max-w-xl mx-auto text-xs font-mono opacity-50">Analyzing playstyles, performance data, and cross-platform achievements to find your perfect competitive match.</p>
+        <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">Military Intelligence</h2>
+        <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-widest text-white mb-8">COMBAT_COMPARISON</h1>
+        <p className="text-zinc-500 max-w-xl mx-auto font-serif italic text-lg opacity-80">
+          Measure thy strength against thy peers. Bound by data, judged by skill.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 items-center">
-        {/* Player 1 */}
-        <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
-          <PlayerVersusCard player={COMPARISON_DATA.p1} color="cyan" />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <GlassCard className="p-8">
+          <label className="text-[10px] font-bold text-primary/60 tracking-widest block mb-4 uppercase font-mono">Warrior I (Current or Steam ID)</label>
+          <div className="relative">
+            <input 
+              type="text" 
+              value={id1}
+              onChange={(e) => setId1(e.target.value)}
+              placeholder="CURRENT_UPLINK"
+              className="w-full bg-zinc-950/50 border border-white/10 p-5 rounded-xl font-mono text-xs tracking-widest focus:border-primary/40 focus:outline-none transition-all pl-12"
+            />
+            <Search className="absolute left-4 top-4 w-5 h-5 text-zinc-600" />
+          </div>
+        </GlassCard>
 
-        {/* Comparison Engine */}
-        <div className="lg:col-span-3 order-1 lg:order-2">
-          <GlassCard className="p-8 text-center bg-primary/5 border-primary/20">
-            <div className="flex justify-center mb-8 relative">
-                <div className="w-24 h-24 rounded-full border-4 border-primary/30 flex items-center justify-center bg-black relative z-10">
-                    <Swords className="w-12 h-12 text-primary" />
-                </div>
-            </div>
-
-            <div className="mb-8">
-                <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Sync Compatibility</h3>
-                <div className="text-5xl font-heading font-bold text-primary">{matchScore}%</div>
-                <div className="text-xs font-bold text-primary mt-2 uppercase tracking-tighter">GOOD_MATCH_DETECTED</div>
-            </div>
-
-            <div className="h-64 w-full mb-8">
-                <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={MERGED_SKILLS}>
-                    <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: "#666", fontSize: 10 }} />
-                    <Radar
-                        name={COMPARISON_DATA.p1.name}
-                        dataKey="A"
-                        stroke="#00E5FF"
-                        fill="#00E5FF"
-                        fillOpacity={0.3}
-                    />
-                    <Radar
-                        name={COMPARISON_DATA.p2.name}
-                        dataKey="B"
-                        stroke="#FFB300"
-                        fill="#FFB300"
-                        fillOpacity={0.3}
-                    />
-                    </RadarChart>
-                </ResponsiveContainer>
-            </div>
-
-            <p className="text-xs text-zinc-500 leading-relaxed uppercase tracking-tighter opacity-60">
-                Playstyle overlap: High | Strategic alignment: Medium | Rank gap: 1 Tier
-            </p>
-          </GlassCard>
-        </div>
-
-        {/* Player 2 */}
-        <div className="lg:col-span-2 space-y-6 order-3">
-          <PlayerVersusCard player={COMPARISON_DATA.p2} color="amber" />
-        </div>
+        <GlassCard className="p-8">
+          <label className="text-[10px] font-bold text-primary/60 tracking-widest block mb-4 uppercase font-mono">Warrior II (Opponent Steam ID)</label>
+          <div className="relative">
+            <input 
+              type="text" 
+              value={id2}
+              onChange={(e) => setId2(e.target.value)}
+              placeholder="TARGET_UPLINK_ID"
+              className="w-full bg-zinc-950/50 border border-white/10 p-5 rounded-xl font-mono text-xs tracking-widest focus:border-primary/40 focus:outline-none transition-all pl-12"
+            />
+            <Search className="absolute left-4 top-4 w-5 h-5 text-zinc-600" />
+          </div>
+        </GlassCard>
       </div>
-    </div>
+
+      <button 
+        onClick={handleCompare}
+        disabled={loading}
+        className="w-full py-6 bg-primary/10 border border-primary/40 text-primary font-serif font-bold tracking-[0.4em] mb-16 hover:bg-primary hover:text-background transition-all flex items-center justify-center gap-4 disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "EXECUTE_COMPARISON"}
+      </button>
+
+      {results && (
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        >
+          {/* Warrior 1 Column */}
+          <div className="space-y-6">
+             <PlayerCompareCard player={results.p1} />
+          </div>
+
+          {/* Comparison Center */}
+          <div className="space-y-6 flex flex-col justify-center">
+            <MetricComp label="Record Playtime" val1={results.p1.steam.totalPlaytime} val2={results.p2.steam.totalPlaytime} unit="h" />
+            <MetricComp label="Titles Owned" val1={results.p1.steam.library.length} val2={results.p2.steam.library.length} />
+          </div>
+
+          {/* Warrior 2 Column */}
+          <div className="space-y-6">
+             <PlayerCompareCard player={results.p2} />
+          </div>
+        </motion.div>
+      )}
+    </main>
   );
 }
 
-function PlayerVersusCard({ player, color }: any) {
-    return (
-        <GlassCard className="text-center p-8 bg-black/40 border-white/5">
-            <div className="w-24 h-24 rounded-3xl border-2 border-white/5 bg-zinc-900 mx-auto mb-6 flex items-center justify-center">
-                <UserIcon className={cn("w-12 h-12", color === "cyan" ? "text-primary" : "text-secondary")} />
-            </div>
-            <h4 className="font-heading font-bold text-lg mb-1 truncate">{player.name}</h4>
-            <span className={cn(
-                "text-[10px] font-bold px-3 py-1 rounded-full border mb-6 inline-block uppercase",
-                color === "cyan" ? "border-primary/30 text-primary bg-primary/5" : "border-secondary/30 text-secondary bg-secondary/5"
-            )}>
-                {player.tier} RANK
-            </span>
-
-            <div className="space-y-3 pt-6 border-t border-white/5">
-                {player.stats.slice(0, 3).map((s: any) => (
-                    <div key={s.subject} className="flex justify-between items-center px-2">
-                        <span className="text-[10px] text-zinc-500 font-bold uppercase">{s.subject}</span>
-                        <div className="flex items-center gap-2">
-                            <div className="w-16 h-1 bg-white/5 rounded-full overflow-hidden">
-                                <div className={cn("h-full", color === "cyan" ? "bg-primary" : "bg-secondary")} style={{ width: `${(s.val/150)*100}%` }} />
-                            </div>
-                            <span className="text-[10px] font-mono text-zinc-400">{s.val}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </GlassCard>
-    );
+function PlayerCompareCard({ player }: { player: any }) {
+  const profile = player.steam.profile;
+  return (
+    <GlassCard className="p-8 border-primary/10">
+      <div className="flex items-center gap-6 mb-8">
+        <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-primary/20 overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+          <img src={profile.avatarfull} className="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 className="text-2xl font-serif font-bold leading-tight">{profile.personaname}</h3>
+          <p className="text-[10px] font-mono text-zinc-600 tracking-widest mt-1">LVL {player.steam.level || "ARCHIVED"}</p>
+        </div>
+      </div>
+    </GlassCard>
+  );
 }
 
-function UserIcon({ className }: { className?: string }) {
-    return (
-      <svg 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="1.5" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className={className}
-      >
-        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    );
+function MetricComp({ label, val1, val2, unit = "" }: { label: string, val1: number, val2: number, unit?: string }) {
+  const diff = val1 - val2;
+  return (
+    <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/5">
+      <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-4">{label}</p>
+      <div className="flex items-center justify-between gap-8 px-4">
+        <span className={cn("text-2xl font-serif font-bold", diff > 0 && "text-primary")}>{val1}{unit}</span>
+        <div className="h-px flex-1 bg-white/10 relative">
+          <div className={cn("absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full", diff > 0 ? "bg-primary left-0" : "bg-zinc-500 right-0")} />
+        </div>
+        <span className={cn("text-2xl font-serif font-bold", diff < 0 && "text-primary")}>{val2}{unit}</span>
+      </div>
+    </div>
+  );
 }

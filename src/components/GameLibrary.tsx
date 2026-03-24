@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import GlassCard from "./GlassCard";
-import { Gamepad2, Clock, ExternalLink } from "lucide-react";
+import { Gamepad2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Game {
@@ -14,69 +13,70 @@ interface Game {
   icon?: string;
 }
 
-const MOCK_LIBRARY: Game[] = [
-  { name: "Elden Ring", playtime: 12400, platform: "steam" },
-  { name: "Valorant", playtime: 45000, platform: "riot" },
-  { name: "Cyberpunk 2077", playtime: 5600, platform: "steam" },
-  { name: "Black Myth: Wukong", playtime: 3200, platform: "steam" },
-  { name: "League of Legends", playtime: 89000, platform: "riot" },
-];
+interface GameLibraryProps {
+  games: Game[];
+}
 
-export default function GameLibrary({ games = MOCK_LIBRARY }: { games?: Game[] }) {
+export default function GameLibrary({ games }: GameLibraryProps) {
+  // Filter games with at least 1 hour of playtime
+  const filteredGames = games.filter(game => game.playtime >= 60);
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div>
-          <h2 className="text-xs font-heading font-bold text-primary tracking-[0.3em] mb-2 uppercase opacity-60">Archive</h2>
-          <h1 className="text-3xl font-heading font-bold tracking-tight">UNIFIED_LIBRARY</h1>
-        </div>
-        <p className="text-[10px] font-mono text-zinc-500 font-bold uppercase tracking-widest">{games.length} TITLES_DETECTED</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {games.sort((a, b) => b.playtime - a.playtime).map((game, index) => (
+    <div className="space-y-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredGames.map((game, index) => (
           <motion.div
-            key={game.name}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            key={`${game.name}-${index}`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ delay: index * 0.05 }}
+            className="group relative bg-zinc-950/40 border border-primary/10 rounded-2xl overflow-hidden hover:border-primary/40 transition-all aspect-[16/9]"
           >
-            <div className="group bg-zinc-900/50 border border-white/5 p-4 rounded-2xl hover:border-white/20 transition-all hover:bg-zinc-800/50">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-black border border-white/5 flex items-center justify-center overflow-hidden">
-                  {game.appid && game.icon ? (
-                    <img 
-                      src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.icon}.jpg`} 
-                      alt={game.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Gamepad2 className={cn("w-5 h-5", game.platform === "steam" ? "text-primary" : "text-secondary")} />
-                  )}
+            {/* Banner Image */}
+            <div className="absolute inset-0 z-0">
+              {game.appid ? (
+                <img 
+                  src={`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`} 
+                  alt={game.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-40 group-hover:opacity-60"
+                />
+              ) : (
+                <div className="w-full h-full bg-primary/5 flex items-center justify-center">
+                  <Gamepad2 className="w-12 h-12 text-primary/20" />
                 </div>
-                <div className={cn(
-                    "px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter border",
-                    game.platform === "steam" ? "border-primary/30 text-primary" : "border-secondary/30 text-secondary"
-                )}>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+            </div>
+
+            <div className="relative z-10 h-full p-6 flex flex-col justify-end">
+              <div className="flex justify-between items-end gap-4">
+                <div className="flex-1">
+                  <div className={cn(
+                    "inline-block px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest border mb-3",
+                    game.platform === "steam" ? "border-primary/30 text-primary/80" : "border-secondary/30 text-secondary/80"
+                  )}>
                     {game.platform}
-                </div>
-              </div>
-              
-              <h3 className="font-heading font-bold text-sm mb-1 line-clamp-1 group-hover:text-primary transition-colors">{game.name}</h3>
-              
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2 text-zinc-500">
+                  </div>
+                  <h4 className="text-xl font-serif font-bold group-hover:text-primary transition-colors leading-tight mb-1 truncate">
+                    {game.name}
+                  </h4>
+                  <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-mono tracking-widest">
                     <Clock className="w-3 h-3" />
-                    <span className="text-xs font-mono font-bold">{Math.round(game.playtime / 60)}h</span>
+                    {Math.floor(game.playtime / 60)} HOURS RECORDED
+                  </div>
                 </div>
-                <button className="text-zinc-700 group-hover:text-white transition-colors">
-                    <ExternalLink className="w-3 h-3" />
-                </button>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {filteredGames.length === 0 && (
+        <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-3xl">
+          <p className="text-zinc-500 font-serif italic">No significant combat records found (Min. 1hr playtime)</p>
+        </div>
+      )}
     </div>
   );
 }
