@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+import { JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+import ThreeBackground from "@/components/ThreeBackground";
+import Navbar from "@/components/Navbar";
+
 const monoFont = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",

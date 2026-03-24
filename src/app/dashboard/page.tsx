@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
 import GameLibrary from "@/components/GameLibrary";
@@ -28,14 +28,42 @@ import {
 } from "recharts";
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardLoading() {
+  return (
+    <div className="h-screen flex items-center justify-center bg-background">
+      <div className="text-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+        <p className="font-heading tracking-[0.6em] text-primary/60 text-xs">SYNCING_WAR_ARCHIVES...</p>
+      </div>
+    </div>
+  );
+}
+
+function DashboardContent() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function loadData() {
       try {
+        const steamAuth = searchParams.get("steam_auth");
+        if (steamAuth) {
+          localStorage.setItem("gamesphere_steam_id", steamAuth);
+          // Clear param from URL
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, "", newUrl);
+        }
+
         const steamId = localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki";
         const riotId = localStorage.getItem("gamesphere_riot_id") || "Swastid#SOLO";
         
@@ -51,7 +79,7 @@ export default function DashboardPage() {
     }
 
     loadData();
-  }, []);
+  }, [searchParams]);
 
   const handleLogout = () => {
     localStorage.clear();

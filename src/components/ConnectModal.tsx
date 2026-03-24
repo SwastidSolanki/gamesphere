@@ -120,15 +120,24 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
 
                   <div>
                     <label className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">
-                      {activeTab === "steam" ? "IDENTIFIER (Vanity URL or ID)" : "IDENTIFIER (GameName#Tag)"}
+                      IDENTIFIER ({activeTab === "steam" ? "Username, Vanity URL or ID" : "GameName#Tag"})
                     </label>
-                    <input
-                      type="text"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
-                      className="w-full bg-black/40 border border-white/10 py-5 px-8 text-lg focus:outline-none focus:border-white transition-all font-mono text-white"
-                    />
+                    <div className="flex gap-2">
+                        <input
+                        type="text"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
+                        className="flex-1 bg-black/40 border border-white/10 py-5 px-8 text-lg focus:outline-none focus:border-white transition-all font-mono text-white"
+                        />
+                        <button 
+                            onClick={handleVerify}
+                            disabled={isLoading || !identifier}
+                            className="px-8 bg-white text-black font-heading tracking-widest hover:bg-primary transition-all disabled:opacity-50"
+                        >
+                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "SEARCH"}
+                        </button>
+                    </div>
                   </div>
 
                   {error && (
@@ -136,6 +145,11 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                       <AlertCircle className="w-4 h-4" /> {error}
                     </div>
                   )}
+
+                  <div className="relative py-4">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+                    <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
+                  </div>
 
                   <button
                     onClick={() => {
@@ -145,24 +159,6 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                   >
                     LOGIN_VIA_STEAM_SECURE
                   </button>
-
-                  <div className="relative py-4">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                    <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OR_MANUAL_UPLINK</div>
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">
-                      {activeTab === "steam" ? "IDENTIFIER (Vanity URL or ID)" : "IDENTIFIER (GameName#Tag)"}
-                    </label>
-                    <input
-                      type="text"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
-                      className="w-full bg-black/40 border border-white/10 py-5 px-8 text-lg focus:outline-none focus:border-white transition-all font-mono text-white"
-                    />
-                  </div>
 
                   {activeTab === "riot" && (
                     <div className="p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed">
