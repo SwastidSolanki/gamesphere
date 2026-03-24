@@ -30,10 +30,10 @@ function SnowStorm() {
       <PointMaterial
         transparent
         color="#ffffff"
-        size={0.18} // Larger, more visible flakes
+        size={0.06} // Substantial reduction
         sizeAttenuation={true}
         depthWrite={false}
-        opacity={0.8}
+        opacity={0.3} // Much more subtle
         blending={THREE.AdditiveBlending}
       />
     </Points>
@@ -48,17 +48,17 @@ export default function ThreeBackground() {
     >
       <Canvas 
         camera={{ position: [0, 0, 12], fov: 75 }}
-        style={{ width: '100vw', height: '100vh', background: '#0a0b0d' }}
+        style={{ width: '100vw', height: '100vh', background: '#08090a' }}
       >
         <Suspense fallback={null}>
-          <color attach="background" args={["#0a0b0d"]} />
-          <ambientLight intensity={1.2} />
-          <pointLight position={[10, 10, 10]} intensity={3} color="#ffffff" />
+          <color attach="background" args={["#08090a"]} />
+          <ambientLight intensity={0.8} />
+          <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
           <SnowStorm />
-          <fog attach="fog" args={["#0a0b0d", 5, 35]} />
+          <fog attach="fog" args={["#08090a", 2, 25]} />
         </Suspense>
       </Canvas>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80" />
     </div>
   );
 }
