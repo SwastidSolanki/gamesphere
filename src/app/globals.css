@@ -14,11 +14,12 @@
   --color-ring: #a0c0d0;
   
   --font-heading: "Bebas Neue", sans-serif;
+  --font-subheading: "Roboto Condensed", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --radius-xl: 0.25rem;
-  --radius-2xl: 0.5rem;
+  --radius-xl: 0.15rem;
+  --radius-2xl: 0.25rem;
 }
 
 @layer base {
@@ -29,18 +30,21 @@
     @apply bg-background text-foreground antialiased font-body;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-wider uppercase font-normal;
+    @apply font-heading tracking-[0.05em] uppercase font-normal;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-xl overflow-hidden;
+  .hud-card {
+    @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.06] rounded-sm overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)];
+  }
+  .hud-button {
+    @apply px-8 py-4 bg-white/5 border border-white/10 hover:bg-white text-white hover:text-black font-heading tracking-widest transition-all active:scale-95 text-xl;
   }
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -48,5 +52,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/20 rounded-full hover:bg-primary/40;
+  @apply bg-primary/10 hover:bg-primary/20;
 }
