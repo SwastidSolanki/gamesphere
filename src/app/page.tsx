@@ -4,6 +4,7 @@ import { Cinzel } from "next/font/google";
 import { useLenis } from "@/hooks/useLenis";
 import Navbar from "@/components/Navbar";
 import ConnectModal from "@/components/ConnectModal";
+import ThreeBackground from "@/components/ThreeBackground";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";

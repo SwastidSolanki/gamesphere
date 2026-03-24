@@ -251,7 +251,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <MiniStat label="Legacy Count" value="02" sub="Platforms Linked" />
-        <MiniStat label="Combat Victories" value={(riotLeague?.wins || 0).toString()} sub="Live War Records" />
+        <MiniStat label="Combat Victories" value={(Math.round(riotLeague?.wins || 0)).toString()} sub="Live War Records" />
         <MiniStat label="Eternal Hours" value={`${Math.round(data.steam.totalPlaytime)}h`} sub="Journey Confirmed" />
         <MiniStat label="Order Level" value={riotLeague?.tier || "NONE"} sub="Live Ranking" />
       </div>
