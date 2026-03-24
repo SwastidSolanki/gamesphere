@@ -33,7 +33,7 @@ export default function ComparePage() {
       
       <div className="text-center mb-16">
         <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">WAR_INTELLIGENCE</h2>
-        <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-widest text-white mb-8">SKILL_COMPARISON</h1>
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold tracking-widest text-white mb-8">SKILL_COMPARISON</h1>
         <p className="text-zinc-500 max-w-xl mx-auto font-heading text-sm opacity-80 uppercase tracking-widest">
           Measure thy strength against thy peers. Bound by fate, judged by steel.
         </p>

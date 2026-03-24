@@ -24,14 +24,14 @@ export default function Navbar() {
             key={item.path}
             href={item.path}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
+              "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300",
               pathname === item.path
                 ? "bg-primary/20 text-primary"
                 : "text-zinc-400 hover:text-white hover:bg-white/5"
             )}
           >
             <item.icon className="w-4 h-4" />
-            <span className="text-sm font-heading tracking-[0.2em] font-bold uppercase">{item.name}</span>
+            <span className="text-[10px] sm:text-xs font-heading tracking-[0.2em] font-bold uppercase hidden sm:inline-block">{item.name}</span>
           </Link>
         ))}
       </div>

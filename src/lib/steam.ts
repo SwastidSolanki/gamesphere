@@ -22,13 +22,20 @@ export async function getSteamStats(steamId: string, appId: number) {
 export async function getSteamFriends(steamId: string) {
   const response = await fetch(`/api/steam?endpoint=friends&steamid=${steamId}`);
   const data = await response.json();
+  
+  if (!data.response?.friendslist) {
+    console.warn("STEAM_FRIENDS_RESTRICTED: PROFILE MAY BE PRIVATE");
+    return [];
+  }
+  
   const friends = data.response.friendslist.friends;
+  if (!friends || friends.length === 0) return [];
   
   // Fetch summaries for all friends
   const friendIds = friends.map((f: any) => f.steamid).join(",");
   const summariesResponse = await fetch(`/api/steam?endpoint=summaries&steamids=${friendIds}`);
   const summariesData = await summariesResponse.json();
-  return summariesData.response.players;
+  return summariesData.response?.players || [];
 }
 
 export async function resolveSteamVanityURL(vanityUrl: string) {
