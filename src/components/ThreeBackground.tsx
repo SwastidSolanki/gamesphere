@@ -28,11 +28,11 @@ function SnowParticles() {
     <Points ref={ref} positions={particles} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#a0c0d0"
-        size={0.05}
+        color="#ffffff"
+        size={0.12}
         sizeAttenuation={true}
         depthWrite={false}
-        opacity={0.3}
+        opacity={0.6}
         blending={THREE.AdditiveBlending}
       />
     </Points>
@@ -41,7 +41,7 @@ function SnowParticles() {
 
 export default function ThreeBackground() {
   return (
-    <div className="fixed inset-0 -z-10 bg-[#0a0b0d]">
+    <div className="fixed inset-0 -z-10">
       <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />

@@ -113,7 +113,7 @@ export default function DashboardPage() {
   const powerScore = Math.round(data.steam.totalPlaytime * 0.4 + (riotLeague?.leaguePoints || 0) * 1.5 + (riotLeague?.wins || 0) * 10);
 
   return (
-    <main className="min-h-screen bg-background font-body pt-32 pb-24 px-6 max-w-7xl mx-auto">
+    <main className="min-h-screen font-body pt-32 pb-24 px-6 max-w-7xl mx-auto bg-transparent">
       <Navbar />
       
       {/* HUD HEADER */}

@@ -1,10 +1,6 @@
-"use client";
-
-import { Montserrat } from "next/font/google";
 import { useLenis } from "@/hooks/useLenis";
 import Navbar from "@/components/Navbar";
 import ConnectModal from "@/components/ConnectModal";
-import ThreeBackground from "@/components/ThreeBackground";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -36,9 +32,8 @@ export default function LandingPage() {
   };
 
   return (
-    <main className={`${montserrat.variable} min-h-screen bg-background text-foreground font-body overflow-x-hidden`}>
+    <main className={`${montserrat.variable} min-h-screen text-foreground font-body overflow-x-hidden bg-transparent`}>
       <Navbar />
-      <ThreeBackground />
 
       {/* Hero Section */}
       <section className="relative pt-64 pb-32 px-6 flex flex-col items-center text-center">
