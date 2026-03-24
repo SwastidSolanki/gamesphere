@@ -20,14 +20,14 @@ export async function fetchUnifiedData(steamIdentifier: string, riotName: string
 
   return {
     steam: {
-      profile: steamProfile,
-      library: steamGames.games || [],
-      totalPlaytime: (steamGames.games || []).reduce((acc: number, g: any) => acc + g.playtime_forever, 0) / 60
+      profile: steamProfile || {},
+      library: steamGames?.games || [],
+      totalPlaytime: (steamGames?.games || []).reduce((acc: number, g: any) => acc + g.playtime_forever, 0) / 60
     },
     riot: {
-      account: riotAccount,
-      summoner,
-      league: league[0] || null
+      account: riotAccount || null,
+      summoner: summoner || null,
+      league: (league && league[0]) || null
     }
   };
 }

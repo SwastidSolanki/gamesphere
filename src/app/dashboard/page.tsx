@@ -63,7 +63,7 @@ export default function DashboardPage() {
       <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-          <p className="font-heading tracking-[0.6em] text-primary/60 text-xs">SYNCHRONIZING_ETERNAL_RECORDS...</p>
+          <p className="font-heading tracking-[0.6em] text-primary/60 text-xs">SYNCING_WAR_ARCHIVES...</p>
         </div>
       </div>
     );
