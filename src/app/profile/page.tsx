@@ -62,8 +62,8 @@ export default function ProfilePage() {
             <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
               <Zap className="w-4 h-4 text-primary" /> SKILL_ENGINE
             </h3>
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="h-64 w-full relative">
+              <ResponsiveContainer width="100%" height="100%" aspect={2} minWidth={1} minHeight={1}>
                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILL_DATA}>
                   <PolarGrid stroke="rgba(255,255,255,0.1)" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: "#666", fontSize: 8 }} />

@@ -36,7 +36,7 @@ export default function GameBanner({ appid, name, externalIcon, platform }: Game
     } else if (platform === "riot") {
         if (retry === 0) {
             // Try alternative Riot CDN
-            setSrc("https://cmsassets.rgpub.io/visibility/riot-games/valorant/valorant-wallpaper-1.jpg");
+            setSrc("https://cmsassets.rgpub.io/visibility/riot-games/valorant/wallpaper/episode-7-act-1-jett-1.jpg");
             setRetry(1);
         } else {
             setSrc("");

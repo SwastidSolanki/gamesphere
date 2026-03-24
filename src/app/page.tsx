@@ -44,7 +44,7 @@ export default function LandingPage() {
         {/* Cinematic Background */}
         <div className="absolute inset-0 z-0">
             <img 
-                src="/C:/Users/swast/.gemini/antigravity/brain/455dfb48-51b7-4eb9-817a-8c0feb9b8d5b/fimbulwinter_vault_hero_4k_1774383365593.png" 
+                src="https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYcg7Oi0q.png" 
                 alt="Fimbulwinter Vault" 
                 className="w-full h-full object-cover opacity-60 scale-105"
             />
