@@ -186,8 +186,8 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                 </motion.div>
               )}
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
