@@ -10,7 +10,7 @@ interface GlassCardProps {
   delay?: number;
 }
 
-export default function GlassCard({ children, className, glow, delay = 0 }: GlassCardProps) {
+export default function GlassCard({ children, className, delay = 0 }: GlassCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,8 +19,6 @@ export default function GlassCard({ children, className, glow, delay = 0 }: Glas
       whileHover={{ y: -5 }}
       className={cn(
         "glass-card p-6 relative group transition-all duration-300",
-        glow === "cyan" && "hover:glow-cyan",
-        glow === "amber" && "hover:glow-amber",
         className
       )}
     >

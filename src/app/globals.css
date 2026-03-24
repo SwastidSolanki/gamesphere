@@ -23,17 +23,10 @@
   --radius: 0.5rem;
 }
 
-@layer base {
-  * {
-    border-color: hsl(var(--border) / 0.1);
-  }
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
 @theme {
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+  
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-primary: hsl(var(--primary));
@@ -42,22 +35,25 @@
   --color-border: hsl(var(--border));
 }
 
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-mono;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight capitalize;
+  }
+}
+
 @layer components {
   .glass-card {
-    @apply bg-card/70 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl;
+    @apply bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden;
   }
   
-  .glow-cyan {
-    @apply shadow-[0_0_20px_-5px_rgba(0,229,255,0.5)];
-  }
-  
-  .glow-amber {
-    @apply shadow-[0_0_20px_-5px_rgba(255,179,0,0.5)];
-  }
-
-  .text-glow {
-    text-shadow: 0 0 10px currentColor;
-  }
+  /* Removed glow effects as per user request */
 }
 
 /* Custom scrollbar for gaming aesthetic */

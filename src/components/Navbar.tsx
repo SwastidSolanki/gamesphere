@@ -26,7 +26,7 @@ export default function Navbar() {
             className={cn(
               "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
               pathname === item.path
-                ? "bg-primary/20 text-primary glow-cyan"
+                ? "bg-primary/20 text-primary"
                 : "text-zinc-400 hover:text-white hover:bg-white/5"
             )}
           >

@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Zap, Target, Globe } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
+import { Canvas } from "@react-three/fiber";
+import HeroCharacter from "@/components/HeroCharacter";
 
 export default function LandingPage() {
   useLenis();
@@ -11,20 +13,28 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center">
       {/* Hero Section */}
-      <section className="relative w-full h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+      <section className="relative w-full h-screen flex flex-col lg:flex-row items-center justify-center px-6 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Canvas camera={{ position: [0, 0.5, 4] }}>
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <HeroCharacter />
+          </Canvas>
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center z-10"
+          className="text-left z-10 lg:w-1/2"
         >
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-space-grotesk font-bold tracking-tighter leading-tight text-glow mb-4"
+            className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[1.1] mb-6"
           >
-            ASCEND TO THE <br /> <span className="text-primary italic">NEXT DIMENSION</span>
+            ASCEND TO THE <br /> <span className="text-primary italic">NEXT_DIMENSION</span>
           </motion.h1>
           
           <motion.p
@@ -41,11 +51,11 @@ export default function LandingPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col md:flex-row gap-4 justify-center"
+            className="flex flex-col md:flex-row gap-4"
           >
             <Link 
               href="/dashboard"
-              className="bg-primary text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:glow-cyan transition-all group"
+              className="bg-primary text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:bg-primary/80 transition-all group font-heading text-xs"
             >
               CONNECT ACCOUNTS
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

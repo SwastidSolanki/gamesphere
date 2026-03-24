@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
+import { cn } from "@/lib/utils";
 import { 
   Trophy, 
   Gamepad2, 
@@ -59,14 +60,14 @@ export default function DashboardPage() {
     <div className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
         <div>
-          <h2 className="text-sm font-space-grotesk font-bold text-primary tracking-[0.2em] mb-2 uppercase">Command Center</h2>
-          <h1 className="text-4xl md:text-5xl font-space-grotesk font-bold tracking-tight">PLAYER_DASHBOARD</h1>
+          <h2 className="text-xs font-heading font-bold text-primary tracking-[0.3em] mb-2 uppercase opacity-60">Command Center</h2>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">PLAYER_DASHBOARD</h1>
         </div>
         
-        <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-2xl backdrop-blur-md">
+        <div className="flex items-center gap-4 bg-zinc-900/50 border border-white/5 px-6 py-4 rounded-2xl backdrop-blur-md">
           <div className="text-right">
-            <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Overall Power Score</p>
-            <p className="text-3xl font-space-grotesk font-bold text-primary text-glow">{MOCK_DATA.powerScore}</p>
+            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Overall Power Score</p>
+            <p className="text-3xl font-heading font-bold text-primary">{MOCK_DATA.powerScore}</p>
           </div>
           <div className="w-12 h-12 rounded-full border-2 border-primary/30 flex items-center justify-center bg-primary/10">
             <Trophy className="w-6 h-6 text-primary" />
@@ -76,7 +77,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Steam Overview */}
-        <GlassCard glow="cyan" className="lg:col-span-2">
+        <GlassCard className="lg:col-span-2 border-primary/20">
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
@@ -118,7 +119,7 @@ export default function DashboardPage() {
         </GlassCard>
 
         {/* Riot Stats */}
-        <GlassCard glow="amber">
+        <GlassCard className="border-secondary/20">
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">

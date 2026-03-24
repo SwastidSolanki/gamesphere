@@ -29,8 +29,8 @@ export default function LeaderboardPage() {
     <div className="pt-32 pb-24 px-6 max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
         <div>
-          <h2 className="text-sm font-space-grotesk font-bold text-primary tracking-[0.2em] mb-2 uppercase">Global Ranking</h2>
-          <h1 className="text-4xl md:text-5xl font-space-grotesk font-bold tracking-tight">PLATFORM_LADDER</h1>
+          <h2 className="text-xs font-heading font-bold text-primary tracking-[0.3em] mb-2 uppercase opacity-60">Global Ranking</h2>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight">PLATFORM_LADDER</h1>
         </div>
         
         <div className="flex gap-2">
@@ -61,7 +61,7 @@ export default function LeaderboardPage() {
                 player.name === "Swastid_Solanki" && "border-primary/30 bg-primary/5"
             )}>
               <div className="flex items-center gap-6">
-                <div className="w-8 text-center font-space-grotesk font-bold text-xl text-zinc-600 group-hover:text-primary transition-colors">
+                <div className="w-8 text-center font-heading font-bold text-xl text-zinc-600 group-hover:text-primary transition-colors">
                     {player.rank.toString().padStart(2, '0')}
                 </div>
                 
@@ -79,7 +79,7 @@ export default function LeaderboardPage() {
               <div className="flex items-center gap-12">
                 <div className="text-right">
                     <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Power Score</p>
-                    <p className="font-space-grotesk font-bold text-glow">{player.score}</p>
+                    <p className="font-heading font-bold">{player.score}</p>
                 </div>
 
                 <div className="w-24 text-center">

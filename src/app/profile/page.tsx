@@ -45,7 +45,7 @@ export default function ProfilePage() {
                 </div>
             </div>
             <div className="pb-2">
-              <h1 className="text-4xl font-space-grotesk font-bold tracking-tight mb-1 uppercase">SWASTID_SOLANKI</h1>
+              <h1 className="text-4xl font-heading font-bold tracking-tight mb-1 uppercase">SWASTID_SOLANKI</h1>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold font-mono px-3 py-1 rounded-full bg-primary/20 text-primary border border-primary/20">ELITE TIER</span>
                 <span className="text-xs text-zinc-400 font-bold uppercase tracking-widest">Global Rank #1,240</span>
@@ -58,7 +58,7 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Skill Metrics */}
         <div className="space-y-6">
-          <GlassCard glow="cyan">
+          <GlassCard>
             <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
               <Zap className="w-4 h-4 text-primary" /> SKILL_ENGINE
             </h3>
@@ -140,7 +140,7 @@ export default function ProfilePage() {
 function TimelineItem({ platform, title, desc, time, color }: any) {
   return (
     <div className="relative">
-      <div className={cn("absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-black border-2 border-primary shadow-[0_0_10px_rgba(0,229,255,0.5)]", platform === "RIOT" && "border-secondary shadow-[0_0_10px_rgba(255,179,0,0.5)]")} />
+      <div className={cn("absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-black border-2 border-primary", platform === "RIOT" && "border-secondary")} />
       <div>
         <div className="flex items-center gap-3 mb-1">
           <span className={cn("text-[10px] font-bold tracking-tighter px-2 py-0.5 rounded bg-white/5", color)}>{platform}</span>
