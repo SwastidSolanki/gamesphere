@@ -147,7 +147,7 @@ export default function DashboardPage() {
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-950/20 border border-red-900/40 rounded-sm text-[10px] font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all font-heading"
             >
-                <LogOut className="w-3 h-3" /> SEVER_UPLINK
+                <LogOut className="w-3 h-3" /> CLOSE_UPLINK
             </button>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function DashboardPage() {
             <div className="w-20 h-20 rounded-full bg-zinc-950 border border-secondary/30 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(74,93,78,0.2)]">
               <Target className="w-8 h-8 text-secondary" />
             </div>
-            <h3 className="text-2xl font-heading font-bold uppercase tracking-widest">Riot Sanctum</h3>
+            <h3 className="text-2xl font-heading font-bold uppercase tracking-widest">RIOT_HUB</h3>
             <p className="text-[10px] font-mono text-secondary/50 tracking-[0.3em] uppercase mt-1">
               {riotAccount?.gameName ? `${riotAccount.gameName}#${riotAccount.tagLine}` : "NOT_FOUND"}
             </p>
