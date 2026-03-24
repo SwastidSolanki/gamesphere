@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: 240 10% 3.9%;
@@ -27,12 +25,21 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border) / 0.1);
   }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-secondary: hsl(var(--secondary));
+  --color-card: hsl(var(--card));
+  --color-border: hsl(var(--border));
 }
 
 @layer components {
