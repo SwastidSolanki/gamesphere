@@ -10,8 +10,8 @@
   --color-secondary-foreground: #e0e0e0;
   --color-accent: #ffffff;
   --color-accent-foreground: #000000;
-  --color-border: rgba(255, 255, 255, 0.05);
-  --color-input: rgba(255, 255, 255, 0.1);
+  --color-border: rgba(255, 255, 255, 0.15);
+  --color-input: rgba(255, 255, 255, 0.2);
   --color-ring: #a0c0d0;
   
   --font-heading: "JetBrains Mono", monospace;
@@ -28,7 +28,7 @@
     border-color: rgba(255, 255, 255, 0.05);
   }
   body {
-    @apply bg-background text-foreground antialiased font-heading tracking-widest uppercase;
+    @apply bg-background text-foreground antialiased font-heading tracking-widest uppercase font-bold;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-[0.05em] uppercase font-normal;
@@ -37,7 +37,7 @@
 
 @layer components {
   .hud-card {
-    @apply bg-white/[0.04] backdrop-blur-3xl border border-white/[0.1] rounded-sm overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)];
+    @apply bg-white/[0.08] backdrop-blur-3xl border border-white/[0.2] rounded-sm overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.9)];
   }
   .hud-button {
     @apply px-8 py-4 bg-white/5 border border-white/10 hover:bg-white text-white hover:text-black font-heading tracking-widest transition-all active:scale-95 text-xl;

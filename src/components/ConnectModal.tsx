@@ -140,25 +140,23 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     </div>
                   </div>
 
-                  {error && (
-                    <div className="flex items-center gap-2 text-red-500 text-[10px] font-black tracking-widest bg-red-500/10 p-4 border border-red-500/20">
-                      <AlertCircle className="w-4 h-4" /> {error}
-                    </div>
+                  {activeTab === "steam" && (
+                    <>
+                      <div className="relative py-4">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                            window.location.href = "/api/auth/steam";
+                        }}
+                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-3 border border-white/10"
+                      >
+                        LOGIN_VIA_STEAM_SECURE
+                      </button>
+                    </>
                   )}
-
-                  <div className="relative py-4">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                    <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                        window.location.href = "/api/auth/steam";
-                    }}
-                    className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-3 border border-white/5"
-                  >
-                    LOGIN_VIA_STEAM_SECURE
-                  </button>
 
                   {activeTab === "riot" && (
                     <div className="p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed">

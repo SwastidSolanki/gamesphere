@@ -39,7 +39,7 @@ export default function GameLibrary({ games }: GameLibraryProps) {
                 <img 
                   src={`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`} 
                   alt={game.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-40 group-hover:opacity-60"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90 grayscale-[0.3] group-hover:grayscale-0"
                 />
               ) : (
                 <div className="w-full h-full bg-primary/5 flex items-center justify-center">
@@ -58,7 +58,7 @@ export default function GameLibrary({ games }: GameLibraryProps) {
                   )}>
                     {game.platform}
                   </div>
-                  <h4 className="text-xl font-serif font-bold group-hover:text-primary transition-colors leading-tight mb-1 truncate">
+                  <h4 className="text-xl font-heading font-black group-hover:text-primary transition-colors leading-tight mb-1 truncate tracking-wider">
                     {game.name}
                   </h4>
                   <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-mono tracking-widest">
