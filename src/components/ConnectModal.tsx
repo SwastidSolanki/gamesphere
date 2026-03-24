@@ -138,12 +138,37 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                   )}
 
                   <button
-                    onClick={handleVerify}
-                    disabled={!identifier || isLoading}
-                    className="w-full py-6 bg-primary text-black font-heading text-xl tracking-widest hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                    onClick={() => {
+                        window.location.href = "/api/auth/steam";
+                    }}
+                    className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-3 border border-white/5"
                   >
-                    {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "VERIFY_IDENTITY"}
+                    LOGIN_VIA_STEAM_SECURE
                   </button>
+
+                  <div className="relative py-4">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+                    <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OR_MANUAL_UPLINK</div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">
+                      {activeTab === "steam" ? "IDENTIFIER (Vanity URL or ID)" : "IDENTIFIER (GameName#Tag)"}
+                    </label>
+                    <input
+                      type="text"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
+                      className="w-full bg-black/40 border border-white/10 py-5 px-8 text-lg focus:outline-none focus:border-white transition-all font-mono text-white"
+                    />
+                  </div>
+
+                  {activeTab === "riot" && (
+                    <div className="p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed">
+                      NOTE: OFFICIAL RIOT_LOGIN REQUIRES PRODUCTION_OAUTH_CLIENT. PREVIEWING VIA VERIFIED_HANDSHAKE FOR CURRENT UPLINK.
+                    </div>
+                  )}
                 </div>
               ) : (
                 <motion.div 
