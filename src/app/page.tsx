@@ -102,11 +102,21 @@ export default function LandingPage() {
           </div>
         </motion.div>
 
-        {/* HUD Borders */}
-        <div className="absolute top-10 left-10 w-24 h-24 border-t-2 border-l-2 border-primary/20 pointer-events-none" />
-        <div className="absolute top-10 right-10 w-24 h-24 border-t-2 border-r-2 border-primary/20 pointer-events-none" />
-        <div className="absolute bottom-10 left-10 w-24 h-24 border-b-2 border-l-2 border-primary/20 pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-24 h-24 border-b-2 border-r-2 border-primary/20 pointer-events-none" />
+        {/* Status Ticker */}
+        <div className="absolute bottom-0 left-0 right-0 py-4 bg-primary/5 border-t border-primary/10 backdrop-blur-md z-30">
+            <div className="max-w-7xl mx-auto px-6 flex justify-between items-center text-[8px] font-black tracking-[0.5em] text-primary/60 uppercase">
+                <div className="flex items-center gap-4">
+                    <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                    SYSTEM_STABLE // ARCHIVE_READY
+                </div>
+                <div className="hidden md:flex gap-12">
+                    <span>UPLINK: ACTIVE</span>
+                    <span>VAULT: SECURE</span>
+                    <span>LAST_SYNC: {new Date().toLocaleTimeString()}</span>
+                </div>
+                <div>EST_VER: 1.2.4-BETA</div>
+            </div>
+        </div>
       </section>
 
       {/* Features Grid */}
@@ -161,18 +171,21 @@ function FeatureSection({ icon, title, desc, link }: { icon: React.ReactNode, ti
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      className="group p-16 bg-[#0d0e12] hover:bg-white transition-all cursor-pointer"
+      className="group p-16 bg-[#0d0e12] hover:bg-primary/5 border-l border-white/5 hover:border-primary/40 transition-all cursor-pointer relative overflow-hidden"
       onClick={() => router.push(link)}
     >
-      <div className="mb-12 text-primary group-hover:text-black transition-colors">
+      <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Zap className="w-4 h-4 text-primary/40" />
+      </div>
+      <div className="mb-12 text-primary group-hover:scale-110 transition-transform origin-left">
         {icon}
       </div>
-      <h3 className="text-2xl font-black mb-6 tracking-widest group-hover:text-black transition-colors uppercase">{title}</h3>
-      <p className="text-zinc-500 text-xs mb-12 leading-relaxed tracking-wider group-hover:text-zinc-700 transition-colors uppercase font-bold">
+      <h3 className="text-2xl font-black mb-6 tracking-widest text-white transition-colors uppercase">{title}</h3>
+      <p className="text-zinc-500 text-xs mb-12 leading-relaxed tracking-wider group-hover:text-zinc-300 transition-colors uppercase font-bold">
         {desc}
       </p>
-      <div className="flex items-center gap-3 font-black text-[10px] tracking-[0.4em] text-primary group-hover:text-black transition-all uppercase">
-        ACCESS_ARCHIVE <ChevronRight className="w-4 h-4" />
+      <div className="flex items-center gap-3 font-black text-[10px] tracking-[0.4em] text-primary transition-all uppercase">
+        ACCESS_ARCHIVE <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
       </div>
     </motion.div>
   );

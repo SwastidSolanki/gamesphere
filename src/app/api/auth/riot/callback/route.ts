@@ -4,12 +4,13 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
   const RIOT_CLIENT_ID = process.env.RIOT_CLIENT_ID;
   const RIOT_CLIENT_SECRET = process.env.RIOT_CLIENT_SECRET;
-  const REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/riot/callback`;
+  const REDIRECT_URI = `${baseUrl}/api/auth/riot/callback`;
 
   if (!code) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard?riot_error=CODE_MISSING`);
+    return NextResponse.redirect(`${baseUrl}/dashboard?riot_error=CODE_MISSING`);
   }
 
   try {
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
     const account = await userResponse.json();
 
     // Redirect to Dashboard with verified Riot identity
-    const dashboardUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`);
+    const dashboardUrl = new URL(`${baseUrl}/dashboard`);
     dashboardUrl.searchParams.set('riot_auth', 'success');
     dashboardUrl.searchParams.set('riot_name', account.gameName);
     dashboardUrl.searchParams.set('riot_tag', account.tagLine);
@@ -51,6 +52,6 @@ export async function GET(request: NextRequest) {
     console.error("RIOT_AUTH_ERROR:", error);
     
     // In production, you'd show an error. For preview, we'll redirect with a mock if requested or just error.
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard?riot_error=${encodeURIComponent(error.message)}`);
+    return NextResponse.redirect(`${baseUrl}/dashboard?riot_error=${encodeURIComponent(error.message)}`);
   }
 }

@@ -151,10 +151,10 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         onClick={() => {
                             window.location.href = "/api/auth/steam";
                         }}
-                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-4 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                       >
-                        <img src="https://community.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=96bea98" alt="Steam" className="w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity" />
-                        <span>LOGIN_WITH_STEAM</span>
+                        <span className="font-black">LOGIN WITH STEAM</span>
+                        <img src="https://community.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=96bea98" alt="Steam" className="w-12 h-12 opacity-80 group-hover:opacity-100 transition-opacity" />
                       </button>
                     </>
                   )}
@@ -170,10 +170,10 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         onClick={() => {
                             window.location.href = "/api/auth/riot";
                         }}
-                        className="w-full py-6 bg-[#d13639] text-white font-heading text-xl tracking-widest hover:bg-[#ff4655] transition-all flex items-center justify-center gap-4 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                        className="w-full py-6 bg-[#d13639] text-white font-heading text-xl tracking-widest hover:bg-[#ff4655] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                       >
-                        <img src="https://www.riotgames.com/dark-riot-logo.png" alt="Riot" className="w-8 h-8 object-contain invert brightness-0 group-hover:brightness-100 transition-all" />
-                        <span>LOGIN_WITH_RIOT_CLIENT</span>
+                        <span className="font-black">LOGIN WITH RIOT CLIENT</span>
+                        <img src="https://www.riotgames.com/dark-riot-logo.png" alt="Riot" className="w-10 h-10 object-contain invert brightness-0 group-hover:brightness-100 transition-all" />
                       </button>
 
                       <div className="mt-4 p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed font-mono">
