@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap');
 
 @theme {
   --color-background: #0a0b0d;
@@ -13,9 +14,9 @@
   --color-input: rgba(255, 255, 255, 0.1);
   --color-ring: #a0c0d0;
   
-  --font-heading: "Bebas Neue", sans-serif;
-  --font-subheading: "Roboto Condensed", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-heading: "JetBrains Mono", monospace;
+  --font-subheading: "JetBrains Mono", monospace;
+  --font-body: "JetBrains Mono", monospace;
   --font-mono: "JetBrains Mono", monospace;
   
   --radius-xl: 0.15rem;
