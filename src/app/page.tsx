@@ -1,3 +1,6 @@
+"use client";
+
+import { Montserrat } from "next/font/google";
 import { useLenis } from "@/hooks/useLenis";
 import Navbar from "@/components/Navbar";
 import ConnectModal from "@/components/ConnectModal";
