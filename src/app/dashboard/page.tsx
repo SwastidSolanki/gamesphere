@@ -64,6 +64,18 @@ function DashboardContent() {
           window.history.replaceState({}, "", newUrl);
         }
 
+        // Handle Riot Identity Callback
+        const riotAuth = searchParams.get('riot_auth');
+        const riotNameParam = searchParams.get('riot_name');
+        const riotTagParam = searchParams.get('riot_tag');
+        if (riotAuth === 'success' && riotNameParam && riotTagParam) {
+            localStorage.setItem('gamesphere_riot_id', `${riotNameParam}#${riotTagParam}`);
+            // Clean URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+            window.location.reload();
+        }
+        
         const steamId = localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki";
         const riotId = localStorage.getItem("gamesphere_riot_id") || "Swastid#SOLO";
         
@@ -120,7 +132,7 @@ function DashboardContent() {
   const riotAccount = data?.riot?.account;
   const riotLeague = data?.riot?.league;
 
-  const unifiedLibrary = [...steamLibrary.map(g => ({
+  const unifiedLibrary = [...steamLibrary.map((g: any) => ({
     name: g.name,
     playtime: g.playtime_forever,
     platform: "steam" as const,

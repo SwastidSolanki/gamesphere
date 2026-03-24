@@ -151,17 +151,35 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         onClick={() => {
                             window.location.href = "/api/auth/steam";
                         }}
-                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-3 border border-white/10"
+                        className="w-full py-6 bg-[#171a21] text-white font-heading text-xl tracking-widest hover:bg-[#2a475e] transition-all flex items-center justify-center gap-4 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                       >
-                        LOGIN_VIA_STEAM_SECURE
+                        <img src="https://community.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=96bea98" alt="Steam" className="w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity" />
+                        <span>LOGIN_WITH_STEAM</span>
                       </button>
                     </>
                   )}
 
                   {activeTab === "riot" && (
-                    <div className="p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed">
-                      NOTE: OFFICIAL RIOT_LOGIN REQUIRES PRODUCTION_OAUTH_CLIENT. PREVIEWING VIA VERIFIED_HANDSHAKE FOR CURRENT UPLINK.
-                    </div>
+                    <>
+                      <div className="relative py-4">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+                        <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL_AUTH</div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                            window.location.href = "/api/auth/riot";
+                        }}
+                        className="w-full py-6 bg-[#d13639] text-white font-heading text-xl tracking-widest hover:bg-[#ff4655] transition-all flex items-center justify-center gap-4 border border-white/10 group shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                      >
+                        <img src="https://www.riotgames.com/dark-riot-logo.png" alt="Riot" className="w-8 h-8 object-contain invert brightness-0 group-hover:brightness-100 transition-all" />
+                        <span>LOGIN_WITH_RIOT_CLIENT</span>
+                      </button>
+
+                      <div className="mt-4 p-4 bg-zinc-950/50 border border-white/5 text-[8px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed font-mono">
+                        NOTE: Production identity binding requires verified RSO client.
+                      </div>
+                    </>
                   )}
                 </div>
               ) : (

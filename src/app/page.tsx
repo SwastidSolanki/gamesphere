@@ -1,6 +1,5 @@
 "use client";
 
-import { Bebas_Neue } from "next/font/google";
 import { useLenis } from "@/hooks/useLenis";
 import Navbar from "@/components/Navbar";
 import ConnectModal from "@/components/ConnectModal";
@@ -13,16 +12,11 @@ import {
   Trophy, 
   Sword, 
   User, 
-  Zap,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  Zap,
+  Lock
 } from "lucide-react";
-
-const bebas = Bebas_Neue({ 
-  subsets: ["latin"], 
-  weight: ["400"],
-  variable: "--font-heading"
-});
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,73 +29,112 @@ export default function LandingPage() {
   };
 
   return (
-    <main className={`${bebas.variable} min-h-screen text-foreground font-body overflow-x-hidden bg-transparent`}>
+    <main className="min-h-screen text-foreground font-heading overflow-x-hidden bg-[#0d0e12]">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-64 pb-32 px-6 flex flex-col items-center text-center">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+        {/* Cinematic Background */}
+        <div className="absolute inset-0 z-0">
+            <img 
+                src="/C:/Users/swast/.gemini/antigravity/brain/455dfb48-51b7-4eb9-817a-8c0feb9b8d5b/fimbulwinter_vault_hero_4k_1774383365593.png" 
+                alt="Fimbulwinter Vault" 
+                className="w-full h-full object-cover opacity-60 scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d0e12]/40 to-[#0d0e12]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0d0e12_80%)]" />
+        </div>
+
+        {/* HUD Scanner Line */}
+        <motion.div 
+            animate={{ top: ["0%", "100%", "0%"] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            className="absolute left-0 right-0 h-[1px] bg-primary/20 z-10 shadow-[0_0_20px_rgba(160,192,208,0.3)]"
+        />
+
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2 }}
-          className="max-w-5xl"
+          className="relative z-20 max-w-6xl px-6"
         >
-          <div className="flex items-center justify-center gap-3 mb-8 opacity-40">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-black tracking-[1em] uppercase text-primary">Realm of Legends</span>
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <div className="h-[1px] w-12 bg-primary/40" />
+            <div className="flex items-center gap-2 px-4 py-1 border border-primary/20 bg-primary/5 rounded-full">
+                <ShieldCheck className="w-3 h-3 text-primary" />
+                <span className="text-[10px] font-black tracking-[0.5em] uppercase text-primary">ENCRYPTED_UPLINK_ACTIVE</span>
+            </div>
+            <div className="h-[1px] w-12 bg-primary/40" />
           </div>
 
-          <h1 className="text-7xl md:text-[10rem] font-heading mb-8 leading-[0.85] text-white">
-            UNIFY <br /> 
-            <span className="text-primary italic opacity-90">THE REALMS</span>
+          <h1 className="text-6xl md:text-[8rem] font-black mb-10 leading-[0.9] tracking-tighter uppercase">
+            <span className="block text-zinc-600 opacity-50">UNIFY</span>
+            <motion.span 
+                animate={{ opacity: [0.9, 1, 0.9], x: [0, 2, -2, 0] }}
+                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 5 }}
+                className="block text-white"
+            >
+                THE_REALMS
+            </motion.span>
           </h1>
 
-          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-16 font-medium leading-relaxed">
+          <p className="text-xs md:text-sm text-zinc-400 max-w-xl mx-auto mb-16 font-black uppercase tracking-[0.4em] leading-relaxed opacity-60">
             The Fimbulwinter of fragmented data is over. Connect thy Steam and Riot archives 
             into a single high-fidelity HUD. Command thy legacy.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="group px-12 py-6 bg-white text-black font-heading rounded-sm hover:bg-primary transition-all active:scale-95 text-xl tracking-widest flex items-center gap-3"
+              className="group relative px-16 py-7 bg-white text-black font-black hover:bg-primary transition-all active:scale-95 text-sm tracking-[0.4em] uppercase overflow-hidden"
             >
-              BIND_ACCOUNTS <ArrowRight className="w-6 h-6" />
+              <div className="relative z-10 flex items-center gap-4">
+                BIND_IDENTITY <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </div>
+              <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </button>
             <button 
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-12 py-6 bg-white/5 border border-white/10 text-white font-heading rounded-sm hover:bg-white/10 transition-all active:scale-95 text-xl tracking-widest"
+              className="px-16 py-7 bg-white/5 border border-white/10 text-white font-black hover:bg-white hover:text-black transition-all active:scale-95 text-sm tracking-[0.4em] uppercase"
             >
-              EXPLORE_FEATURES
+              EXPLORE_VAULT
             </button>
           </div>
         </motion.div>
+
+        {/* HUD Borders */}
+        <div className="absolute top-10 left-10 w-24 h-24 border-t-2 border-l-2 border-primary/20 pointer-events-none" />
+        <div className="absolute top-10 right-10 w-24 h-24 border-t-2 border-r-2 border-primary/20 pointer-events-none" />
+        <div className="absolute bottom-10 left-10 w-24 h-24 border-b-2 border-l-2 border-primary/20 pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-24 h-24 border-b-2 border-r-2 border-primary/20 pointer-events-none" />
       </section>
 
-      {/* Features Walkthrough */}
-      <section id="features" className="py-48 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
+      {/* Features Grid */}
+      <section id="features" className="py-64 px-6 max-w-7xl mx-auto relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-32 w-[1px] bg-gradient-to-b from-primary/40 to-transparent" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
           <FeatureSection 
-            icon={<LayoutDashboard className="w-10 h-10" />}
-            title="COUNCIL_DASHBOARD"
+            icon={<LayoutDashboard className="w-8 h-8" />}
+            title="WAR_COUNCIL"
             desc="A cinematic overview of thy entire digital empire. Track total playtime and live status across all realms."
             link="/dashboard"
           />
           <FeatureSection 
-            icon={<Sword className="w-10 h-10" />}
-            title="COMBAT_COMPARISON"
+            icon={<Sword className="w-8 h-8" />}
+            title="VALIANT_COMPARISON"
             desc="Pit thy records against any seeker. Measure Steam levels and library depth side-by-side."
             link="/compare"
           />
           <FeatureSection 
-            icon={<Trophy className="w-10 h-10" />}
-            title="VALIANT_LEADERBOARDS"
+            icon={<Trophy className="w-8 h-8" />}
+            title="LEADERBORD_ASCENSION"
             desc="See where thou standest among the legends. Real-time ranking based on verified record archives."
             link="/leaderboard"
           />
           <FeatureSection 
-            icon={<User className="w-10 h-10" />}
-            title="SEEKER_PROFILES"
+            icon={<User className="w-8 h-8" />}
+            title="SEEKER_VAULT"
             desc="Thy identity, forged in data. A unified archive of thy achievements across the gaming multiverse."
             link="/profile"
           />
@@ -113,6 +146,10 @@ export default function LandingPage() {
         onClose={() => setIsModalOpen(false)} 
         onConnect={handleConnect}
       />
+
+      <footer className="py-20 border-t border-white/5 text-center">
+        <p className="text-[10px] font-black tracking-[0.8em] text-zinc-600 uppercase">Thy Legacy is Eternal</p>
+      </footer>
     </main>
   );
 }
@@ -121,24 +158,22 @@ function FeatureSection({ icon, title, desc, link }: { icon: React.ReactNode, ti
   const router = useRouter();
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      className="group"
+      className="group p-16 bg-[#0d0e12] hover:bg-white transition-all cursor-pointer"
+      onClick={() => router.push(link)}
     >
-      <div className="mb-8 p-6 bg-primary/10 border border-primary/20 rounded-lg w-fit group-hover:bg-primary group-hover:text-black transition-all">
+      <div className="mb-12 text-primary group-hover:text-black transition-colors">
         {icon}
       </div>
-      <h3 className="text-4xl font-heading mb-6 tracking-wide group-hover:text-primary transition-colors">{title}</h3>
-      <p className="text-zinc-500 text-lg mb-10 leading-relaxed">
+      <h3 className="text-2xl font-black mb-6 tracking-widest group-hover:text-black transition-colors uppercase">{title}</h3>
+      <p className="text-zinc-500 text-xs mb-12 leading-relaxed tracking-wider group-hover:text-zinc-700 transition-colors uppercase font-bold">
         {desc}
       </p>
-      <button 
-        onClick={() => router.push(link)}
-        className="flex items-center gap-3 font-heading text-lg tracking-widest text-primary border-b border-primary/20 pb-2 hover:border-primary transition-all"
-      >
-        ACCESS_ARCHIVE <ChevronRight className="w-5 h-5" />
-      </button>
+      <div className="flex items-center gap-3 font-black text-[10px] tracking-[0.4em] text-primary group-hover:text-black transition-all uppercase">
+        ACCESS_ARCHIVE <ChevronRight className="w-4 h-4" />
+      </div>
     </motion.div>
   );
 }
