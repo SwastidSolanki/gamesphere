@@ -63,7 +63,7 @@ export default function DashboardPage() {
       <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-          <p className="font-serif font-bold tracking-[0.6em] text-primary/60 text-xs italic">SYNCHRONIZING_ETERNAL_RECORDS...</p>
+          <p className="font-heading tracking-[0.6em] text-primary/60 text-xs">SYNCHRONIZING_ETERNAL_RECORDS...</p>
         </div>
       </div>
     );
@@ -74,11 +74,11 @@ export default function DashboardPage() {
       <div className="h-screen flex items-center justify-center bg-background px-6">
         <GlassCard className="max-w-md w-full p-10 border-red-900/40 text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-6" />
-          <h2 className="text-2xl font-serif font-bold mb-4 tracking-widest">UPLINK_SEVERED</h2>
-          <p className="text-zinc-500 text-sm mb-10 font-serif italic">{error}</p>
+          <h2 className="text-4xl font-heading mb-4 tracking-widest">UPLINK_SEVERED</h2>
+          <p className="text-zinc-500 text-[10px] mb-10 font-bold uppercase tracking-widest leading-relaxed">{error}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="w-full py-5 bg-primary/10 border border-primary/40 text-primary font-serif font-bold hover:bg-primary hover:text-background transition-all text-xs tracking-[0.4em]"
+            className="w-full py-5 bg-primary/10 border border-primary/40 text-primary font-heading hover:bg-white hover:text-black transition-all text-sm tracking-[0.4em]"
           >
             RETRY_UPLINK
           </button>

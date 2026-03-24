@@ -27,7 +27,7 @@
     border-color: rgba(255, 255, 255, 0.05);
   }
   body {
-    @apply bg-background text-foreground antialiased font-body;
+    @apply bg-background text-foreground antialiased font-heading tracking-widest uppercase;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-[0.05em] uppercase font-normal;
