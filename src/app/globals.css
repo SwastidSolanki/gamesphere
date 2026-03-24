@@ -7,18 +7,18 @@
   --color-primary-foreground: #0a0b0d;
   --color-secondary: #2a3a4a;
   --color-secondary-foreground: #e0e0e0;
-  --color-accent: #f0f0f0;
+  --color-accent: #ffffff;
   --color-accent-foreground: #000000;
   --color-border: rgba(255, 255, 255, 0.05);
   --color-input: rgba(255, 255, 255, 0.1);
   --color-ring: #a0c0d0;
   
-  --font-heading: "Montserrat", sans-serif;
+  --font-heading: "Bebas Neue", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --radius-xl: 0.5rem;
-  --radius-2xl: 0.75rem;
+  --radius-xl: 0.25rem;
+  --radius-2xl: 0.5rem;
 }
 
 @layer base {
@@ -29,13 +29,13 @@
     @apply bg-background text-foreground antialiased font-body;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-widest uppercase font-black;
+    @apply font-heading tracking-wider uppercase font-normal;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-xl overflow-hidden shadow-2xl;
+    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-xl overflow-hidden;
   }
 }
 

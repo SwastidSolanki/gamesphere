@@ -14,7 +14,8 @@ export async function GET(request: Request) {
   if (endpoint === "profile") {
     url = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v0002/?key=${API_KEY}&steamids=${steamid}`;
   } else if (endpoint === "owned-games") {
-    url = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${API_KEY}&steamid=${steamid}&format=json&include_appinfo=true`;
+    // include_played_free_games=1 ensures CS2 and other F2P games show up
+    url = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${API_KEY}&steamid=${steamid}&format=json&include_appinfo=1&include_played_free_games=1`;
   } else if (endpoint === "vanity") {
     url = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v0001/?key=${API_KEY}&vanityurl=${vanityurl}`;
   } else {
