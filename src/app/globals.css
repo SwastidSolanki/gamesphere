@@ -1,42 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #050505;
-  --color-foreground: #f0ead6;
-  --color-primary: #d4af37;
-  --color-primary-foreground: #050505;
-  --color-secondary: #4a5d4e;
-  --color-secondary-foreground: #f0ead6;
-  --color-accent: #8b0000;
-  --color-accent-foreground: #ffffff;
-  --color-border: rgba(212, 175, 55, 0.1);
-  --color-input: rgba(212, 175, 55, 0.2);
-  --color-ring: #d4af37;
+  --color-background: #0a0b0d;
+  --color-foreground: #e0e0e0;
+  --color-primary: #a0c0d0;
+  --color-primary-foreground: #0a0b0d;
+  --color-secondary: #2a3a4a;
+  --color-secondary-foreground: #e0e0e0;
+  --color-accent: #f0f0f0;
+  --color-accent-foreground: #000000;
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-input: rgba(255, 255, 255, 0.1);
+  --color-ring: #a0c0d0;
   
-  --font-heading: "Cinzel", serif;
+  --font-heading: "Montserrat", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
 }
 
 @layer base {
   * {
-    border-color: rgba(212, 175, 55, 0.1);
+    border-color: rgba(255, 255, 255, 0.05);
   }
   body {
     @apply bg-background text-foreground antialiased font-body;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-widest uppercase;
+    @apply font-heading tracking-widest uppercase font-black;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-black/40 backdrop-blur-3xl border border-primary/20 rounded-2xl overflow-hidden;
+    @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-xl overflow-hidden shadow-2xl;
   }
 }
 
@@ -49,5 +48,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/30 rounded-full transition-colors hover:bg-primary/60;
+  @apply bg-primary/20 rounded-full hover:bg-primary/40;
 }
