@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,11 +37,7 @@ export default function GameLibrary({ games }: GameLibraryProps) {
             {/* Banner Image */}
             <div className="absolute inset-0 z-0">
               {game.appid ? (
-                <img 
-                  src={`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`} 
-                  alt={game.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90 grayscale-[0.3] group-hover:grayscale-0"
-                />
+                <SteamBanner appid={game.appid} name={game.name} />
               ) : (
                 <div className="w-full h-full bg-primary/5 flex items-center justify-center">
                   <Gamepad2 className="w-12 h-12 text-primary/20" />
