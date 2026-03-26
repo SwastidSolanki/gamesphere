@@ -124,35 +124,34 @@ export default function DashboardPage() {
       <Navbar />
       
       <div className="max-w-[1850px] mx-auto px-10 pt-40 pb-32">
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-20 pt-10">
-          <div className="space-y-6 max-w-4xl">
-            <h1 className="text-5xl md:text-8xl lg:text-9xl font-sans font-black tracking-tight uppercase leading-[0.95] text-white select-none">
-              PLAYER <br /> <span className="text-primary">OVERVIEW</span>
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-8 md:gap-12 mb-16 md:mb-20 pt-10 text-center lg:text-left">
+          <div className="space-y-4 md:space-y-6 max-w-4xl">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-sans font-black tracking-tight uppercase leading-[0.95] text-white select-none whitespace-normal break-words">
+              PLAYER <br /> <span className="text-primary text-3xl sm:text-4xl md:text-8xl lg:text-9xl">OVERVIEW</span>
             </h1>
-            <div className="flex items-center gap-4 text-zinc-500 font-bold tracking-tight uppercase text-xs font-mono opacity-80">
-              <span className="text-primary">{steamProfile?.personaname || "ANONYMOUS"}</span>
+            <div className="flex items-center justify-center lg:justify-start gap-4 text-zinc-500 font-bold tracking-tight uppercase text-[10px] md:text-xs font-mono opacity-80">
+              <span className="text-primary truncate max-w-[150px]">{steamProfile?.personaname || "ANONYMOUS"}</span>
               <span>//</span>
-              <span>PLAYER_ID // 001</span>
+              <span className="flex-shrink-0">PLAYER_ID // 001</span>
             </div>
           </div>
 
-          <div className="relative group">
             {steamProfile ? (
-              <GlassCard className="p-10 border-white/10 flex items-center gap-8 group cursor-pointer hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full max-w-md shadow-2xl">
-                <div className="w-32 h-32 rounded-sm bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
+              <GlassCard className="p-6 md:p-10 border-white/10 flex flex-col sm:flex-row items-center gap-6 md:gap-8 group cursor-pointer hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full lg:max-w-md shadow-2xl">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-sm bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
                   <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" />
-                  <div className={cn("absolute bottom-0 right-0 w-6 h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
+                  <div className={cn("absolute bottom-0 right-0 w-4 h-4 md:w-6 md:h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
                 </div>
-                <div className="space-y-4">
-                  <p className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">{steamProfile.personaname}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
-                      <span className="text-white font-black text-xl leading-none">Level {steamLevel}</span>
+                <div className="space-y-2 md:space-y-4 text-center sm:text-left">
+                  <p className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-[200px]">{steamProfile.personaname}</p>
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <div className="flex items-center gap-2 px-3 md:px-5 py-1.5 md:py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
+                      <span className="text-white font-black text-base md:text-xl leading-none">Level {steamLevel}</span>
                     </div>
                   </div>
-                  <div className="space-y-1 pt-2">
-                    <p className="text-[12px] text-zinc-500 font-bold uppercase tracking-[0.4em] font-mono opacity-60">Status: {steamProfile.personastate === 1 ? "ACTIVE_NODE" : "SLEEP_MODE"}</p>
-                    <p className="text-[10px] text-primary font-bold uppercase tracking-[0.5em] font-mono">{steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}</p>
+                  <div className="space-y-1 pt-1 md:pt-2">
+                    <p className="text-[10px] md:text-[12px] text-zinc-500 font-bold uppercase tracking-[0.4em] font-mono opacity-60">Status: {steamProfile.personastate === 1 ? "ACTIVE_NODE" : "SLEEP_MODE"}</p>
+                    <p className="text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-[0.5em] font-mono">{steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}</p>
                   </div>
                 </div>
               </GlassCard>
@@ -162,7 +161,6 @@ export default function DashboardPage() {
                     <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest leading-relaxed">Identity Manifest Unavailable.</p>
                 </div>
             )}
-          </div>
         </div>
 
         {/* Stats Grid */}

@@ -182,7 +182,7 @@ export default function ProfilePage() {
                         transition={{ delay: i * 0.1 }}
                         className="group bg-black/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-primary/40 transition-all cursor-default shadow-2xl"
                         >
-                        <div className="aspect-[3/4] relative overflow-hidden bg-zinc-900 shadow-2xl">
+                        <div className="aspect-video sm:aspect-[3/4] relative overflow-hidden bg-zinc-900 shadow-2xl">
                             <GameImage
                                 appid={game.appid}
                                 alt={game.name}
@@ -242,15 +242,15 @@ export default function ProfilePage() {
                             <td className="px-8 py-6 text-center font-mono text-xs text-zinc-700 group-hover:text-primary transition-colors">[{String(i + 1).padStart(2, '0')}]</td>
                             <td className="px-8 py-6">
                                 <div className="flex items-center gap-6">
-                                <div className="relative">
+                                <div className="relative flex-shrink-0">
                                     <img 
                                         src={`https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`}
                                         onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                                        className="w-8 h-8 rounded-sm transition-all opacity-40 group-hover:opacity-100"
+                                        className="w-6 h-6 md:w-8 md:h-8 rounded-sm transition-all opacity-40 group-hover:opacity-100"
                                         alt=""
                                     />
                                 </div>
-                                <span className="text-sm font-black text-white/40 group-hover:text-white transition-all uppercase tracking-widest">
+                                <span className="text-[10px] md:text-sm font-black text-white/40 group-hover:text-white transition-all uppercase tracking-widest truncate max-w-[120px] md:max-w-none">
                                     {game.name}
                                 </span>
                                 </div>

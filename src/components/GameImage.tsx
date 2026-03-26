@@ -22,6 +22,9 @@ export default function GameImage({ appid, alt, className }: GameImageProps) {
     if (fallbackCount < fallbacks.length) {
       setSrc(fallbacks[fallbackCount]);
       setFallbackCount(fallbackCount + 1);
+    } else if (fallbackCount === fallbacks.length) {
+      setSrc("/game-fallback.png");
+      setFallbackCount(fallbackCount + 1);
     }
   };
 
