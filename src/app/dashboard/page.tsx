@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -82,7 +82,7 @@ export default function Dashboard() {
   const steamProfile = data?.steam?.profile;
   const rawLibrary = data?.steam?.library || [];
   
-  // Process Data — strictly real Steam data, no synthetic values
+  // Process Data â€” strictly real Steam data, no synthetic values
   const filteredLibrary = rawLibrary.filter((game: any) => game.playtime_forever >= 60);
 
   const totalHours = Math.round(data?.steam?.totalPlaytime || 0);
@@ -134,7 +134,7 @@ export default function Dashboard() {
                   </div>
                   <div className="pr-4">
                       <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">{steamProfile.personaname}</p>
-                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {data?.steam?.level ?? "�"} // {steamProfile.loccountrycode || "GLB"}</p>
+                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {data?.steam?.level ?? "N/A"} // {steamProfile.loccountrycode || "GLB"}</p>
                   </div>
               </GlassCard>
           )}
@@ -223,7 +223,7 @@ export default function Dashboard() {
                                 {playerScore.toLocaleString()}
                             </div>
                             <p className="text-[10px] font-mono text-zinc-600 mt-2 tracking-wider">
-                                ({totalHours}h × 0.5) + ({totalAchievements} acv × 0.3) + ({totalGames} games × 0.2)
+                                ({totalHours}h Ã— 0.5) + ({totalAchievements} acv Ã— 0.3) + ({totalGames} games Ã— 0.2)
                             </p>
                         </div>
                     </div>
@@ -234,10 +234,10 @@ export default function Dashboard() {
                             {playerRank}
                         </div>
                         <div className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest text-right">
-                            {playerRank === "PLATINUM" && "Elite Tier — Top 1%"}
-                            {playerRank === "GOLD" && "Score ≥ 1500 — Advanced"}
-                            {playerRank === "SILVER" && "Score ≥ 500 — Intermediate"}
-                            {playerRank === "BRONZE" && "Score < 500 — Developing"}
+                            {playerRank === "PLATINUM" && "Elite Tier â€” Top 1%"}
+                            {playerRank === "GOLD" && "Score â‰¥ 1500 â€” Advanced"}
+                            {playerRank === "SILVER" && "Score â‰¥ 500 â€” Intermediate"}
+                            {playerRank === "BRONZE" && "Score < 500 â€” Developing"}
                         </div>
                     </div>
                 </div>
@@ -280,17 +280,7 @@ export default function Dashboard() {
                                     src={imageSrc} 
                                     alt={game.name}
                                     onError={(e) => {
-                                        const img = e.currentTarget as HTMLImageElement;
-                                        const appid = game.appid;
-                                        if (!img.dataset.fallback) {
-                                            img.dataset.fallback = "1";
-                                            img.src = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/capsule_231x87.jpg`;
-                                        } else if (img.dataset.fallback === "1") {
-                                            img.dataset.fallback = "2";
-                                            img.src = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`;
-                                        } else {
-                                            img.style.display = "none";
-                                        }
+                                        (e.currentTarget as HTMLImageElement).src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_616x353.jpg`;
                                     }}
                                     className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
                                 />
