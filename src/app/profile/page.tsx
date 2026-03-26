@@ -168,7 +168,7 @@ export default function ProfilePage() {
                 {/* MOST ENGAGED GAMES */}
                 <section>
                 <SectionHeader title="High Engagement Archives" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
                     {top5.map((game: any, i: number) => {
                     const hours = Math.round(game.playtime_forever / 60);
                     const pct = Math.min(100, Math.round((game.playtime_forever / (top5[0]?.playtime_forever || 1)) * 100));
@@ -182,13 +182,13 @@ export default function ProfilePage() {
                         transition={{ delay: i * 0.1 }}
                         className="group bg-black/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-primary/40 transition-all cursor-default shadow-2xl"
                         >
-                        <div className="aspect-[3/4] relative overflow-hidden bg-zinc-900 shadow-2xl">
+                        <div className="aspect-video relative overflow-hidden bg-zinc-900 shadow-2xl">
                             <GameImage
                                 appid={game.appid}
                                 alt={game.name}
-                                className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-110"
+                                className="w-full h-full object-cover object-top transition-all duration-700 scale-105 group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6">
                                 <p className="text-xs font-mono text-primary tracking-widest uppercase mb-2 font-black">{hours} Hours</p>
                                 <div className="h-[3px] bg-white/10 rounded-full overflow-hidden">
@@ -201,8 +201,8 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="p-6 border-t border-white/5 bg-white/[0.02]">
-                            <p className="text-sm font-black tracking-widest text-white/70 group-hover:text-white transition-colors uppercase truncate">
+                        <div className="p-6 border-t border-white/5 bg-white/[0.02] flex flex-col justify-center min-h-[5.5rem]">
+                            <p className="text-[11px] font-black tracking-widest text-white/50 group-hover:text-white transition-colors uppercase leading-relaxed">
                             {game.name}
                             </p>
                         </div>
@@ -242,15 +242,15 @@ export default function ProfilePage() {
                             <td className="px-8 py-6 text-center font-mono text-xs text-zinc-700 group-hover:text-primary transition-colors">[{String(i + 1).padStart(2, '0')}]</td>
                             <td className="px-8 py-6">
                                 <div className="flex items-center gap-6">
-                                <div className="relative">
+                                <div className="relative flex-shrink-0">
                                     <img 
                                         src={`https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`}
                                         onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                                        className="w-8 h-8 rounded-sm transition-all opacity-40 group-hover:opacity-100"
+                                        className="w-6 h-6 md:w-8 md:h-8 rounded-sm transition-all opacity-40 group-hover:opacity-100"
                                         alt=""
                                     />
                                 </div>
-                                <span className="text-sm font-black text-white/40 group-hover:text-white transition-all uppercase tracking-widest">
+                                <span className="text-[10px] md:text-sm font-black text-white/40 group-hover:text-white transition-all uppercase tracking-widest truncate max-w-[120px] md:max-w-none">
                                     {game.name}
                                 </span>
                                 </div>

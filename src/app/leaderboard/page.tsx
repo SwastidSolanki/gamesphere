@@ -67,17 +67,24 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12">
-        <div className="flex items-center gap-3 mb-4 opacity-50">
-          <span className="w-10 h-[1px] bg-primary" />
-          <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12 relative overflow-hidden">
+        {/* Background Watermark */}
+        <div className="absolute -top-10 -left-10 text-[12rem] md:text-[20rem] font-black text-white/[0.05] select-none pointer-events-none uppercase tracking-tighter">
+          Rankings
         </div>
-        <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
-          Platform Ladder
-        </h1>
-        <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
-          Steam Network // Real-time data
-        </p>
+        
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4 opacity-50">
+            <span className="w-10 h-[1px] bg-primary" />
+            <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
+            Platform Ladder
+          </h1>
+          <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
+            Steam Network // Real-time data
+          </p>
+        </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-24">
@@ -137,7 +144,7 @@ export default function LeaderboardPage() {
                       exit={{ opacity: 0, scale: 0.97 }}
                       transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
                       className={cn(
-                        "group flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-300",
+                        "group flex items-center gap-3 md:gap-6 p-3 md:p-5 rounded-xl border transition-all duration-300",
                         "hover:bg-white/3 cursor-default",
                         top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/30",
                         player.isSelf && "ring-1 ring-primary/30"
@@ -173,11 +180,11 @@ export default function LeaderboardPage() {
                       {/* Name + badges */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-sm tracking-wider text-white truncate">
+                          <h3 className="font-bold text-xs md:text-sm tracking-wider text-white truncate max-w-[100px] sm:max-w-[200px]">
                             {player.name}
                           </h3>
                           {player.isSelf && (
-                            <span className="px-2 py-0.5 bg-primary/15 border border-primary/30 rounded text-[8px] font-black text-primary tracking-widest uppercase flex-shrink-0">
+                            <span className="px-1.5 py-0.5 bg-primary/15 border border-primary/30 rounded text-[7px] md:text-[8px] font-black text-primary tracking-widest uppercase flex-shrink-0">
                               YOU
                             </span>
                           )}
