@@ -102,9 +102,9 @@ export default function ProfilePage() {
             
             <div className="space-y-8 pl-4 border-l border-white/5 relative">
               <TimelineItem 
-                platform="RIOT"
-                title="Promoted to Diamond IV"
-                desc="Win streak: 5 matches in Valorant Competitive"
+                platform="CS2"
+                title="Promoted to 20K ELO"
+                desc="Win streak: 5 matches in CS2 Premier"
                 time="2h ago"
                 color="text-secondary"
               />
@@ -116,9 +116,9 @@ export default function ProfilePage() {
                 color="text-primary"
               />
               <TimelineItem 
-                platform="RIOT"
+                platform="DOTA 2"
                 title="MVP Performance"
-                desc="25 kills, 4 deaths as Jett in Ascent"
+                desc="25 kills, 4 deaths as Invoker in Mid"
                 time="2d ago"
                 color="text-secondary"
               />
@@ -140,7 +140,7 @@ export default function ProfilePage() {
 function TimelineItem({ platform, title, desc, time, color }: any) {
   return (
     <div className="relative">
-      <div className={cn("absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-black border-2 border-primary", platform === "RIOT" && "border-secondary")} />
+      <div className={cn("absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-black border-2 border-primary", platform === "CS2" && "border-secondary")} />
       <div>
         <div className="flex items-center gap-3 mb-1">
           <span className={cn("text-[10px] font-bold tracking-tighter px-2 py-0.5 rounded bg-white/5", color)}>{platform}</span>

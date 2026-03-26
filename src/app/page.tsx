@@ -24,12 +24,7 @@ export default function LandingPage() {
   useLenis();
 
   const handleConnect = (platform: string, id: string) => {
-    if (platform === "riot") {
-        // Since id is the PUUID here, we'll store it as such
-        localStorage.setItem(`gamesphere_riot_puuid`, id);
-        // We'll also store the search string if available, or just clear it so dashboard re-fetches
-        // For simplicity, the dashboard handles defaults.
-    } else {
+    if (platform === "steam") {
         localStorage.setItem(`gamesphere_${platform}_id`, id);
     }
     router.push("/dashboard");
@@ -82,19 +77,19 @@ export default function LandingPage() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl md:text-[8rem] font-black mb-10 leading-[0.9] tracking-tighter uppercase break-words">
-            <span className="block text-zinc-600 opacity-50">UNIFY</span>
+            <span className="block text-zinc-600 opacity-50">MASTER</span>
             <motion.span 
                 animate={{ opacity: [0.9, 1, 0.9], x: [0, 2, -2, 0] }}
                 transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 5 }}
                 className="block text-white"
             >
-                THE_REALMS
+                THY_LEGACY
             </motion.span>
           </h1>
 
           <p className="text-xs md:text-sm text-zinc-500 font-heading uppercase tracking-[0.3em] mb-16 leading-relaxed px-4 text-center">
             The fimbulwinter of fragmented data is over. <br className="hidden md:block" />
-            Connect thy Steam and Riot archives into a single high-fidelity HUD. <br className="hidden md:block" />
+            Synchronize thy Steam archives into a single high-fidelity HUD. <br className="hidden md:block" />
             Command thy legacy.
           </p>
 

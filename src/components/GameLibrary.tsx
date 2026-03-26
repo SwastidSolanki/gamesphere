@@ -8,7 +8,6 @@ import GameBanner from "./GameBanner";
 interface Game {
   name: string;
   playtime: number; // in minutes
-  platform: "steam" | "riot";
   logo?: string;
   appid?: number;
   icon?: string;
@@ -38,8 +37,6 @@ export default function GameLibrary({ games }: GameLibraryProps) {
                <GameBanner 
                 appid={game.appid} 
                 name={game.name} 
-                externalIcon={game.icon} 
-                platform={game.platform} 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
             </div>
@@ -47,11 +44,8 @@ export default function GameLibrary({ games }: GameLibraryProps) {
             <div className="relative z-10 h-full p-8 flex flex-col justify-end">
               <div className="flex justify-between items-end gap-4">
                 <div className="flex-1">
-                  <div className={cn(
-                    "inline-block px-2 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-[0.3em] border mb-4",
-                    game.platform === "steam" ? "border-primary/30 text-primary/80 bg-primary/5" : "border-secondary/30 text-secondary/80 bg-secondary/5"
-                  )}>
-                    {game.platform}
+                  <div className="inline-block px-2 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-[0.3em] border mb-4 border-primary/30 text-primary/80 bg-primary/5">
+                    STEAM
                   </div>
                   <h4 className="text-2xl font-heading font-black group-hover:text-primary transition-colors leading-tight mb-2 truncate tracking-widest">
                     {game.name}

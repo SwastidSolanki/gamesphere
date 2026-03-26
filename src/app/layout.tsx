@@ -11,7 +11,7 @@ const monoFont = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "GameSphere | Unified Player Stats",
-  description: "Connect your Steam and Riot accounts for unified analytics.",
+  description: "Connect your Steam account for deep player analytics.",
 };
 
 export default function RootLayout({

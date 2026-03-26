@@ -6,24 +6,20 @@ import { Gamepad2 } from "lucide-react";
 interface GameBannerProps {
   appid?: number;
   name: string;
-  externalIcon?: string;
-  platform: "steam" | "riot";
 }
 
-export default function GameBanner({ appid, name, externalIcon, platform }: GameBannerProps) {
+export default function GameBanner({ appid, name }: GameBannerProps) {
   const [src, setSrc] = useState("");
   const [retry, setRetry] = useState(0);
 
   useEffect(() => {
-    if (platform === "steam" && appid) {
+    if (appid) {
         setSrc(`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`);
-    } else if (platform === "riot" && externalIcon) {
-        setSrc(externalIcon);
     }
-  }, [appid, externalIcon, platform]);
+  }, [appid]);
 
   const handleError = () => {
-    if (platform === "steam" && appid) {
+    if (appid) {
         if (retry === 0) {
             setSrc(`https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`);
             setRetry(1);
@@ -32,14 +28,6 @@ export default function GameBanner({ appid, name, externalIcon, platform }: Game
             setRetry(2);
         } else {
             setSrc(""); // Final fallback
-        }
-    } else if (platform === "riot") {
-        if (retry === 0) {
-            // Try alternative Riot CDN
-            setSrc("https://cmsassets.rgpub.io/visibility/riot-games/valorant/wallpaper/episode-7-act-1-jett-1.jpg");
-            setRetry(1);
-        } else {
-            setSrc("");
         }
     }
   };

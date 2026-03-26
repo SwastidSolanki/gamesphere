@@ -12,7 +12,6 @@ interface ConnectModalProps {
 }
 
 export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModalProps) {
-  const [activeTab, setActiveTab] = useState<"steam" | "riot">("steam");
   const [identifier, setIdentifier] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<any>(null);
@@ -22,7 +21,6 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
     setIsLoading(true);
     setError(null);
     try {
-      if (activeTab === "steam") {
         const res = await fetch(`/api/steam?endpoint=vanity&vanityurl=${identifier}`);
         const data = await res.json();
         let steamid = identifier;
@@ -43,28 +41,6 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
         } else {
           setError("VALIANT_NOT_FOUND: ARCHIVE ERROR");
         }
-      } else {
-        const [name, tag] = identifier.split("#");
-        if (!name || !tag) {
-            setError("INVALID_FORMAT: USE NAME#TAG");
-            setIsLoading(false);
-            return;
-        }
-
-        const res = await fetch(`/api/riot?endpoint=account&gameName=${name}&tagLine=${tag}`);
-        const data = await res.json();
-        
-        if (data.puuid) {
-            setPreview({
-                name: data.gameName,
-                tag: data.tagLine,
-                id: data.puuid,
-                avatar: null // Riot API doesn't provide pfp in standard account info
-            });
-        } else {
-            setError("IDENTITY_NOT_FOUND: RIOT NEXUS ERROR");
-        }
-      }
     } catch (err) {
       setError("UPLINK_FAILURE: TRY AGAIN");
     }
@@ -72,7 +48,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
   };
 
   const handleConfirm = () => {
-    onConnect(activeTab, preview.id);
+    onConnect("steam", preview.id);
     onClose();
     setPreview(null);
     setIdentifier("");
@@ -106,37 +82,16 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
 
               {!preview ? (
                 <div className="space-y-8">
-                  <div className="flex gap-4 p-1 bg-white/[0.02] border border-white/5">
-                    <button
-                      onClick={() => { setActiveTab("steam"); setError(null); }}
-                      className={cn(
-                        "flex-1 py-4 font-heading tracking-[0.3em] transition-all",
-                        activeTab === "steam" ? "bg-white text-black" : "text-zinc-500 hover:text-white"
-                      )}
-                    >
-                      STEAM NODE
-                    </button>
-                    <button
-                      onClick={() => { setActiveTab("riot"); setError(null); }}
-                      className={cn(
-                        "flex-1 py-4 font-heading tracking-[0.3em] transition-all",
-                        activeTab === "riot" ? "bg-white text-black" : "text-zinc-500 hover:text-white"
-                      )}
-                    >
-                      RIOT NODE
-                    </button>
-                  </div>
-
                   <div>
                     <label className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">
-                      IDENTIFIER ({activeTab === "steam" ? "Username, Vanity URL or ID" : "GameName#Tag"})
+                      IDENTIFIER (Username, Vanity URL or ID)
                     </label>
                     <div className="flex flex-col sm:flex-row bg-black/40 border border-white/10 focus-within:border-white transition-all group overflow-hidden">
                         <input
                         type="text"
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
-                        placeholder={activeTab === "steam" ? "e.g. SwastidSolanki" : "e.g. Swastid#SOLO"}
+                        placeholder="e.g. SwastidSolanki"
                         className="flex-1 bg-transparent py-4 px-6 sm:py-5 sm:px-8 text-sm sm:text-lg focus:outline-none font-mono text-white placeholder:text-zinc-700 min-w-0"
                         />
                         <button 
@@ -149,8 +104,6 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     </div>
                   </div>
 
-                  {activeTab === "steam" && (
-                    <>
                       <div className="relative py-4">
                         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
                         <div className="relative flex justify-center text-[8px] uppercase font-black text-zinc-600 tracking-[0.5em] bg-[#0d0e12] px-2">OFFICIAL AUTH</div>
@@ -165,20 +118,6 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         <span className="font-black">LOGIN WITH STEAM</span>
                         <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam" className="w-14 h-14 opacity-80 group-hover:opacity-100 transition-opacity filter invert" />
                       </button>
-                    </>
-                  )}
-
-                  {activeTab === "riot" && (
-                      <div className="flex flex-col gap-4">
-                        <div className="p-8 bg-zinc-950/50 border border-white/5 text-[10px] font-black tracking-widest text-zinc-500 uppercase leading-relaxed font-mono text-center">
-                          RIOT_NEXUS_LINKING: SEARCH_BASED_UPLINK_ACTIVE.<br/>
-                          <span className="text-secondary/40 italic font-bold">NEXUS_TUNNEL_STABLE // IDENTITY_RESOLUTION_ACTIVE...</span>
-                        </div>
-                        <div className="flex items-center justify-center py-6 opacity-80 group-hover:opacity-100 transition-all">
-                             <RiotFistIcon className="w-16 h-16 text-[#ff4655]" />
-                        </div>
-                      </div>
-                  )}
                 </div>
               ) : (
                 <motion.div 
@@ -206,7 +145,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                       </div>
                       <div className="flex-1 text-left">
                         <p className="font-heading text-lg group-hover:text-primary transition-colors">{preview.name.toUpperCase()}</p>
-                        <p className="text-[8px] font-black tracking-widest opacity-40 uppercase">{activeTab === "steam" ? `STEAM ARCHIVE: ${preview.id}` : `RIOT ACCOUNT: #${preview.tag}`}</p>
+                        <p className="text-[8px] font-black tracking-widest opacity-40 uppercase">STEAM ARCHIVE: {preview.id}</p>
                       </div>
                       <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <CheckCircle2 className="w-4 h-4 text-primary" />
@@ -241,10 +180,3 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
   );
 }
 
-function RiotFistIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M21 13.3c-.6 0-1 .4-1 1s.4 1 1 1h5.8V13.3H21zM22.3 9.4c-.6 0-1 .4-1 1s.4 1 1 1h7.4l-1-2H22.3zM23.5 5.5c-.6 0-1 .4-1 1s.4 1 1 1h9.1l-1.3-2H23.5zM25.2 1.6c-.6 0-1 .4-1 1s.4 1 1 1h10.9l-1.6-2H25.2zM12 11h-4v2h4v-2zm-6-2v6h12V9H6zm2 4h-2v-2h2v2zm6 0h-2v-2h2v2zm0-6H8v2h4V7zM7 11h2v2H7v-2zm6 0h2v2h-2v-2z" />
-    </svg>
-  );
-}
