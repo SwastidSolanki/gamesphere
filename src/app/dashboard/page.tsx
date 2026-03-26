@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
 import Navbar from "@/components/Navbar";
 import GameDetailsModal from "@/components/GameDetailsModal";
+import AnalyticsVisuals from "@/components/AnalyticsVisuals";
 import { AnimatePresence } from "framer-motion";
 import { fetchUnifiedData } from "@/lib/dataFetcher";
 import { cn } from "@/lib/utils";
@@ -16,7 +17,9 @@ import {
   Star,
   Award,
   Swords,
-  Loader2
+  Loader2,
+  TrendingUp,
+  ShieldCheck
 } from "lucide-react";
 
 // Fade-in slide-up variant
@@ -79,16 +82,28 @@ export default function Dashboard() {
   const steamProfile = data?.steam?.profile;
   const rawLibrary = data?.steam?.library || [];
   
-  // Process Data
+  // Process Data — strictly real Steam data, no synthetic values
   const filteredLibrary = rawLibrary.filter((game: any) => game.playtime_forever >= 60);
 
   const totalHours = Math.round(data?.steam?.totalPlaytime || 0);
   const totalGames = rawLibrary.length;
-  const estimatedAchievements = Math.floor(totalHours * 1.5); // Placeholder as requested
+  // Achievements: we can only get per-game achievements on demand; show 0 until fetched
+  const totalAchievements = 0;
 
   const sortedLibrary = [...filteredLibrary].sort((a: any, b: any) => b.playtime_forever - a.playtime_forever);
   const favoriteGame = sortedLibrary.length > 0 ? sortedLibrary[0] : null;
   const top5Games = sortedLibrary.slice(0, 5);
+
+  // Player Score formula: (Hours * 0.5) + (Achievements * 0.3) + (Games * 0.2)
+  const playerScore = Math.round((totalHours * 0.5) + (totalAchievements * 0.3) + (totalGames * 0.2));
+  const playerRank = playerScore >= 3000 ? "PLATINUM" : playerScore >= 1500 ? "GOLD" : playerScore >= 500 ? "SILVER" : "BRONZE";
+  const rankConfig: Record<string, { color: string; glow: string; border: string; badge: string }> = {
+    PLATINUM: { color: "text-cyan-300", glow: "hover:shadow-[0_0_30px_rgba(103,232,249,0.3)]", border: "hover:border-cyan-400/50", badge: "bg-cyan-400/20 border-cyan-400/40 text-cyan-300" },
+    GOLD:     { color: "text-yellow-300", glow: "hover:shadow-[0_0_30px_rgba(253,224,71,0.3)]", border: "hover:border-yellow-400/50", badge: "bg-yellow-400/20 border-yellow-400/40 text-yellow-300" },
+    SILVER:   { color: "text-zinc-300", glow: "hover:shadow-[0_0_30px_rgba(212,212,216,0.3)]", border: "hover:border-zinc-400/50", badge: "bg-zinc-400/10 border-zinc-400/30 text-zinc-300" },
+    BRONZE:   { color: "text-orange-400", glow: "hover:shadow-[0_0_30px_rgba(251,146,60,0.3)]", border: "hover:border-orange-400/50", badge: "bg-orange-400/20 border-orange-400/40 text-orange-400" },
+  };
+  const rank = rankConfig[playerRank];
 
   return (
     <main className="min-h-screen bg-[#0d0e12] text-white p-4 md:p-8 font-heading overflow-x-hidden relative selection:bg-primary/30">
@@ -170,13 +185,6 @@ export default function Dashboard() {
                     borderColor="hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
                 />
                 <HeroStatCard 
-                    icon={<Award className="w-8 h-8" />} 
-                    label="Achievements" 
-                    value={estimatedAchievements} 
-                    color="from-yellow-500/20 to-orange-500/5"
-                    borderColor="hover:border-yellow-500/50 hover:shadow-[0_0_30px_rgba(234,179,8,0.2)]"
-                />
-                <HeroStatCard 
                     icon={<Star className="w-8 h-8" />} 
                     label="Favorite Game" 
                     value={favoriteGame?.name || "N/A"} 
@@ -185,6 +193,66 @@ export default function Dashboard() {
                     borderColor="hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]"
                 />
             </div>
+        </section>
+
+        {/* PLAYER SCORE + RANK */}
+        <section>
+            <div className="flex items-center gap-4 mb-8">
+                <div className="w-8 h-[2px] bg-primary/40"></div>
+                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Player Score</h2>
+            </div>
+
+            <motion.div
+                variants={itemVariant}
+                className={cn(
+                    "relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 p-8 backdrop-blur-sm transition-all duration-500 group",
+                    rank.glow, rank.border
+                )}
+            >
+                {/* BG glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                            <TrendingUp className="w-10 h-10 text-white/80" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 mb-1">Composite Score</p>
+                            <div className={cn("text-6xl font-black tracking-widest font-heading leading-none", rank.color)}>
+                                {playerScore.toLocaleString()}
+                            </div>
+                            <p className="text-[10px] font-mono text-zinc-600 mt-2 tracking-wider">
+                                ({totalHours}h × 0.5) + ({totalAchievements} acv × 0.3) + ({totalGames} games × 0.2)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-start md:items-end gap-3">
+                        <div className={cn("inline-flex items-center gap-2 px-5 py-2 rounded-sm border text-sm font-black tracking-[0.3em] uppercase", rank.badge)}>
+                            <ShieldCheck className="w-4 h-4" />
+                            {playerRank}
+                        </div>
+                        <div className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest text-right">
+                            {playerRank === "PLATINUM" && "Elite Tier — Top 1%"}
+                            {playerRank === "GOLD" && "Score ≥ 1500 — Advanced"}
+                            {playerRank === "SILVER" && "Score ≥ 500 — Intermediate"}
+                            {playerRank === "BRONZE" && "Score < 500 — Developing"}
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+        </section>
+
+        {/* ANALYTICS SECTION */}
+        <section>
+            <div className="flex items-center gap-4 mb-8">
+                <div className="w-8 h-[2px] bg-primary/40"></div>
+                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Analytics</h2>
+            </div>
+            {sortedLibrary.length > 0 && (
+                <AnalyticsVisuals library={sortedLibrary} />
+            )}
         </section>
 
         {/* TOP GAMES SECTION */}
