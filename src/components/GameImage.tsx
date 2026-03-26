@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface GameImageProps {
   appid: string | number;
@@ -11,6 +12,7 @@ interface GameImageProps {
 export default function GameImage({ appid, alt, className }: GameImageProps) {
   const [src, setSrc] = useState(`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`);
   const [fallbackCount, setFallbackCount] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   const fallbacks = [
     `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`,
@@ -22,11 +24,18 @@ export default function GameImage({ appid, alt, className }: GameImageProps) {
     if (fallbackCount < fallbacks.length) {
       setSrc(fallbacks[fallbackCount]);
       setFallbackCount(fallbackCount + 1);
-    } else if (fallbackCount === fallbacks.length) {
-      setSrc("/game-fallback.png");
-      setFallbackCount(fallbackCount + 1);
+    } else {
+      setHasError(true);
     }
   };
+
+  if (hasError) {
+    return (
+      <div className={cn("flex flex-col items-center justify-center bg-zinc-900 border border-white/5 text-center p-4 min-h-[100px]", className)}>
+        <p className="text-[10px] font-black tracking-[0.2em] text-zinc-600 uppercase">NOT AVAILABLE</p>
+      </div>
+    );
+  }
 
   return (
     <img 

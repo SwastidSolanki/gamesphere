@@ -67,17 +67,24 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12">
-        <div className="flex items-center gap-3 mb-4 opacity-50">
-          <span className="w-10 h-[1px] bg-primary" />
-          <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12 relative overflow-hidden">
+        {/* Background Watermark */}
+        <div className="absolute -top-10 -left-10 text-[12rem] md:text-[20rem] font-black text-white/[0.05] select-none pointer-events-none uppercase tracking-tighter">
+          Rankings
         </div>
-        <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
-          Platform Ladder
-        </h1>
-        <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
-          Steam Network // Real-time data
-        </p>
+        
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4 opacity-50">
+            <span className="w-10 h-[1px] bg-primary" />
+            <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
+            Platform Ladder
+          </h1>
+          <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
+            Steam Network // Real-time data
+          </p>
+        </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-24">

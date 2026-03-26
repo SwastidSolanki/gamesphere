@@ -123,8 +123,13 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#050608] text-white">
       <Navbar />
       
-      <div className="max-w-[1850px] mx-auto px-10 pt-40 pb-32">
-        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-8 md:gap-12 mb-16 md:mb-20 pt-10 text-center lg:text-left">
+      <div className="max-w-[1850px] mx-auto px-10 pt-40 pb-32 relative overflow-hidden">
+        {/* Background Watermark */}
+        <div className="absolute -top-20 -left-10 text-[15rem] md:text-[25rem] font-black text-white/[0.05] select-none pointer-events-none uppercase tracking-tighter whitespace-nowrap">
+          Archive
+        </div>
+
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-8 md:gap-12 mb-16 md:mb-20 pt-10 text-center lg:text-left relative z-10">
           <div className="space-y-4 md:space-y-6 max-w-4xl">
             <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-sans font-black tracking-tight uppercase leading-[0.95] text-white select-none whitespace-normal break-words">
               PLAYER <br /> <span className="text-primary text-3xl sm:text-4xl md:text-8xl lg:text-9xl">OVERVIEW</span>

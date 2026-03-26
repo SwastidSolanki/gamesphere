@@ -168,7 +168,7 @@ export default function ProfilePage() {
                 {/* MOST ENGAGED GAMES */}
                 <section>
                 <SectionHeader title="High Engagement Archives" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
                     {top5.map((game: any, i: number) => {
                     const hours = Math.round(game.playtime_forever / 60);
                     const pct = Math.min(100, Math.round((game.playtime_forever / (top5[0]?.playtime_forever || 1)) * 100));
@@ -182,7 +182,7 @@ export default function ProfilePage() {
                         transition={{ delay: i * 0.1 }}
                         className="group bg-black/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-primary/40 transition-all cursor-default shadow-2xl"
                         >
-                        <div className="aspect-[3/4.5] relative overflow-hidden bg-zinc-900 shadow-2xl">
+                        <div className="aspect-video relative overflow-hidden bg-zinc-900 shadow-2xl">
                             <GameImage
                                 appid={game.appid}
                                 alt={game.name}
