@@ -67,7 +67,7 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
       <div className="flex items-center justify-between mb-6 relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-1 h-5 bg-primary rounded-full"></div>
-          <h3 className="text-sm font-black tracking-[0.3em] uppercase text-white/80">Top 7 Most Played</h3>
+          <h3 className="text-base font-black tracking-[0.3em] uppercase text-white/80">Top 7 Most Played</h3>
         </div>
         <p className="text-xs font-mono text-zinc-500 hidden sm:block">
           hover a bar to see % of playtime
@@ -85,21 +85,21 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
             <XAxis
               dataKey="shortName"
               stroke="#ffffff30"
-              fontSize={10}
+              fontSize={12}
               tickLine={false}
               axisLine={false}
               interval={0}
               angle={-25}
               textAnchor="end"
-              tick={{ fontFamily: "monaco, monospace", fill: "#ffffff60" }}
+              tick={{ fontFamily: "monaco, monospace", fill: "#ffffff80" }}
             />
             <YAxis
               stroke="#ffffff30"
-              fontSize={10}
+              fontSize={12}
               tickLine={false}
               axisLine={false}
               tickFormatter={(val) => `${val}h`}
-              tick={{ fontFamily: "monaco, monospace", fill: "#ffffff40" }}
+              tick={{ fontFamily: "monaco, monospace", fill: "#ffffff60" }}
             />
             <Tooltip
               cursor={{ fill: "#ffffff06", radius: 4 }}
