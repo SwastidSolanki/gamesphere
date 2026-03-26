@@ -90,8 +90,9 @@ export default function ComparePage() {
 
           {/* Comparison Center */}
           <div className="space-y-6 flex flex-col justify-center">
-            <MetricComp label="Record Playtime" val1={results.p1.steam.totalPlaytime} val2={results.p2.steam.totalPlaytime} unit="h" />
+            <MetricComp label="Record Playtime" val1={Math.round(results.p1.steam.totalPlaytime)} val2={Math.round(results.p2.steam.totalPlaytime)} unit="h" />
             <MetricComp label="Titles Owned" val1={results.p1.steam.library.length} val2={results.p2.steam.library.length} />
+            <MetricComp label="Steam Level" val1={results.p1.steam.level || 0} val2={results.p2.steam.level || 0} />
           </div>
 
           {/* Warrior 2 Column */}
@@ -106,20 +107,34 @@ export default function ComparePage() {
 
 function PlayerCompareCard({ player }: { player: any }) {
   const profile = player.steam.profile;
+  const level = player.steam.level ?? 0;
+  const isOnline = profile.personastate === 1;
+
   return (
     <GlassCard className="p-8 border-primary/10">
       <div className="flex items-center gap-6 mb-8">
-        <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-primary/20 overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+        <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-primary/20 overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.1)] flex-shrink-0">
           <img src={profile.avatarfull} className="w-full h-full object-cover" />
         </div>
         <div>
           <h3 className="text-2xl font-heading font-bold leading-tight">{profile.personaname}</h3>
-          <p className="text-[10px] font-heading text-primary/40 tracking-[0.4em] uppercase mt-2">
-            Status: {profile.personastate === 1 ? "ONLINE" : "OFFLINE"}
-          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <span className={cn("w-2 h-2 rounded-full", isOnline ? "bg-green-400" : "bg-zinc-600")} />
+            <p className="text-[10px] font-heading text-zinc-500 tracking-[0.3em] uppercase">
+              {isOnline ? "ONLINE" : "OFFLINE"}
+            </p>
+          </div>
+          {/* Steam Level Badge */}
           <div className="flex items-center gap-2 mt-3">
-            <div className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-primary tracking-widest uppercase">
-              LEVEL_{player.steam.level || "ARCHIVED"}
+            <div className="relative flex items-center justify-center">
+              {/* Steam-style hex level badge */}
+              <div className="w-10 h-10 bg-gradient-to-br from-[#4a90d9] to-[#1a5fa8] border border-white/20 rounded-sm flex items-center justify-center shadow-[0_0_12px_rgba(74,144,217,0.4)]">
+                <span className="text-white font-black text-sm font-heading leading-none">{level}</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Steam Level</p>
+              <p className="text-[10px] font-black text-white tracking-wider">{level >= 60 ? "DIAMOND" : level >= 30 ? "SAPPHIRE" : level >= 10 ? "RUBY" : "RECRUIT"}</p>
             </div>
           </div>
         </div>

@@ -134,7 +134,7 @@ export default function Dashboard() {
                   </div>
                   <div className="pr-4">
                       <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">{steamProfile.personaname}</p>
-                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {Math.floor(totalHours / 100) || 0} // {steamProfile.loccountrycode || "GLB"}</p>
+                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {data?.steam?.level ?? "—"} // {steamProfile.loccountrycode || "GLB"}</p>
                   </div>
               </GlassCard>
           )}
@@ -280,7 +280,17 @@ export default function Dashboard() {
                                     src={imageSrc} 
                                     alt={game.name}
                                     onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_616x353.jpg`;
+                                        const img = e.currentTarget as HTMLImageElement;
+                                        const appid = game.appid;
+                                        if (!img.dataset.fallback) {
+                                            img.dataset.fallback = "1";
+                                            img.src = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/capsule_231x87.jpg`;
+                                        } else if (img.dataset.fallback === "1") {
+                                            img.dataset.fallback = "2";
+                                            img.src = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`;
+                                        } else {
+                                            img.style.display = "none";
+                                        }
                                     }}
                                     className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
                                 />

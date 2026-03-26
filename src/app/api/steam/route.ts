@@ -23,6 +23,10 @@ export async function GET(request: Request) {
     url = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${API_KEY}&steamid=${steamid}&format=json&include_appinfo=1&include_played_free_games=1`;
   } else if (endpoint === "vanity") {
     url = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v0001/?key=${API_KEY}&vanityurl=${vanityurl}`;
+  } else if (endpoint === "level") {
+    url = `${STEAM_API_BASE}/IPlayerService/GetSteamLevel/v1/?key=${API_KEY}&steamid=${steamid}`;
+  } else if (endpoint === "badges") {
+    url = `${STEAM_API_BASE}/IPlayerService/GetBadges/v1/?key=${API_KEY}&steamid=${steamid}`;
   } else {
     return NextResponse.json({ error: "Invalid endpoint" }, { status: 400 });
   }

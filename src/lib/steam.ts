@@ -7,6 +7,26 @@ export async function getSteamProfile(steamId: string) {
   return data.response.players[0];
 }
 
+export async function getSteamLevel(steamId: string): Promise<number> {
+  try {
+    const response = await fetch(`/api/steam?endpoint=level&steamid=${steamId}`);
+    const data = await response.json();
+    return data.response?.player_level ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+export async function getSteamBadges(steamId: string) {
+  try {
+    const response = await fetch(`/api/steam?endpoint=badges&steamid=${steamId}`);
+    const data = await response.json();
+    return data.response || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getSteamOwnedGames(steamId: string) {
   const response = await fetch(`/api/steam?endpoint=owned-games&steamid=${steamId}`);
   const data = await response.json();
