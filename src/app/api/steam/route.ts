@@ -27,12 +27,60 @@ export async function GET(request: Request) {
     url = `${STEAM_API_BASE}/IPlayerService/GetSteamLevel/v1/?key=${API_KEY}&steamid=${steamid}`;
   } else if (endpoint === "badges") {
     url = `${STEAM_API_BASE}/IPlayerService/GetBadges/v1/?key=${API_KEY}&steamid=${steamid}`;
+  } else if (endpoint === "search") {
+    const q = searchParams.get("q");
+    // Use the official Steam community search AJAX
+    url = `https://steamcommunity.com/search/SearchCommunityAjax?text=${q}&type=users&sessionid=&filter=users`;
   } else {
     return NextResponse.json({ error: "Invalid endpoint" }, { status: 400 });
   }
 
   try {
     const response = await fetch(url);
+    
+    // Special handling for search which returns HTML
+    if (endpoint === "search") {
+      const data = await response.json();
+      const html = data.html || "";
+      
+      // Basic regex to find SteamIDs and Names in the returned AJAX html
+      // Steam search results contain links like steamcommunity.com/profiles/[ID] or /id/[Vanity]
+      const results: any[] = [];
+      const profileRegex = /<a class="searchPersonaName" href="https:\/\/steamcommunity\.com\/(id|profiles)\/(.*?)"/g;
+      const avatarRegex = /<div class="search_capsule"><img src="(.*?)"/g;
+      
+      let match;
+      const profiles: string[] = [];
+      const avatars: string[] = [];
+      
+      while ((match = profileRegex.exec(html)) !== null) {
+        profiles.push(match[2]);
+      }
+      
+      let avatarMatch;
+      while ((avatarMatch = avatarRegex.exec(html)) !== null) {
+        avatars.push(avatarMatch[1]);
+      }
+
+      // Also need to get names
+      const nameRegex = /<a class="searchPersonaName".*?>(.*?)<\/a>/g;
+      const names: string[] = [];
+      let nameMatch;
+      while ((nameMatch = nameRegex.exec(html)) !== null) {
+        names.push(nameMatch[1].replace(/<.*?>/g, ""));
+      }
+
+      for (let i = 0; i < profiles.length; i++) {
+        results.push({
+          id: profiles[i],
+          name: names[i] || "Unknown",
+          avatar: avatars[i] || ""
+        });
+      }
+
+      return NextResponse.json({ success: true, results: results.slice(0, 5) });
+    }
+
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {

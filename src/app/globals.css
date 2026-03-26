@@ -42,6 +42,26 @@
   .hud-button {
     @apply px-8 py-4 bg-white/5 border border-white/10 hover:bg-white text-white hover:text-black font-heading tracking-widest transition-all active:scale-95 text-xl;
   }
+  
+  .animate-hud-scan {
+    animation: hud-scan 4s linear infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes hud-scan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(600px); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 ::-webkit-scrollbar {
