@@ -1,499 +1,438 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import GlassCard from "@/components/GlassCard";
-import GameLibrary from "@/components/GameLibrary";
-import Navbar from "@/components/Navbar";
-import { fetchUnifiedData } from "@/lib/dataFetcher";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy, 
   Gamepad2, 
   Clock, 
-  Target, 
-  TrendingUp,
-  ExternalLink,
-  ChevronRight,
-  Loader2,
-  AlertCircle,
-  LogOut,
-  Sword,
-  ShieldCheck,
+  TrendingUp, 
+  Swords, 
   Zap,
-  Lock,
+  BarChart3,
+  LogOut,
+  ChevronRight,
   Search,
-  Check
+  Settings,
+  Terminal,
+  Play,
+  History,
+  AlertCircle,
+  X,
+  Target
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import GlassCard from "@/components/GlassCard";
+import Navbar from "@/components/Navbar";
+import GameImage from "@/components/GameImage";
+
+const mLabels = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG"];
 
 export default function DashboardPage() {
-  return (
-    <Suspense fallback={<DashboardLoading />}>
-      <DashboardContent />
-    </Suspense>
-  );
-}
-
-function DashboardLoading() {
-  return (
-    <div className="h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-        <p className="font-heading tracking-[0.6em] text-primary/60 text-xs">SYNCING_WAR_ARCHIVES...</p>
-      </div>
-    </div>
-  );
-}
-
-function DashboardContent() {
-  const [data, setData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [dashboardMode, setDashboardMode] = useState<"steam" | "riot">("steam");
-  const [isConnectOpen, setIsConnectOpen] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [steamProfile, setSteamProfile] = useState<any>(null);
+  const [steamLevel, setSteamLevel] = useState<number>(0);
+  const [games, setGames] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGame, setSelectedGame] = useState<any>(null);
+  const [gameStats, setGameStats] = useState<any>(null);
+  const [statsLoading, setStatsLoading] = useState(false);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const steamAuth = searchParams.get("steam_auth");
-        if (steamAuth) {
-          localStorage.setItem("gamesphere_steam_id", steamAuth);
-          const newUrl = window.location.pathname;
-          window.history.replaceState({}, "", newUrl);
-        }
-
-        const riotAuthStatus = searchParams.get('riot_auth');
-        if (riotAuthStatus === 'success') {
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
-        }
-        
-        const steamId = localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki";
-        const riotId = localStorage.getItem("gamesphere_riot_id") || "Swastid#SOLO";
-        
-        const [riotName, riotTag] = riotId.split("#");
-        const unifiedData = await fetchUnifiedData(steamId, riotName, riotTag || "SOLO");
-        setData(unifiedData);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-        setError("UPLINK_FAILURE: Verify your connection identifiers.");
-      } finally {
-        setIsLoading(false);
+    const fetchIdentity = async () => {
+      let storedId = localStorage.getItem("gamesphere_steam_id");
+      if (!storedId) {
+        setLoading(false);
+        return;
       }
+
+      try {
+        let actualSteamId = storedId;
+        if (!/^\d+$/.test(storedId)) {
+          const vanityRes = await fetch(`/api/steam?endpoint=vanity&vanityurl=${storedId}`);
+          const vanityData = await vanityRes.json();
+          if (vanityData.response?.steamid) {
+            actualSteamId = vanityData.response.steamid;
+          }
+        }
+
+        const [profileRes, gamesRes, levelRes] = await Promise.all([
+          fetch(`/api/steam?endpoint=profile&steamid=${actualSteamId}`),
+          fetch(`/api/steam?endpoint=owned-games&steamid=${actualSteamId}`),
+          fetch(`/api/steam?endpoint=level&steamid=${actualSteamId}`)
+        ]);
+
+        const [profileData, gamesData, levelData] = await Promise.all([
+          profileRes.json(),
+          gamesRes.json(),
+          levelRes.json()
+        ]);
+        
+        if (profileData.response?.players?.[0]) setSteamProfile(profileData.response.players[0]);
+        if (gamesData.response?.games) setGames(gamesData.response.games);
+        if (levelData.response?.player_level) setSteamLevel(levelData.response.player_level);
+      } catch (err) {
+        console.error("IDENTITY_SYNC_FAILURE", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIdentity();
+  }, []);
+
+  const fetchGameStats = async (game: any) => {
+    setSelectedGame(game);
+    setStatsLoading(true);
+    setGameStats(null);
+    try {
+      const storedId = localStorage.getItem("gamesphere_steam_id");
+      let actualSteamId = storedId;
+      if (storedId && !/^\d+$/.test(storedId)) {
+         const v = await fetch(`/api/steam?endpoint=vanity&vanityurl=${storedId}`);
+         const d = await v.json();
+         actualSteamId = d.response.steamid;
+      }
+      const res = await fetch(`/api/steam?endpoint=stats&steamid=${actualSteamId}&appid=${game.appid}`);
+      const data = await res.json();
+      setGameStats(data.playerstats);
+    } catch (err) {
+      console.error("STATS_FETCH_FAILURE", err);
+    } finally {
+      setStatsLoading(false);
     }
-
-    loadData();
-  }, [searchParams]);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    router.push("/");
   };
 
-  if (isLoading) {
-    return <DashboardLoading />;
-  }
+  const handleDisconnect = () => {
+    localStorage.removeItem("gamesphere_steam_id");
+    window.location.href = "/";
+  };
 
-  const riotError = searchParams.get('riot_error');
 
-  if (riotError === 'CREDENTIALS_MISSING') {
-      return (
-          <main className="min-h-screen bg-[#0a0a0c] text-white flex items-center justify-center p-6 relative overflow-hidden font-heading">
-              <GlassCard className="p-16 max-w-2xl border-red-500/20 bg-red-500/5 text-center relative z-10 transition-all hover:bg-red-500/10">
-                  <AlertCircle className="w-20 h-20 text-red-500 mx-auto mb-8 animate-pulse" />
-                  <h2 className="text-4xl font-heading font-black tracking-widest mb-4 uppercase">UPLINK_RESTRICTED // RIOT_NEXUS</h2>
-                  <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.4em] mb-12 max-w-md mx-auto leading-relaxed">
-                      IDENTITY_RESOLUTION_ACTIVE. NEXUS_UPLINK_STABLE // ESTABLISHING_MANUAL_SYNCHRONIZATION...
-                  </p>
-                  
-                  <div className="flex gap-4 justify-center">
-                      <button 
-                          onClick={() => setIsConnectOpen(true)}
-                          className="px-10 py-4 bg-red-500 text-white font-heading text-sm tracking-[0.2em] hover:bg-red-600 transition-all shadow-[0_0_30px_rgba(209,54,57,0.3)]"
-                      >
-                          LINK_VIA_RIOT_ID
-                      </button>
-                      <button 
-                          onClick={() => {
-                              const newUrl = window.location.pathname;
-                              window.history.replaceState({}, '', newUrl);
-                              window.location.reload();
-                          }}
-                          className="px-10 py-4 bg-white/5 border border-white/10 text-white font-heading text-xs tracking-[0.2em] hover:bg-white hover:text-black transition-all"
-                      >
-                          RETURN_TO_VAULT
-                      </button>
-                  </div>
-              </GlassCard>
-
-              {isConnectOpen && (
-                  <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl"
-                  >
-                      <GlassCard className="p-10 w-full max-w-md border-primary/20">
-                          <h3 className="text-2xl font-heading tracking-widest mb-2">RIOT_UPLINK</h3>
-                          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-8 text-center italic opacity-60">Enter Identity (Name#Tag)</p>
-                          
-          <form onSubmit={async (e) => {
-              e.preventDefault();
-              const val = (e.currentTarget.elements.namedItem('riotId') as HTMLInputElement).value;
-              if (val.includes('#')) {
-                  const [name, tag] = val.split('#');
-                  try {
-                      const res = await fetch(`/api/riot?endpoint=account&gameName=${name}&tagLine=${tag}`);
-                      const data = await res.json();
-                      if (data.puuid) {
-                          localStorage.setItem('gamesphere_riot_id', val);
-                          localStorage.setItem('gamesphere_riot_puuid', data.puuid);
-                          window.location.reload();
-                      } else {
-                          alert('IDENTITY_NOT_FOUND: RIOT_NEXUS_ERROR');
-                      }
-                  } catch (err) {
-                      alert('UPLINK_FAILURE: TRY_AGAIN');
-                  }
-              } else {
-                  alert('USE NAME#TAG FORMAT');
-              }
-          }} className="space-y-6 text-center">
-                              <input 
-                                  name="riotId"
-                                  type="text" 
-                                  placeholder="e.g. Swastid#SOLO" 
-                                  className="w-full bg-black/40 border border-white/10 p-5 font-mono text-white focus:outline-none focus:border-primary transition-all text-center tracking-widest uppercase"
-                              />
-                              <div className="flex gap-4">
-                                  <button type="submit" className="flex-1 py-4 bg-white text-black font-heading text-xs tracking-widest hover:bg-primary transition-all uppercase">RESOLVE_ID</button>
-                                  <button type="button" onClick={() => setIsConnectOpen(false)} className="px-6 py-4 bg-white/5 border border-white/10 text-white font-heading text-xs tracking-widest hover:bg-white hover:text-black transition-all uppercase">CANCEL</button>
-                              </div>
-                          </form>
-                      </GlassCard>
-                  </motion.div>
-              )}
-          </main>
-      );
-  }
-
-  const steamProfile = data?.steam?.profile;
-  const steamLibrary = data?.steam?.library || [];
-  const riotAccount = data?.riot?.account;
-  const riotLeague = data?.riot?.league;
-
-  const unifiedLibrary = [...steamLibrary.map((g: any) => ({
-    name: g.name,
-    playtime: g.playtime_forever,
-    platform: "steam" as const,
-    appid: g.appid,
-    icon: g.img_icon_url
-  }))];
-
-  if (riotAccount) {
-    const estimatedPlaytime = ((riotLeague?.wins || 0) + (riotLeague?.losses || 0)) * 35 + 120;
-    unifiedLibrary.unshift({
-      name: "Valorant",
-      playtime: estimatedPlaytime,
-      platform: "riot" as const,
-      appid: undefined,
-      icon: "https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt90cd899f8d5cf486/660c681284d72d6226fc965f/VAL_Header.jpg"
-    });
-  }
-
-  const powerScore = Math.round((data?.steam?.totalPlaytime || 0) * 0.4 + (riotLeague?.leaguePoints || 0) * 1.5 + (riotLeague?.wins || 0) * 10);
+  const sortedGames = [...games].sort((a, b) => b.playtime_forever - a.playtime_forever);
+  const topGames = sortedGames.slice(0, 5);
+  const maxPlaytimeRaw = Math.max(...topGames.map(g => g.playtime_forever), 600 * 60);
+  const maxPlaytimeHours = Math.ceil(maxPlaytimeRaw / 60 / 150) * 150;
+  const maxPlaytime = maxPlaytimeHours * 60;
+  const barColors = ['#00f2ff', '#a855f7', '#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#6366f1'];
+  const filteredGames = sortedGames.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const totalPlaytimeHours = Math.round(games.reduce((acc, g) => acc + g.playtime_forever, 0) / 60);
 
   return (
-    <main className="min-h-screen bg-[#0d0e12] text-white p-4 md:p-8 font-heading overflow-x-hidden relative">
+    <main className="min-h-screen bg-[#050608] text-white">
       <Navbar />
       
-      {/* HUD HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start mb-20 gap-8">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-6 opacity-40">
-            <span className="w-12 h-[1px] bg-primary"></span>
-            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading">WAR_ARCHIVES // {dashboardMode.toUpperCase()}</h2>
-          </div>
-          
-          <div className="flex flex-wrap gap-6 mb-8">
-            <button 
-                onClick={() => setDashboardMode("steam")}
-                className={cn(
-                    "flex items-center gap-4 px-10 py-5 font-heading text-lg tracking-[0.3em] border transition-all relative overflow-hidden group",
-                    dashboardMode === "steam" ? "bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]" : "bg-black/40 text-white/40 border-white/5 hover:border-white/20"
-                )}
-            >
-                <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" 
-                    alt="Steam" 
-                    className={cn("w-6 h-6 transition-all", dashboardMode === "steam" ? "invert" : "opacity-40 grayscale")}
-                />
-                STEAM_VAULT
-                {dashboardMode === "steam" && <motion.div layoutId="mode-glint" className="absolute bottom-0 left-0 w-full h-[2px] bg-primary" />}
-            </button>
-            <button 
-                onClick={() => setDashboardMode("riot")}
-                className={cn(
-                    "flex items-center gap-4 px-10 py-5 font-heading text-lg tracking-[0.3em] border transition-all relative overflow-hidden group",
-                    dashboardMode === "riot" ? "bg-[#d13639] text-white border-[#d13639] shadow-[0_0_40px_rgba(209,54,57,0.3)]" : "bg-black/40 text-white/40 border-white/5 hover:border-white/20"
-                )}
-            >
-                <img 
-                    src="https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt6f17666299b90848/66068e6e84d72d6226f30d0a/Riot_Games_Fist.png" 
-                    alt="Riot" 
-                    className={cn("w-6 h-6 transition-all", dashboardMode === "riot" ? "brightness-200" : "opacity-40 grayscale")}
-                />
-                RIOT_NEXUS
-                {dashboardMode === "riot" && <motion.div layoutId="mode-glint" className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
-            </button>
+      <div className="max-w-[1850px] mx-auto px-10 pt-40 pb-32">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-20 pt-10">
+          <div className="space-y-6 max-w-4xl">
+            <h1 className="text-5xl md:text-8xl lg:text-9xl font-sans font-black tracking-tight uppercase leading-[0.95] text-white select-none">
+              PLAYER <br /> <span className="text-primary">OVERVIEW</span>
+            </h1>
+            <div className="flex items-center gap-4 text-zinc-500 font-bold tracking-tight uppercase text-xs font-mono opacity-80">
+              <span className="text-primary">{steamProfile?.personaname || "ANONYMOUS"}</span>
+              <span>//</span>
+              <span>PLAYER_ID // 001</span>
+            </div>
           </div>
 
-          <h1 className="text-5xl md:text-8xl font-heading font-black tracking-widest text-white leading-none">
-            {dashboardMode === "steam" ? "VALHALLA_VAULT" : "RIOT_NEXUS"}
-          </h1>
-        </div>
-        
-        <div className="flex flex-col items-end gap-6 pt-4">
-          {dashboardMode === "steam" && steamProfile && (
-              <GlassCard className="p-4 border-white/10 flex items-center gap-4 group cursor-pointer hover:border-primary/40 transition-all">
-                  <div className="w-12 h-12 rounded-sm bg-zinc-950 border border-primary/20 overflow-hidden relative">
-                      <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" />
-                      <div className={cn("absolute bottom-0 right-0 w-3 h-3 border-2 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500" : "bg-zinc-600")} />
+          <div className="relative group">
+            {steamProfile ? (
+              <GlassCard className="p-10 border-white/10 flex items-center gap-8 group cursor-pointer hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full max-w-md shadow-2xl">
+                <div className="w-32 h-32 rounded-sm bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
+                  <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" />
+                  <div className={cn("absolute bottom-0 right-0 w-6 h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
+                </div>
+                <div className="space-y-4">
+                  <p className="text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">{steamProfile.personaname}</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
+                      <span className="text-white font-black text-xl leading-none">Level {steamLevel}</span>
+                    </div>
                   </div>
-                  <div className="pr-4">
-                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">{steamProfile.personaname}</p>
-                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {Math.floor(data?.steam?.totalPlaytime / 100) || 0} // {steamProfile.loccountrycode || "GLB"}</p>
+                  <div className="space-y-1 pt-2">
+                    <p className="text-[12px] text-zinc-500 font-bold uppercase tracking-[0.4em] font-mono opacity-60">Status: {steamProfile.personastate === 1 ? "ACTIVE_NODE" : "SLEEP_MODE"}</p>
+                    <p className="text-[10px] text-primary font-bold uppercase tracking-[0.5em] font-mono">{steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}</p>
                   </div>
+                </div>
               </GlassCard>
-          )}
-
-          <div className="flex items-center gap-8 bg-black/60 border border-primary/20 px-10 py-6 rounded-sm backdrop-blur-3xl shadow-[0_0_40px_rgba(212,175,55,0.05)]">
-            <div className="text-right">
-              <p className="text-[9px] text-primary/40 font-bold uppercase tracking-[0.5em] mb-2">Ascension Score</p>
-              <p className="text-5xl font-heading font-bold text-primary">{Math.round(powerScore)}</p>
-            </div>
-            <div className="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center bg-primary/5 shadow-inner">
-              <Trophy className="w-7 h-7 text-primary" />
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <button 
-                onClick={() => router.push('/compare')}
-                className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm text-[10px] font-bold tracking-widest hover:bg-primary hover:text-black transition-all font-heading"
-            >
-                <Sword className="w-3 h-3" /> SYNC_WARRIORS
-            </button>
-            <button 
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-red-950/20 border border-red-900/40 rounded-sm text-[10px] font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all font-heading"
-            >
-                <LogOut className="w-3 h-3" /> CLOSE_UPLINK
-            </button>
+            ) : (
+                <div className="p-10 border border-white/5 bg-white/5 rounded-2xl flex flex-col items-center justify-center gap-4 text-center w-full max-w-md min-h-[220px]">
+                    <AlertCircle className="w-10 h-10 text-zinc-700" />
+                    <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest leading-relaxed">Identity Manifest Unavailable.</p>
+                </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {dashboardMode === "steam" ? (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
-        <GlassCard className="lg:col-span-3 p-12 border-primary/10 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors" />
-          
-          <div className="flex justify-between items-center mb-12">
-            <div className="flex items-center gap-8">
-              <div className="w-24 h-24 rounded-sm bg-zinc-950 border border-primary/20 overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.1)]">
-                {steamProfile?.avatarfull ? (
-                  <img src={steamProfile.avatarfull} alt="Avatar" className="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all duration-700" />
-                ) : (
-                  <Gamepad2 className="w-10 h-10 text-primary mx-auto mt-6" />
-                )}
-              </div>
-              <div>
-                <h3 className="text-3xl font-heading font-bold tracking-widest">{steamProfile?.personaname || "Unknown Subject"}</h3>
-                <p className="text-[10px] font-mono text-primary/40 tracking-[0.4em] uppercase mt-2">
-                  LOC: {steamProfile?.loccountrycode || "GLOBAL"} // STATUS: {steamProfile?.personastate === 1 ? "ONLINE" : "OFFLINE"}
-                </p>
-              </div>
-            </div>
-            <a href={steamProfile?.profileurl} target="_blank" className="p-4 bg-primary/5 rounded-sm hover:bg-primary transition-all border border-primary/30 group/btn">
-              <ExternalLink className="w-5 h-5 text-primary group-hover/btn:text-background" />
-            </a>
-          </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
+          <StatCard icon={<Clock className="w-8 h-8" />} label="TOTAL PLAYTIME" value={`${totalPlaytimeHours.toLocaleString()}H`} color="text-primary" />
+          <StatCard icon={<Gamepad2 className="w-8 h-8" />} label="TOTAL TITLES" value={games.length.toString()} color="text-zinc-400" />
+          <StatCard icon={<Trophy className="w-8 h-8" />} label="TOP PLAYED" value={topGames[0]?.name || "N/A"} subValue={`${Math.round(topGames[0]?.playtime_forever / 60 || 0)} HOURS`} color="text-green-500" />
+          <StatCard icon={<TrendingUp className="w-8 h-8" />} label="STEAM LEVEL" value={`Level ${steamLevel}`} color="text-[#4a90d9]" />
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <StatBox icon={<Clock className="w-4 h-4" />} label="Record Playtime" value={`${Math.round(data?.steam?.totalPlaytime || 0)}h`} />
-            <StatBox icon={<Gamepad2 className="w-4 h-4" />} label="Digital Arsenal" value={steamLibrary.length} />
-            <StatBox icon={<Target className="w-4 h-4" />} label="Verified ID" value={steamProfile?.steamid?.slice(-8) || "ARCHIVED"} />
-            <StatBox icon={<ShieldCheck className="w-4 h-4" />} label="Security Protocol" value="ACTIVE" />
-          </div>
-
-          <div className="h-56 w-full opacity-60 grayscale hover:grayscale-0 transition-all duration-1000">
-             <div className="w-full h-full bg-gradient-to-t from-primary/5 to-transparent rounded-sm flex items-end">
-                {[4,2,6,1,8,12,5,9,3,11,7,10,2,4,8,1].map((h, i) => (
-                    <div key={i} className="flex-1 bg-primary/20 hover:bg-primary/60 transition-all cursor-crosshair border-t border-primary/40" style={{ height: `${h * 8}%` }} />
-                ))}
-             </div>
-          </div>
-        </GlassCard>
-      </div>
-      ) : (
-      <div className="mb-20">
-        {riotAccount ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <GlassCard className="lg:col-span-3 p-12 border-secondary/10 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-secondary/10 transition-colors" />
+        <section className="space-y-12">
+           <div className="flex items-center justify-between border-b border-white/5 pb-8">
+              <h2 className="text-3xl font-black tracking-tight uppercase">Statistics & Analysis</h2>
+              <div className="w-1/3 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+           </div>
+           
+           <div className="grid grid-cols-1 gap-12">
+              <div className="space-y-12">
+                {/* Fixed Graph */}
+                 <div className="p-10 bg-black/40 border border-white/5 rounded-2xl relative group overflow-hidden">
+                    <div className="flex items-center gap-3 mb-10">
+                       <div className="w-1.5 h-6 bg-primary" />
+                       <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white">Most Hours Spent</h3>
+                    </div>
                     
-                    <div className="flex justify-between items-center mb-12">
-                        <div className="flex items-center gap-8">
-                            <div className="w-24 h-24 rounded-full bg-zinc-950 border border-secondary/30 flex items-center justify-center shadow-[0_0_30px_rgba(74,93,78,0.2)]">
-                                <Target className="w-10 h-10 text-secondary" />
+                    <div className="relative h-[400px] flex items-end">
+                       {/* Y-Axis Labels */}
+                       <div className="absolute left-0 h-full flex flex-col justify-between text-[11px] font-mono text-zinc-600 font-black pb-24">
+                          <span>{maxPlaytimeHours}H</span>
+                          <span>{Math.round(maxPlaytimeHours * 0.75)}H</span>
+                          <span>{Math.round(maxPlaytimeHours * 0.5)}H</span>
+                          <span>{Math.round(maxPlaytimeHours * 0.25)}H</span>
+                          <span>0H</span>
+                       </div>
+
+                       {/* Grid Lines */}
+                       <div className="absolute inset-0 flex flex-col justify-between py-1 opacity-10 pointer-events-none pb-24">
+                          {[0, 1, 2, 3, 4].map((i) => (
+                            <div key={i} className="w-full border-t border-dashed border-zinc-700" />
+                          ))}
+                       </div>
+
+                       {/* Bars Container */}
+                       <div className="flex-1 h-full flex items-end justify-between pl-20 pr-6 pb-24 relative z-10">
+                          {topGames.map((game, i) => (
+                            <div key={game.appid} className="flex flex-col items-center flex-1 h-full justify-end group/bar px-3">
+                               <motion.div
+                                 initial={{ height: 0 }}
+                                 animate={{ height: `${(game.playtime_forever / maxPlaytime) * 100}%` }}
+                                 transition={{ delay: i * 0.1, duration: 1, ease: [0.33, 1, 0.68, 1] }}
+                                 style={{ backgroundColor: barColors[i % barColors.length] }}
+                                 className="w-full rounded-t-xl relative hover:brightness-125 transition-all cursor-pointer shadow-lg"
+                                 onClick={() => fetchGameStats(game)}
+                               >
+                                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap bg-black/95 border border-white/10 px-4 py-2 rounded-lg text-[10px] font-black z-30 shadow-2xl">
+                                     {game.name}: {Math.round(game.playtime_forever/60)}h
+                                  </div>
+                               </motion.div>
+                               <div className="absolute bottom-5 w-full text-center">
+                                  <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest truncate px-2 group-hover:text-zinc-400 transition-colors font-bold">
+                                     {game.name}
+                                  </p>
+                               </div>
                             </div>
-                            <div>
-                                <h3 className="text-3xl font-heading font-bold tracking-widest uppercase">{riotAccount.gameName}#{riotAccount.tagLine}</h3>
-                                <p className="text-[10px] font-mono text-secondary/40 tracking-[0.4em] uppercase mt-2">
-                                    REGION: {riotLeague?.tier ? "VALORANT_MAIN" : "UNRANKED_NODE"} // ACCESS: GRANTED
-                                </p>
+                          ))}
+                       </div>
+                    </div>
+                 </div>
+
+                {/* Top Titles Grid */}
+                <div>
+                   <div className="flex items-center gap-4 mb-8">
+                      <Trophy className="w-5 h-5 text-primary" />
+                      <h3 className="text-xl font-sans font-black uppercase tracking-tight">TOP PLAYED GAMES</h3>
+                   </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
+                       {topGames.map((game) => (
+                         <div 
+                           key={game.appid} 
+                           onClick={() => fetchGameStats(game)}
+                           className="flex flex-col gap-8 p-10 bg-white/[0.03] border border-white/10 rounded-3xl hover:border-primary/60 hover:bg-white/[0.05] transition-all group cursor-pointer hover:scale-[1.03] shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
+                         >
+                            <div className="w-full aspect-video rounded-xl overflow-hidden bg-zinc-950 border border-white/10 ring-1 ring-white/5 group-hover:ring-primary/20 relative shadow-2xl">
+                               <GameImage appid={game.appid} alt={game.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" />
                             </div>
-                        </div>
+                            <div className="flex-1 min-w-0">
+                               <h4 className="text-2xl font-black truncate uppercase text-primary mb-3 group-hover:text-white transition-colors tracking-tight">{game.name}</h4>
+                               <p className="text-sm font-mono text-zinc-500 uppercase tracking-widest font-black opacity-80">{Math.round(game.playtime_forever / 60)} HOURS LOGGED</p>
+                            </div>
+                            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                               <span className="text-[10px] font-mono text-zinc-600 font-bold tracking-[0.2em]">ACT_NODE_ID_{game.appid}</span>
+                               <ChevronRight className="w-6 h-6 text-zinc-800 group-hover:text-primary transition-all group-hover:translate-x-3" />
+                            </div>
+                         </div>
+                       ))}
                     </div>
+                </div>
+              </div>
+           </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                        <div className="p-8 bg-zinc-950/60 rounded-sm border border-secondary/10 text-center relative overflow-hidden group">
-                            <p className="text-[9px] font-black text-secondary/30 uppercase tracking-[0.5em] mb-4">Current Order</p>
-                            <p className="text-3xl font-heading font-black text-secondary tracking-[0.2em] italic">
-                                {riotLeague ? `${riotLeague.tier} ${riotLeague.rank}` : "UNRANKED"}
-                            </p>
-                        </div>
-                        <StatBox icon={<Sword className="w-4 h-4" />} label="Victories" value={riotLeague?.wins || 0} />
-                        <StatBox icon={<ShieldCheck className="w-4 h-4" />} label="Defeats" value={riotLeague?.losses || 0} />
-                        <div className="p-8 bg-zinc-950/90 rounded-sm border border-primary/10 text-center relative group">
-                            <p className="text-[8px] text-primary/30 mb-2 uppercase font-black tracking-[0.5em]">Battle Prowess</p>
-                            <p className="text-4xl font-heading font-black text-primary tracking-widest">
-                                {riotLeague?.leaguePoints ? `${riotLeague.leaguePoints} LP` : "RECRUIT"}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="h-40 w-full bg-gradient-to-r from-secondary/5 via-secondary/10 to-transparent rounded-sm flex items-center justify-center border border-white/5 lowercase font-mono text-[10px] text-secondary/40 tracking-widest">
-                        Handshake verified // Nexus sync active...
-                    </div>
-                </GlassCard>
-            </div>
-        ) : (
-            <GlassCard className="p-20 text-center border-red-900/40">
-                <Lock className="w-16 h-16 text-red-500 mx-auto mb-8 animate-pulse" />
-                <h2 className="text-5xl font-heading mb-6 tracking-widest">ACCESS_DENIED</h2>
-                <p className="text-zinc-500 text-xs mb-12 font-bold uppercase tracking-[0.4em] max-w-lg mx-auto leading-loose">
-                    Your Spartan Vault has not been synchronized with the Riot Nexus. Link your identity to unlock Battle Prowess analytics.
-                </p>
-                <button 
-                    onClick={() => setIsConnectOpen(true)}
-                    className="px-12 py-5 bg-[#d13639] text-white font-heading tracking-[0.4em] hover:bg-[#ff4655] transition-all shadow-[0_0_50px_rgba(209,54,57,0.2)]"
-                >
-                    INITIATE_NEXUS_SYNC
-                </button>
-            </GlassCard>
-        )}
-      </div>
-      )}
-
-      <div className="mb-24">
-        <div className="flex items-center justify-between mb-16 px-2">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-[1px] bg-primary/40"></div>
-            <h1 className="text-2xl sm:text-4xl font-heading font-black tracking-[0.3em]">GRAND_VAULT</h1>
-          </div>
-          <p className="text-[10px] font-mono text-zinc-600 tracking-widest">DETECTED: {unifiedLibrary.length} TITLES</p>
-        </div>
-        <GameLibrary games={unifiedLibrary} />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-        <MiniStat label="Legacy Links" value="02" sub="Platforms Synchronized" />
-        {dashboardMode === "steam" ? (
-          <>
-            <MiniStat label="Digital Arsenal" value={steamLibrary.length.toString()} sub="Games Collected" />
-            <MiniStat label="Total Playtime" value={`${Math.round(data?.steam?.totalPlaytime || 0)}h`} sub="Journey Confirmed" />
-            <MiniStat label="Ascension Rank" value={Math.floor(data?.steam?.totalPlaytime / 200).toString()} sub="Legacy Level" />
-          </>
-        ) : (
-          <>
-            <MiniStat label="Battle Victories" value={(Math.round(riotLeague?.wins || 0)).toString()} sub="Live War Records" />
-            <MiniStat label="Live Ranking" value={riotLeague?.tier || "UNRANKED"} sub={riotLeague?.rank || "RECRUIT"} />
-            <MiniStat label="Prowess Points" value={riotLeague?.leaguePoints ? `${riotLeague.leaguePoints} LP` : "00"} sub="Combat Metadata" />
-          </>
-        )}
-      </div>
-
-      {isConnectOpen && (
-          <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl"
-          >
-              <GlassCard className="p-10 w-full max-w-md border-primary/20">
-                  <h3 className="text-2xl font-heading tracking-widest mb-2 text-center uppercase">Riot_Uplink</h3>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-8 text-center italic opacity-60">Enter Identity (Name#Tag)</p>
-                  
-                  <form onSubmit={async (e) => {
-                      e.preventDefault();
-                      const val = (e.currentTarget.elements.namedItem('riotId') as HTMLInputElement).value;
-                      if (val.includes('#')) {
-                          const [name, tag] = val.split('#');
-                          try {
-                              const res = await fetch(`/api/riot?endpoint=account&gameName=${name}&tagLine=${tag}`);
-                              const data = await res.json();
-                              if (data.puuid) {
-                                  localStorage.setItem('gamesphere_riot_id', val);
-                                  localStorage.setItem('gamesphere_riot_puuid', data.puuid);
-                                  window.location.reload();
-                              } else {
-                                  alert('IDENTITY_NOT_FOUND: RIOT_NEXUS_ERROR');
-                              }
-                          } catch (err) {
-                              alert('UPLINK_FAILURE: TRY_AGAIN');
-                          }
-                      } else {
-                          alert('USE NAME#TAG FORMAT');
-                      }
-                  }} className="space-y-6 text-center">
-                      <input 
-                          name="riotId"
-                          type="text" 
-                          placeholder="e.g. Swastid#SOLO" 
-                          className="w-full bg-black/40 border border-white/10 p-5 font-mono text-white focus:outline-none focus:border-primary transition-all text-center tracking-widest"
-                      />
-                      <div className="flex gap-4">
-                          <button type="submit" className="flex-1 py-4 bg-white text-black font-heading text-xs tracking-widest hover:bg-primary transition-all uppercase">Establish_Link</button>
-                          <button type="button" onClick={() => setIsConnectOpen(false)} className="px-6 py-4 bg-white/5 border border-white/10 text-white font-heading text-xs tracking-widest hover:bg-white hover:text-black transition-all uppercase">Cancel</button>
+           {/* Full Collection Section */}
+           <div className="pt-20">
+              <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+                 <div className="flex items-center gap-4">
+                    <History className="w-6 h-6 text-zinc-500" />
+                    <h2 className="text-3xl font-black tracking-tighter uppercase italic">My Collection</h2>
+                 </div>
+                 <div className="flex items-center gap-4 px-6 py-3 bg-white/5 border border-white/10 rounded-full w-full md:w-auto">
+                    <Search className="w-4 h-4 text-zinc-500" />
+                    <input type="text" placeholder="FILTER_COLLECTION..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="bg-transparent border-none outline-none text-[10px] font-bold tracking-widest w-full md:w-48 placeholder:text-zinc-700 uppercase" />
+                 </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+                 {filteredGames.slice(0, 30).map((game) => (
+                   <div key={game.appid} onClick={() => fetchGameStats(game)} className="group relative bg-white/[0.02] border border-white/5 p-8 rounded-2xl hover:bg-white/5 hover:scale-[1.04] transition-all cursor-pointer shadow-xl">
+                      <div className="aspect-[16/10] rounded-xl overflow-hidden bg-zinc-950 border border-white/5 mb-8 relative shadow-2xl">
+                         <GameImage appid={game.appid} alt={game.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" />
                       </div>
-                  </form>
-              </GlassCard>
-          </motion.div>
-      )}
+                      <h4 className="text-base font-black uppercase truncate text-primary group-hover:text-white transition-colors tracking-tight">{game.name}</h4>
+                      <p className="text-[11px] font-mono text-zinc-500 mt-3 uppercase font-black">{Math.round(game.playtime_forever/60)}H RECORDED</p>
+                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center">
+                            <Play className="w-5 h-5 text-primary fill-primary" />
+                         </div>
+                      </div>
+                   </div>
+                 ))}
+              </div>
+           </div>
+        </section>
+      </div>
+
+      {/* Game Detail Modal */}
+      <AnimatePresence>
+        {selectedGame && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setSelectedGame(null)}
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, y: 20, opacity: 0 }} 
+              animate={{ scale: 1, y: 0, opacity: 1 }} 
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              className="w-full max-w-4xl bg-[#0d0e12] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative z-10"
+            >
+               <button onClick={() => setSelectedGame(null)} className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors z-20">
+                  <X className="w-6 h-6" />
+               </button>
+
+               <div className="relative h-64 md:h-80 w-full">
+                  <img src={`https://steamcdn-a.akamaihd.net/steam/apps/${selectedGame.appid}/header.jpg`} className="w-full h-full object-cover opacity-40 blur-sm scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] via-transparent to-transparent" />
+                  <div className="absolute bottom-10 left-10 flex items-end gap-8">
+                     <div className="w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden shadow-2xl border border-white/10">
+                        <img src={`https://steamcdn-a.akamaihd.net/steam/apps/${selectedGame.appid}/header.jpg`} className="w-full h-full object-cover" />
+                     </div>
+                     <div className="pb-4 space-y-4">
+                        <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">{selectedGame.name}</h2>
+                        <div className="flex items-center gap-6">
+                           <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg">
+                              <Clock className="w-4 h-4 text-primary" />
+                              <span className="text-xl font-black">{Math.round(selectedGame.playtime_forever/60)}H</span>
+                           </div>
+                           <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">TOTAL_LOGGED_MANIFEST</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-8">
+                     <div className="flex items-center gap-4">
+                        <Trophy className="w-6 h-6 text-primary" />
+                        <h3 className="text-xl font-black uppercase tracking-tight italic">Achievement Protocol</h3>
+                     </div>
+                     {statsLoading ? (
+                        <div className="space-y-4 animate-pulse">
+                           <div className="h-4 bg-white/5 rounded w-full" />
+                           <div className="h-4 bg-white/5 rounded w-3/4" />
+                        </div>
+                     ) : gameStats?.achievements ? (
+                        <div className="space-y-4">
+                           <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${(gameStats.achievements.filter((a: any) => a.achieved === 1).length / gameStats.achievements.length) * 100}%` }}
+                                className="h-full bg-primary"
+                              />
+                           </div>
+                           <div className="flex justify-between text-[10px] font-mono text-zinc-500 font-bold uppercase tracking-widest">
+                              <span>Progress</span>
+                              <span>{gameStats.achievements.filter((a: any) => a.achieved === 1).length} / {gameStats.achievements.length} UNLOCKED</span>
+                           </div>
+                           <div className="grid grid-cols-2 gap-4 pt-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                              {gameStats.achievements.slice(0, 10).map((a: any) => (
+                                 <div key={a.name} className={cn("p-3 rounded-lg border flex items-center gap-3", a.achieved === 1 ? "bg-primary/5 border-primary/20" : "bg-white/5 border-white/5 opacity-40")}>
+                                    <Trophy className={cn("w-4 h-4", a.achieved === 1 ? "text-primary" : "text-zinc-600")} />
+                                    <span className="text-[9px] font-bold uppercase truncate">{a.name.replace(/_/g, " ")}</span>
+                                 </div>
+                              ))}
+                           </div>
+                        </div>
+                     ) : (
+                        <div className="p-8 bg-white/5 border border-white/5 rounded-xl flex flex-col items-center gap-4 text-center">
+                           <AlertCircle className="w-8 h-8 text-zinc-800" />
+                           <p className="text-[10px] font-mono text-zinc-700 uppercase tracking-widest">No achievement data available for this manifest.</p>
+                        </div>
+                     )}
+                  </div>
+
+                   <div className="space-y-8">
+                      <div className="flex items-center gap-4">
+                         <Target className="w-6 h-6 text-green-500" />
+                         <h3 className="text-xl font-black uppercase tracking-tight italic">Live Telemetry</h3>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                         <DetailCard label="TOTAL HOURS" value={`${Math.round(selectedGame.playtime_forever / 60)}H`} />
+                         <DetailCard label="ACHIEVEMENTS" value={gameStats?.achievements ? `${gameStats.achievements.filter((a: any) => a.achieved === 1).length}` : "0"} />
+                         <DetailCard label="LAST 14 DAYS" value={`${Math.round((selectedGame.playtime_2weeks || 0) / 60)}H`} />
+                         <DetailCard label="MANIFEST_ID" value={`#${selectedGame.appid}`} />
+                      </div>
+                   </div>
+               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
 
-function StatBox({ icon, label, value }: { icon: React.ReactNode, label: string, value: string | number }) {
-  return (
-    <div className="p-8 bg-primary/5 rounded-sm border border-primary/10 hover:border-primary/40 transition-all backdrop-blur-md">
-      <div className="flex items-center gap-4 mb-4 text-primary/50">
-        {icon}
-        <span className="text-[9px] font-black uppercase tracking-[0.4em] font-heading">{label}</span>
+function DetailCard({ label, value }: any) {
+   return (
+      <div className="p-4 bg-white/5 border border-white/5 rounded-xl space-y-1">
+         <p className="text-[9px] font-mono text-zinc-600 uppercase font-bold tracking-widest">{label}</p>
+         <p className="text-lg font-black uppercase">{value}</p>
       </div>
-      <p className="text-3xl font-heading font-bold tracking-widest text-white">{value}</p>
-    </div>
+   );
+}
+
+function StatCard({ icon, label, value, subValue, color }: any) {
+  return (
+    <GlassCard className="p-10 space-y-8 border-white/5 hover:border-primary/20 transition-all group overflow-hidden relative">
+      <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className={cn("mb-4 transition-transform group-hover:scale-110", color)}>{icon}</div>
+      <div className="space-y-3 relative z-10">
+        <p className="text-[9px] font-bold tracking-[0.4em] text-zinc-500 uppercase font-mono group-hover:text-zinc-400 transition-colors">{label}</p>
+        <h3 className="text-5xl font-black tracking-tighter uppercase group-hover:text-white transition-all leading-tight">{value}</h3>
+        {subValue && <p className="text-[9px] font-mono text-primary tracking-[0.3em] uppercase font-bold opacity-60">{subValue}</p>}
+      </div>
+    </GlassCard>
   );
 }
 
-function MiniStat({ label, value, sub }: { label: string, value: string, sub: string }) {
+
+function ActivityItem({ label, time, detail, highlight = false }: any) {
   return (
-    <GlassCard className="p-10 border-white/5 hover:border-primary/20 transition-all cursor-pointer group">
-      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-[0.5em] mb-4 group-hover:text-primary transition-colors">{label}</p>
-      <p className="text-4xl font-heading font-bold mb-3 tracking-widest">{value}</p>
-      <p className="text-[10px] font-heading italic text-white/30 tracking-widest opacity-60">{sub}</p>
-    </GlassCard>
+    <div className="flex items-center justify-between">
+       <div className="flex items-center gap-4">
+          <div className={cn("w-1.5 h-1.5 rounded-full", highlight ? "bg-primary shadow-[0_0_10px_white]" : "bg-zinc-800")} />
+          <div>
+             <p className="text-[10px] font-black tracking-tight text-white uppercase">{label}</p>
+             <p className="text-[8px] font-mono text-zinc-600 uppercase truncate max-w-[120px]">{detail}</p>
+          </div>
+       </div>
+       <span className="text-[8px] font-mono text-zinc-700 font-bold">{time}</span>
+    </div>
   );
 }

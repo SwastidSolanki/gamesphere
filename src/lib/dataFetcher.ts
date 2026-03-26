@@ -1,7 +1,6 @@
-import { getSteamProfile, getSteamOwnedGames, resolveSteamVanityURL, getSteamFriends } from "./steam";
-import { getRiotAccountByRiotId, getSummonerByPuuid, getLeagueBySummonerId, getRecentRivals } from "./riot";
+import { getSteamProfile, getSteamOwnedGames, resolveSteamVanityURL, getSteamFriends, getSteamLevel, getSteamTheme, getSteamBans } from "./steam";
 
-export async function fetchUnifiedData(steamIdentifier: string, riotName: string, riotTag: string) {
+export async function fetchUnifiedData(steamIdentifier: string, unusedRiotName: string = "", unusedRiotTag: string = "") {
   let steamId = steamIdentifier;
   
   // Resolve vanity URL if it's not a numeric ID
@@ -9,54 +8,104 @@ export async function fetchUnifiedData(steamIdentifier: string, riotName: string
     steamId = await resolveSteamVanityURL(steamIdentifier);
   }
 
-  const [steamProfile, steamGames] = await Promise.all([
+  const [steamProfile, steamGames, steamLevel, steamTheme, steamBans] = await Promise.all([
     getSteamProfile(steamId),
-    getSteamOwnedGames(steamId)
+    getSteamOwnedGames(steamId),
+    getSteamLevel(steamId),
+    getSteamTheme(steamId),
+    getSteamBans(steamId)
   ]);
-
-  const riotAccount = await getRiotAccountByRiotId(riotName, riotTag);
-  const summoner = await getSummonerByPuuid(riotAccount.puuid);
-  const league = await getLeagueBySummonerId(summoner.id);
 
   return {
     steam: {
       profile: steamProfile || {},
       library: steamGames?.games || [],
-      totalPlaytime: (steamGames?.games || []).reduce((acc: number, g: any) => acc + g.playtime_forever, 0) / 60
-    },
-    riot: {
-      account: riotAccount || null,
-      summoner: summoner || null,
-      league: (league && league[0]) || null
+      totalPlaytime: (steamGames?.games || []).reduce((acc: number, g: any) => acc + g.playtime_forever, 0) / 60,
+      level: steamLevel,
+      theme: steamTheme,
+      bans: steamBans
     }
   };
 }
 
-export async function fetchLeaderboardData(platform: "steam" | "riot", identifier: string) {
-  if (platform === "steam") {
-    const players = await getSteamFriends(identifier);
-    return players.map((p: any, i: number) => ({
-      rank: i + 1,
-      name: p.personaname,
-      score: Math.floor(Math.random() * 5000) + 4000,
-      tier: "Elite",
-      trend: i % 3 === 0 ? "up" : i % 3 === 1 ? "down" : "stable",
-      platform: "Steam",
-      avatar: p.avatarfull,
-      status: p.personastate === 1 ? "Online" : "Offline"
-    }));
-  } else {
-    // For Riot, fetch rivals since friends are restricted
-    const rivals = await getRecentRivals(identifier);
-    return rivals.map((r: any, i: number) => ({
-      rank: i + 1,
-      name: r.name,
-      score: Math.floor(Math.random() * 5000) + 4000,
-      tier: r.win ? "Legend" : "Elite",
-      trend: r.win ? "up" : "down",
-      platform: "Riot",
-      avatar: null,
-      status: r.rank // This is actually their champion name
-    }));
+export async function fetchLeaderboardData(platform: "steam", identifier: string) {
+  // Resolve the self steamid
+  let selfId = identifier;
+  if (!/^\d+$/.test(identifier)) {
+    selfId = await resolveSteamVanityURL(identifier);
   }
+
+  // Fetch self data + friends list in parallel
+  const [selfProfile, selfGames, selfLevel, rawFriends] = await Promise.all([
+    getSteamProfile(selfId),
+    getSteamOwnedGames(selfId),
+    getSteamLevel(selfId),
+    getSteamFriends(selfId),
+  ]);
+
+  // Build self entry
+  const selfHours = Math.round(
+    ((selfGames?.games || []).reduce((a: number, g: any) => a + g.playtime_forever, 0)) / 60
+  );
+  const selfEntry = {
+    steamid: selfId,
+    name: selfProfile?.personaname || "You",
+    avatar: selfProfile?.avatarfull || "",
+    status: selfProfile?.personastate === 1 ? "Online" : "Offline",
+    hours: selfHours,
+    games: (selfGames?.games || []).length,
+    level: selfLevel,
+    score: Math.round(selfHours * 0.5 + selfLevel * 2 + (selfGames?.games || []).length * 0.2),
+    isSelf: true,
+  };
+
+  // Limit friends to first 19 (+ self = 20)
+  const friends = (rawFriends || []).slice(0, 19);
+
+  // For each friend, we only have profile (from getSteamFriends which already called summaries).
+  // Fetch owned games + level for each in parallel batches
+  const friendEntries = await Promise.all(
+    friends.map(async (p: any) => {
+      try {
+        // Try to fetch games and level, but don't fail the whole user if one fails
+        const [gamesRes, levelRes] = await Promise.allSettled([
+          getSteamOwnedGames(p.steamid),
+          getSteamLevel(p.steamid),
+        ]);
+
+        const gamesData = gamesRes.status === "fulfilled" ? gamesRes.value : null;
+        const level = levelRes.status === "fulfilled" ? levelRes.value : 0;
+
+        const hours = gamesData?.games 
+          ? Math.round((gamesData.games.reduce((a: number, g: any) => a + g.playtime_forever, 0)) / 60)
+          : 0;
+        
+        const gamesCount = gamesData?.games ? gamesData.games.length : 0;
+
+        return {
+          steamid: p.steamid,
+          name: p.personaname || "Unknown",
+          avatar: p.avatarfull || "",
+          status: p.personastate === 1 ? "Online" : "Offline",
+          hours,
+          games: gamesCount,
+          level,
+          score: Math.round(hours * 0.5 + level * 2 + gamesCount * 0.2),
+          isSelf: false,
+        };
+      } catch (err) {
+        console.error(`Error fetching friend ${p.steamid}:`, err);
+        return {
+          steamid: p.steamid,
+          name: p.personaname || "Unknown",
+          avatar: p.avatarfull || "",
+          status: "Unknown",
+          hours: 0, games: 0, level: 0, score: 0, isSelf: false,
+        };
+      }
+    })
+  );
+
+  return [selfEntry, ...friendEntries];
 }
+

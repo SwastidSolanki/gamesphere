@@ -1,205 +1,238 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import GlassCard from "@/components/GlassCard";
-import { 
-  Trophy, 
-  Search, 
-  Filter, 
-  ChevronRight, 
-  TrendingUp, 
-  TrendingDown, 
-  Minus, 
-  Clock, 
-  Gamepad2,
-  Loader2,
-  Target,
-  User
-} from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import { Trophy, Clock, Gamepad2, TrendingUp, Loader2, ShieldCheck, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchLeaderboardData } from "@/lib/dataFetcher";
 
+type Metric = "score" | "hours" | "games";
+
+const RANK_TIERS = [
+  { min: 3000, label: "PLATINUM", color: "text-cyan-300",   bg: "bg-cyan-400/10 border-cyan-400/30"   },
+  { min: 1500, label: "GOLD",     color: "text-yellow-300", bg: "bg-yellow-400/10 border-yellow-400/30" },
+  { min: 500,  label: "SILVER",   color: "text-zinc-300",   bg: "bg-zinc-400/10 border-zinc-400/20"   },
+  { min: 0,    label: "BRONZE",   color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/30" },
+];
+
+function getRankTier(score: number) {
+  return RANK_TIERS.find(t => score >= t.min) || RANK_TIERS[3];
+}
+
+const TOP3_STYLES = [
+  { border: "border-yellow-400/40", glow: "shadow-[0_0_20px_rgba(250,204,21,0.12)]",  num: "text-yellow-400",  bg: "bg-yellow-400/5"  }, // #1 gold
+  { border: "border-zinc-400/30",   glow: "shadow-[0_0_16px_rgba(212,212,216,0.08)]", num: "text-zinc-300",    bg: "bg-zinc-400/5"    }, // #2 silver
+  { border: "border-orange-400/30", glow: "shadow-[0_0_16px_rgba(251,146,60,0.08)]",  num: "text-orange-400",  bg: "bg-orange-400/5"  }, // #3 bronze
+];
+
+const METRIC_OPTIONS: { key: Metric; label: string; icon: React.ReactNode; unit: string }[] = [
+  { key: "score",  label: "Player Score",  icon: <TrendingUp className="w-3.5 h-3.5" />, unit: "pts" },
+  { key: "hours",  label: "Hours Played",  icon: <Clock className="w-3.5 h-3.5" />,      unit: "h"   },
+  { key: "games",  label: "Games Owned",   icon: <Gamepad2 className="w-3.5 h-3.5" />,   unit: ""    },
+];
+
 export default function LeaderboardPage() {
-  const [platform, setPlatform] = useState<"steam" | "riot" | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [players, setPlayers] = useState<any[]>([]);
+  const [rawPlayers, setRawPlayers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [metric, setMetric] = useState<Metric>("score");
 
   useEffect(() => {
-    if (platform) {
-      loadLeaderboard();
-    }
-  }, [platform]);
-
-  async function loadLeaderboard() {
-    setIsLoading(true);
-    setPlayers([]);
-    try {
-      const identifier = platform === "steam" 
-        ? localStorage.getItem("gamesphere_steam_id") 
-        : localStorage.getItem("gamesphere_riot_puuid"); // Use PUUID for Riot friends/rivals
-        
-      if (!identifier) {
-          // Handle no account
-          return;
+    async function load() {
+      setIsLoading(true);
+      try {
+        const id = localStorage.getItem("gamesphere_steam_id");
+        if (!id) return;
+        const data = await fetchLeaderboardData("steam", id);
+        setRawPlayers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await fetchLeaderboardData(platform!, identifier);
-      setPlayers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
     }
-  }
+    load();
+  }, []);
+
+  // Sort by selected metric, assign rank positions
+  const ranked = useMemo(() => {
+    const sorted = [...rawPlayers].sort((a, b) => (b[metric] ?? 0) - (a[metric] ?? 0));
+    return sorted.map((p, i) => ({ ...p, position: i + 1 }));
+  }, [rawPlayers, metric]);
+
+  const currentMetric = METRIC_OPTIONS.find(m => m.key === metric)!;
 
   return (
-    <div className="pt-32 pb-24 px-6 max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-        <div>
-          <div className="flex items-center gap-3 mb-6 opacity-30">
-            <span className="w-12 h-[1px] bg-primary"></span>
-            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] mb-4 uppercase opacity-50">WAR_INTELLIGENCE</h2>
-          </div>
-            <h1 className="text-2xl sm:text-4xl md:text-8xl font-heading font-black tracking-widest text-white mb-2">PLATFORM_LADDER</h1>
-            <p className="text-[8px] sm:text-[10px] font-mono text-primary/40 tracking-[0.6em] uppercase">Warriors Synchronized // Real-Time Archives</p>
+    <div className="min-h-screen bg-[#0d0e12] text-white font-heading">
+      <Navbar />
+
+      {/* Page header */}
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12">
+        <div className="flex items-center gap-3 mb-4 opacity-50">
+          <span className="w-10 h-[1px] bg-primary" />
+          <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
         </div>
-        
-        {platform && (
-            <div className="flex gap-4">
-                <button 
-                    onClick={() => setPlatform(null)}
-                    className="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black tracking-widest hover:bg-white hover:text-black transition-all"
-                >
-                    SWITCH_PLATFORM
-                </button>
-                <div className="flex bg-white/5 border border-white/10 rounded-full focus-within:border-primary/50 transition-all overflow-hidden group h-10 items-center">
-                    <div className="pl-5">
-                        <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-primary transition-colors" />
-                    </div>
-                    <input 
-                        type="text" 
-                        placeholder="SEARCH_WARRIOR..." 
-                        className="bg-transparent py-2 pl-3 pr-6 text-[10px] font-bold tracking-widest focus:outline-none w-32 focus:w-48 transition-all text-white placeholder:text-zinc-700 uppercase"
-                    />
-                </div>
-            </div>
-        )}
+        <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
+          Platform Ladder
+        </h1>
+        <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
+          Steam Network // Real-time data
+        </p>
       </div>
 
-      {!platform ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-10">
-              <PlatformChoiceCard 
-                title="STEAM_Vanguard"
-                desc="Ascend among your VALHALLA allies. Focus on playtime and library depth."
-                icon={<Gamepad2 className="w-12 h-12" />}
-                onClick={() => setPlatform("steam")}
-                color="primary"
-              />
-              <PlatformChoiceCard 
-                title="RIOT_Incursion"
-                desc="Dominate the Nexus. Focus on rank, victories, and battle prowess."
-                icon={<RiotFistIcon className="w-12 h-12" />}
-                onClick={() => setPlatform("riot")}
-                color="secondary"
-              />
-          </div>
-      ) : (
-        <div className="space-y-4">
-          {isLoading ? (
-            <div className="py-20 text-center">
-              <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-              <p className="font-heading tracking-[0.4em] text-primary/60 text-xs text-primary animate-pulse">ARCHIVING_BATTLE_RECORDS...</p>
-            </div>
-          ) : players.length === 0 ? (
-            <div className="py-20 text-center border border-white/5 bg-white/5 rounded-sm">
-              <p className="font-heading tracking-[0.4em] text-zinc-600 text-xs">NO_WARRIORS_DETECTED_IN_THIS_REALM</p>
-            </div>
-          ) : (
-            players.map((player) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                key={player.name}
-              >
-                <GlassCard className="p-6 flex items-center justify-between group hover:border-white/20 transition-all">
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 rounded-sm bg-black border border-white/10 overflow-hidden relative">
-                      {player.avatar ? (
-                          <img src={player.avatar} alt="Avatar" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
-                      ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-zinc-900">
-                              <User className="w-5 h-5 text-zinc-600" />
-                          </div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-bold tracking-widest text-lg">{player.name}</h3>
-                      <p className="text-[8px] font-black text-zinc-500 tracking-widest uppercase">{player.platform} // {player.status}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-12">
-                    <div className="text-right">
-                      <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Power Score</p>
-                      <p className="font-heading font-bold text-xl text-primary">{player.score.toLocaleString()}</p>
-                    </div>
-                    <div className="w-10 h-10 flex items-center justify-center">
-                        {player.trend === "up" ? (
-                            <TrendingUp className="w-5 h-5 text-green-500" />
-                        ) : player.trend === "down" ? (
-                            <TrendingDown className="w-5 h-5 text-red-500" />
-                        ) : (
-                            <Minus className="w-5 h-5 text-zinc-700" />
-                        )}
-                    </div>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            ))
-          )}
+      <div className="max-w-5xl mx-auto px-6 pb-24">
+        {/* Metric Toggle */}
+        <div className="flex items-center gap-2 mb-8 flex-wrap">
+          <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest mr-2">Rank by:</span>
+          {METRIC_OPTIONS.map(opt => (
+            <button
+              key={opt.key}
+              onClick={() => setMetric(opt.key)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-black tracking-widest uppercase border transition-all duration-200",
+                metric === opt.key
+                  ? "bg-primary text-black border-primary shadow-[0_0_12px_rgba(0,229,255,0.3)]"
+                  : "bg-white/5 border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+              )}
+            >
+              {opt.icon}
+              {opt.label}
+            </button>
+          ))}
         </div>
-      )}
+
+        {/* Leaderboard */}
+        {isLoading ? (
+          <div className="py-32 flex flex-col items-center gap-4">
+            <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            <p className="text-xs font-mono text-primary/60 tracking-widest uppercase animate-pulse">
+              Fetching Steam network data...
+            </p>
+            <p className="text-[10px] font-mono text-zinc-600 tracking-widest">
+              This may take ~30s while we load friend stats
+            </p>
+          </div>
+        ) : ranked.length === 0 ? (
+          <div className="py-24 text-center border border-white/5 rounded-xl bg-white/3">
+            <p className="text-sm font-heading text-zinc-500 tracking-widest">No players detected — ensure friends list is public</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+              <div className="min-w-[600px] space-y-3">
+                {ranked.map((player, i) => {
+                  const tier = getRankTier(player.score);
+                  const top3 = i < 3 ? TOP3_STYLES[i] : null;
+                  const metricVal = player[metric] ?? 0;
+                  const displayVal = metric === "score"
+                    ? metricVal.toLocaleString()
+                    : `${metricVal.toLocaleString()}${currentMetric.unit}`;
+
+                  return (
+                    <motion.div
+                      key={player.steamid || player.name}
+                      layout
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
+                      className={cn(
+                        "group flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-300",
+                        "hover:bg-white/3 cursor-default",
+                        top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/30",
+                        player.isSelf && "ring-1 ring-primary/30"
+                      )}
+                    >
+                      {/* Rank number */}
+                      <div className={cn(
+                        "w-10 text-center font-black text-xl flex-shrink-0",
+                        top3 ? top3.num : "text-zinc-600"
+                      )}>
+                        {i < 3 ? (
+                          <Trophy className={cn("w-6 h-6 mx-auto", top3?.num)} />
+                        ) : (
+                          <span className="text-base">{player.position}</span>
+                        )}
+                      </div>
+
+                      {/* Avatar */}
+                      <div className="w-12 h-12 rounded-lg border border-white/10 overflow-hidden bg-zinc-900 flex-shrink-0">
+                        {player.avatar ? (
+                          <img
+                            src={player.avatar}
+                            alt={player.name}
+                            className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-zinc-600" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Name + badges */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-bold text-sm tracking-wider text-white truncate">
+                            {player.name}
+                          </h3>
+                          {player.isSelf && (
+                            <span className="px-2 py-0.5 bg-primary/15 border border-primary/30 rounded text-[8px] font-black text-primary tracking-widest uppercase flex-shrink-0">
+                              YOU
+                            </span>
+                          )}
+                          {/* Rank Tier Badge */}
+                          <span className={cn("hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase flex-shrink-0", tier.bg, tier.color)}>
+                            <ShieldCheck className="w-2.5 h-2.5" />
+                            {tier.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 mt-0.5">
+                          {/* Steam Level badge */}
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-[#1a5fa8]/30 border border-[#4a90d9]/30 rounded text-[9px] font-black text-[#7ab8f5]">
+                            Lvl {player.level}
+                          </div>
+                          <span className={cn("text-[9px] font-mono", player.status === "Online" ? "text-green-500" : "text-zinc-600")}>
+                            {player.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* All 3 metrics — small */}
+                      <div className="hidden lg:flex items-center gap-6 text-right flex-shrink-0">
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Score</p>
+                          <p className={cn("text-xs font-black", metric === "score" ? "text-primary" : "text-zinc-400")}>
+                            {player.score.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Hours</p>
+                          <p className={cn("text-xs font-black", metric === "hours" ? "text-primary" : "text-zinc-400")}>
+                            {player.hours.toLocaleString()}h
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Games</p>
+                          <p className={cn("text-xs font-black", metric === "games" ? "text-primary" : "text-zinc-400")}>
+                            {player.games}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Primary metric (mobile-visible, highlighted) */}
+                      <div className="flex-shrink-0 text-right lg:hidden">
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-500 mb-0.5">{currentMetric.label}</p>
+                        <p className="text-base font-black text-primary">{displayVal}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </AnimatePresence>
+        )}
+      </div>
     </div>
   );
-}
-
-function RiotFistIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M7 2v2h2v2h2v2h2V6h2V4h2V2H7zm4 8H9v2H7v2h2v2h2v2h2v-2h2v-2h2v-2h-2v-2h-2v2h-2v-2z" />
-    </svg>
-  );
-}
-
-function PlatformChoiceCard({ title, desc, icon, onClick, color }: any) {
-    return (
-        <div 
-            className="group relative cursor-pointer"
-            onClick={onClick}
-        >
-            <GlassCard className={cn(
-                "p-12 border-white/5 hover:border-white/20 transition-all text-center h-full",
-                color === "secondary" && "hover:border-[#d13639]/40"
-            )}>
-                <div className={cn(
-                    "w-24 h-24 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(0,0,0,0.5)]",
-                    color === "secondary" ? "text-[#d13639]" : "text-primary"
-                )}>
-                    {icon}
-                </div>
-                <h2 className={cn(
-                    "text-3xl font-heading font-black tracking-widest mb-4",
-                    color === "secondary" ? "text-white" : "text-primary"
-                )}>{title}</h2>
-                <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.3em] leading-relaxed max-w-xs mx-auto mb-8">{desc}</p>
-                <div className={cn(
-                    "inline-block px-10 py-3 border border-white/10 rounded-full text-[10px] font-black tracking-[0.5em] group-hover:bg-white group-hover:text-black transition-all",
-                    color === "secondary" && "group-hover:bg-[#d13639] group-hover:border-[#d13639] group-hover:text-white"
-                )}>
-                    INITIATE_VIEW
-                </div>
-            </GlassCard>
-        </div>
-    );
 }
