@@ -182,13 +182,13 @@ export default function ProfilePage() {
                         transition={{ delay: i * 0.1 }}
                         className="group bg-black/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-primary/40 transition-all cursor-default shadow-2xl"
                         >
-                        <div className="aspect-video sm:aspect-[3/4] relative overflow-hidden bg-zinc-900 shadow-2xl">
+                        <div className="aspect-[3/4.5] relative overflow-hidden bg-zinc-900 shadow-2xl">
                             <GameImage
                                 appid={game.appid}
                                 alt={game.name}
-                                className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-110"
+                                className="w-full h-full object-cover object-top transition-all duration-700 scale-105 group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6">
                                 <p className="text-xs font-mono text-primary tracking-widest uppercase mb-2 font-black">{hours} Hours</p>
                                 <div className="h-[3px] bg-white/10 rounded-full overflow-hidden">
@@ -201,8 +201,8 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="p-6 border-t border-white/5 bg-white/[0.02]">
-                            <p className="text-sm font-black tracking-widest text-white/70 group-hover:text-white transition-colors uppercase truncate">
+                        <div className="p-6 border-t border-white/5 bg-white/[0.02] flex flex-col justify-center min-h-[5.5rem]">
+                            <p className="text-[11px] font-black tracking-widest text-white/50 group-hover:text-white transition-colors uppercase leading-relaxed">
                             {game.name}
                             </p>
                         </div>
