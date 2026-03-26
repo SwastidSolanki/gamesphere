@@ -94,9 +94,37 @@ export default function DashboardPage() {
          const d = await v.json();
          actualSteamId = d.response.steamid;
       }
-      const res = await fetch(`/api/steam?endpoint=stats&steamid=${actualSteamId}&appid=${game.appid}`);
-      const data = await res.json();
-      setGameStats(data.playerstats);
+      
+      const [statsRes, achievRes, schemaRes] = await Promise.all([
+        fetch(`/api/steam?endpoint=stats&steamid=${actualSteamId}&appid=${game.appid}`),
+        fetch(`/api/steam?endpoint=achievements&steamid=${actualSteamId}&appid=${game.appid}`),
+        fetch(`/api/steam?endpoint=schema&appid=${game.appid}`)
+      ]);
+
+      const [statsData, achievData, schemaData] = await Promise.all([
+        statsRes.json(),
+        achievRes.json(),
+        schemaRes.json()
+      ]);
+
+      const userAchievs = achievData.playerstats?.achievements || [];
+      const schemaAchievs = schemaData.game?.availableGameStats?.achievements || [];
+
+      // Merge data
+      const merged = userAchievs.map((uA: any) => {
+        const schema = schemaAchievs.find((sA: any) => sA.name === uA.apiname);
+        return {
+          ...uA,
+          name: schema?.displayName || uA.apiname.replace(/_/g, " "),
+          description: schema?.description || "",
+          icon: schema?.icon || null
+        };
+      });
+
+      setGameStats({
+        ...statsData.playerstats,
+        achievements: merged
+      });
     } catch (err) {
       console.error("STATS_FETCH_FAILURE", err);
     } finally {
@@ -123,7 +151,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#050608] text-white">
       <Navbar />
       
-      <div className="max-w-[1850px] mx-auto px-10 pt-40 pb-32 relative overflow-hidden">
+      <div className="max-w-[1850px] mx-auto px-10 pt-10 pb-32 relative overflow-hidden">
         {/* Background Watermark */}
         <div className="absolute -top-20 -left-10 text-[15rem] md:text-[25rem] font-black text-white/[0.05] select-none pointer-events-none uppercase tracking-tighter whitespace-nowrap">
           Archive
@@ -131,7 +159,7 @@ export default function DashboardPage() {
 
         <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-8 md:gap-12 mb-16 md:mb-20 pt-10 text-center lg:text-left relative z-10">
           <div className="space-y-4 md:space-y-6 max-w-4xl">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-sans font-black tracking-tight uppercase leading-[0.95] text-white select-none whitespace-normal break-words">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-heading font-black tracking-tight uppercase leading-[0.95] text-white select-none whitespace-normal break-words">
               PLAYER <br /> <span className="text-primary text-3xl sm:text-4xl md:text-8xl lg:text-9xl">OVERVIEW</span>
             </h1>
             <div className="flex items-center justify-center lg:justify-start gap-4 text-zinc-500 font-bold tracking-tight uppercase text-[10px] md:text-xs font-mono opacity-80">
@@ -148,7 +176,7 @@ export default function DashboardPage() {
                   <div className={cn("absolute bottom-0 right-0 w-4 h-4 md:w-6 md:h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
                 </div>
                 <div className="space-y-2 md:space-y-4 text-center sm:text-left">
-                  <p className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-[200px]">{steamProfile.personaname}</p>
+                  <p className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-[200px] font-heading">{steamProfile.personaname}</p>
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <div className="flex items-center gap-2 px-3 md:px-5 py-1.5 md:py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
                       <span className="text-white font-black text-base md:text-xl leading-none">Level {steamLevel}</span>
@@ -301,7 +329,7 @@ export default function DashboardPage() {
       {/* Game Detail Modal */}
       <AnimatePresence>
         {selectedGame && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
+          <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 md:p-12">
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
@@ -363,8 +391,8 @@ export default function DashboardPage() {
                               <span>Progress</span>
                               <span>{gameStats.achievements.filter((a: any) => a.achieved === 1).length} / {gameStats.achievements.length} UNLOCKED</span>
                            </div>
-                           <div className="grid grid-cols-2 gap-4 pt-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                              {gameStats.achievements.slice(0, 10).map((a: any) => (
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                              {gameStats.achievements.map((a: any) => (
                                  <div key={a.name} className={cn("p-3 rounded-lg border flex items-center gap-3", a.achieved === 1 ? "bg-primary/5 border-primary/20" : "bg-white/5 border-white/5 opacity-40")}>
                                     <Trophy className={cn("w-4 h-4", a.achieved === 1 ? "text-primary" : "text-zinc-600")} />
                                     <span className="text-[9px] font-bold uppercase truncate">{a.name.replace(/_/g, " ")}</span>
@@ -383,7 +411,7 @@ export default function DashboardPage() {
                    <div className="space-y-8">
                       <div className="flex items-center gap-4">
                          <Target className="w-6 h-6 text-green-500" />
-                         <h3 className="text-xl font-black uppercase tracking-tight italic">Live Telemetry</h3>
+                         <h3 className="text-xl font-black uppercase tracking-tight font-heading">Live Telemetry</h3>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                          <DetailCard label="TOTAL HOURS" value={`${Math.round(selectedGame.playtime_forever / 60)}H`} />

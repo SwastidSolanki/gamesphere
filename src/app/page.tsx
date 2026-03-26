@@ -271,7 +271,7 @@ export default function LandingPage() {
       
 
       {/* 1. HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden gsap-hero-section">
+      <section className="relative h-screen flex flex-col items-center justify-start pt-32 text-center px-6 overflow-hidden gsap-hero-section">
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 z-0">
           <motion.div 
@@ -298,7 +298,7 @@ export default function LandingPage() {
 
           {/* Title Area */}
           <div className="relative group gsap-hero-title">
-            <h1 className="text-[12vw] md:text-[14rem] font-sans font-black tracking-tight mb-4 md:mb-8 leading-[0.7] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 select-none">
+            <h1 className="text-[12vw] md:text-[14rem] font-heading font-black tracking-tight mb-4 md:mb-8 leading-[0.7] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 select-none">
               <span className="gsap-hero-split-left inline-block">
                 <Typewriter text="GAME" delay={150} />
               </span>
