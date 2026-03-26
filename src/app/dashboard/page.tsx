@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
 import Navbar from "@/components/Navbar";
+import GameDetailsModal from "@/components/GameDetailsModal";
+import { AnimatePresence } from "framer-motion";
 import { fetchUnifiedData } from "@/lib/dataFetcher";
 import { cn } from "@/lib/utils";
 import { 
@@ -36,6 +38,7 @@ export default function Dashboard() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedGame, setSelectedGame] = useState<any>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -77,11 +80,13 @@ export default function Dashboard() {
   const rawLibrary = data?.steam?.library || [];
   
   // Process Data
+  const filteredLibrary = rawLibrary.filter((game: any) => game.playtime_forever >= 60);
+
   const totalHours = Math.round(data?.steam?.totalPlaytime || 0);
   const totalGames = rawLibrary.length;
   const estimatedAchievements = Math.floor(totalHours * 1.5); // Placeholder as requested
 
-  const sortedLibrary = [...rawLibrary].sort((a: any, b: any) => b.playtime_forever - a.playtime_forever);
+  const sortedLibrary = [...filteredLibrary].sort((a: any, b: any) => b.playtime_forever - a.playtime_forever);
   const favoriteGame = sortedLibrary.length > 0 ? sortedLibrary[0] : null;
   const top5Games = sortedLibrary.slice(0, 5);
 
@@ -199,6 +204,7 @@ export default function Dashboard() {
                             key={game.appid}
                             variants={itemVariant}
                             whileHover={{ scale: 1.05, y: -10 }}
+                            onClick={() => setSelectedGame(game)}
                             className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,229,255,0.15)]"
                         >
                             <div className="aspect-[4/3] w-full relative overflow-hidden bg-zinc-900">
@@ -233,7 +239,67 @@ export default function Dashboard() {
                 })}
             </div>
         </section>
+
+        {/* FULL LIBRARY SECTION */}
+        <section>
+            <div className="flex items-center gap-4 mb-10">
+                <div className="w-8 h-[2px] bg-primary/40"></div>
+                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Full Arsenal</h2>
+                <div className="ml-auto text-xs font-mono text-zinc-500 tracking-widest uppercase">
+                    {sortedLibrary.length} Titles Logged ({">"}1H)
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                {sortedLibrary.map((game: any) => {
+                    const hours = Math.round(game.playtime_forever / 60);
+                    const imageSrc = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`;
+                    
+                    return (
+                        <motion.div 
+                            key={`lib-${game.appid}`}
+                            variants={itemVariant}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() => setSelectedGame(game)}
+                            className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all hover:border-primary/30"
+                        >
+                            <div className="aspect-[16/9] w-full relative overflow-hidden bg-zinc-900">
+                                <img 
+                                    src={imageSrc} 
+                                    alt={game.name}
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_616x353.jpg`;
+                                    }}
+                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] to-transparent" />
+                            </div>
+                            
+                            <div className="p-4 relative z-10 -mt-4">
+                                <h3 className="text-xs font-bold tracking-widest uppercase mb-1 line-clamp-1 group-hover:text-primary transition-colors text-white/80">
+                                    {game.name}
+                                </h3>
+                                <p className="text-[10px] font-mono text-zinc-500 tracking-widest group-hover:text-zinc-400">
+                                    {hours}H
+                                </p>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
+        </section>
       </motion.div>
+
+      {/* GAME DETAILS MODAL */}
+      <AnimatePresence>
+        {selectedGame && (
+          <GameDetailsModal 
+              game={selectedGame} 
+              steamId={localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki"} 
+              onClose={() => setSelectedGame(null)} 
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 }
