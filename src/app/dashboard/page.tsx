@@ -497,3 +497,10 @@ function MiniStat({ label, value, sub }: { label: string, value: string, sub: st
     </GlassCard>
   );
 }
+function RiotFistIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M21 13.3c-.6 0-1 .4-1 1s.4 1 1 1h5.8V13.3H21zM22.3 9.4c-.6 0-1 .4-1 1s.4 1 1 1h7.4l-1-2H22.3zM23.5 5.5c-.6 0-1 .4-1 1s.4 1 1 1h9.1l-1.3-2H23.5zM25.2 1.6c-.6 0-1 .4-1 1s.4 1 1 1h10.9l-1.6-2H25.2zM12 11h-4v2h4v-2zm-6-2v6h12V9H6zm2 4h-2v-2h2v2zm6 0h-2v-2h2v2zm0-6H8v2h4V7zM7 11h2v2H7v-2zm6 0h2v2h-2v-2z" />
+    </svg>
+  );
+}
