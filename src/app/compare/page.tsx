@@ -35,29 +35,28 @@ export default function ComparePage() {
   };
 
   return (
-    <main className="min-h-screen font-heading pt-32 pb-32 px-6 max-w-7xl mx-auto bg-[#0d0e12] selection:bg-primary/30">
+    <main className="min-h-screen font-mono pt-32 pb-32 px-6 max-w-7xl mx-auto bg-[#0d0e12] selection:bg-primary/30 relative">
       <Navbar />
       
       {/* Header section with cinematic typography */}
-      <div className="mb-20">
+      <div className="relative z-10 mb-20">
         <div className="flex items-center gap-3 mb-6 opacity-40">
           <span className="w-12 h-[1px] bg-primary"></span>
-          <h2 className="text-xs font-bold text-primary tracking-[0.6em] uppercase">WAR_INTELLIGENCE // COMPARISON</h2>
+          <p className="text-[10px] font-bold tracking-[0.6em] text-red-500 mb-6 uppercase">Trial_of_the_Gods // BATTLE_ANALYSIS</p>
         </div>
-        <h1 className="text-5xl md:text-8xl font-black tracking-widest text-white leading-none mb-6">
-          SKILL_VAULT
-        </h1>
-        <p className="text-zinc-500 max-w-2xl font-mono text-sm tracking-widest uppercase leading-relaxed">
-          Measure thy strength against thy peers. Bound by fate, <br className="hidden md:block" />
-          judged by real-time Steam archives.
+        <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-12 uppercase leading-[0.8]">
+            FATES <br /> <span className="text-red-500">INTERTWINED</span>
+          </h1>
+        <p className="text-zinc-500 max-w-2xl font-mono text-xs tracking-widest uppercase leading-relaxed">
+          Differential analysis between two player entities. Synchronizing Steam archives for objective evaluation.
         </p>
       </div>
 
       {/* Input Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <GlassCard className="p-8 border-white/5 bg-black/40 backdrop-blur-md">
-            <label className="text-xs font-black text-primary/60 tracking-[0.3em] block mb-5 uppercase">SPARTAN_I (Current ID)</label>
+          <GlassCard className="p-8 border-white/5 bg-black/60 backdrop-blur-md">
+            <label className="text-[10px] font-black text-primary/60 tracking-[0.4em] block mb-5 uppercase font-mono">UNIT_01 (Current ID)</label>
             <div className="relative group">
               <input 
                 type="text" 
@@ -72,8 +71,8 @@ export default function ComparePage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-          <GlassCard className="p-8 border-white/5 bg-black/40 backdrop-blur-md">
-            <label className="text-xs font-black text-primary/60 tracking-[0.3em] block mb-5 uppercase">WARRIOR_II (Target ID)</label>
+          <GlassCard className="p-8 border-white/5 bg-black/60 backdrop-blur-md">
+            <label className="text-[10px] font-black text-primary/60 tracking-[0.4em] block mb-5 uppercase font-mono">UNIT_02 (Target ID)</label>
             <div className="relative group">
               <input 
                 type="text" 
@@ -91,11 +90,11 @@ export default function ComparePage() {
       <button 
         onClick={handleCompare}
         disabled={loading || !id2}
-        className="w-full py-7 bg-white/5 border border-white/10 text-white font-black tracking-[0.5em] mb-16 hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center justify-center gap-4 disabled:opacity-20 rounded-xl group relative overflow-hidden"
+        className="w-full py-7 bg-white/5 border border-white/10 text-white font-black tracking-[0.6em] mb-16 hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center justify-center gap-4 disabled:opacity-20 rounded-xl group relative overflow-hidden uppercase text-xs"
       >
         <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
         <span className="relative z-10 flex items-center gap-3">
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Swords className="w-5 h-5" /> EXECUTE_SYNC</>}
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Swords className="w-5 h-5" /> SYNC_NODES</>}
         </span>
       </button>
 
@@ -109,26 +108,34 @@ export default function ComparePage() {
             className="grid grid-cols-1 lg:grid-cols-7 gap-6 items-start"
           >
             {/* Player 1 Card */}
-            <div className="lg:col-span-2">
+            <div className={cn("lg:col-span-2 transition-all duration-700", results.p1.steam.profile.personaname.toLowerCase().includes("kratos") ? "scale-105" : "")}>
                <PlayerCompareCard player={results.p1} />
             </div>
 
             {/* Comparison Metrics */}
             <div className="lg:col-span-3 space-y-4">
-              <div className="flex items-center gap-4 mb-8 justify-center">
-                <div className="h-[1px] w-8 bg-primary/20" />
-                <span className="text-xs font-black text-zinc-500 tracking-[0.4em] uppercase">Differential_Analysis</span>
-                <div className="h-[1px] w-8 bg-primary/20" />
+              <div className="flex flex-col items-center gap-6 mb-8 justify-center">
+                <div className="p-4 bg-zinc-950 border border-white/10 rounded-full shadow-2xl relative">
+                   <Swords className="w-8 h-8 text-primary" />
+                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-black text-primary tracking-[0.5em]">VS</div>
+                </div>
+                <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
               </div>
               
               <MetricComp label="Total Playtime" val1={Math.round(results.p1.steam.totalPlaytime)} val2={Math.round(results.p2.steam.totalPlaytime)} unit="H" />
               <MetricComp label="Titles Logged" val1={results.p1.steam.library.length} val2={results.p2.steam.library.length} />
               <MetricComp label="Account Tier" val1={results.p1.steam.level || 0} val2={results.p2.steam.level || 0} prefix="LVL " />
+              <MetricComp label="Battle Power" val1={(results.p1.steam.totalPlaytime * 0.4) + (results.p1.steam.level * 10)} val2={(results.p2.steam.totalPlaytime * 0.4) + (results.p2.steam.level * 10)} unit=" BP" />
               
-              <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-xl text-center">
-                <p className="text-[10px] font-mono text-primary/60 tracking-widest uppercase mb-1">Combat Result</p>
-                <p className="text-sm font-black text-white tracking-widest uppercase">
-                  {results.p1.steam.totalPlaytime > results.p2.steam.totalPlaytime ? "SPARTAN_I_DOMINATES" : "WARRIOR_II_ASCENDS"}
+              <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-xl text-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                <p className="text-[10px] font-mono text-primary/60 tracking-widest uppercase mb-1 relative z-10">Combat Result</p>
+                <p className="text-sm font-black text-white tracking-[0.2em] uppercase relative z-10">
+                  {results.p1.steam.profile.personaname.toLowerCase().includes("kratos") 
+                    ? "DIVINE_ENTROP_ESTABLISHED // KRATOS_VICTORY" 
+                    : results.p1.steam.totalPlaytime > results.p2.steam.totalPlaytime 
+                      ? "UNIT_01_DOMINANCE" 
+                      : "UNIT_02_SUPERIORITY"}
                 </p>
               </div>
             </div>
@@ -158,7 +165,10 @@ function PlayerCompareCard({ player }: { player: any }) {
         </div>
         
         <div>
-          <h3 className="text-2xl font-black tracking-widest text-white mb-2 uppercase">{profile.personaname}</h3>
+            <h2 className="text-2xl font-black tracking-tighter mb-6 uppercase">ASCEND_TO_THE_HALL_OF_HEROES</h2>
+            <p className="text-zinc-500 text-sm mb-8 font-bold tracking-tight">
+              Forge your identity across the multi-verse. Choose your realm and enter the archive.
+            </p>
           <p className="text-xs font-mono text-zinc-500 tracking-widest uppercase mb-4">
             {profile.loccountrycode || "GLOBAL"} // {isOnline ? "ONLINE" : "OFFLINE"}
           </p>

@@ -67,10 +67,10 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
           </p>
           <div className="flex items-center gap-2 mb-2">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <p className="text-primary font-mono text-xl font-black italic">{d.hours}H</p>
+            <p className="text-primary font-mono text-xl font-bold">{d.hours}H</p>
           </div>
-          <p className="text-zinc-500 font-mono text-[10px] tracking-widest uppercase border-t border-white/5 pt-2">
-            {d.pct}% OF TOTAL ARCHIVE
+          <p className="text-zinc-500 font-mono text-[10px] tracking-wider uppercase border-t border-white/5 pt-2">
+            {d.pct}% of total archive
           </p>
         </div>
       );
@@ -99,16 +99,16 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
       <div className="flex items-center justify-between mb-10 relative z-10">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-0.5">
-            <div className="w-8 h-1 bg-primary rounded-full"></div>
-            <div className="w-4 h-1 bg-primary/40 rounded-full"></div>
+            <div className="w-8 h-1 bg-primary/80 rounded-full"></div>
+            <div className="w-4 h-1 bg-primary/20 rounded-full"></div>
           </div>
-          <h3 className="text-xl md:text-2xl font-black tracking-[0.4em] uppercase text-white leading-none">
-            Combat_Analytics
+          <h3 className="text-xl md:text-2xl font-bold tracking-tighter uppercase text-white leading-none">
+            BATTLE_TELEMETRY
           </h3>
         </div>
         <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 hidden sm:flex uppercase tracking-[0.2em]">
           <span className="w-2 h-2 rounded-full border border-zinc-600"></span>
-          SCANNING ARCHIVES...
+          CRAFTING_LEGACY...
         </div>
       </div>
 
@@ -133,11 +133,11 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
               axisLine={false}
               width={140}
               tick={{ 
-                fontFamily: "var(--font-heading)", 
+                fontFamily: "var(--font-mono)", 
                 fill: "#ffffffa0", 
-                fontWeight: 900,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase'
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                fontSize: 11
               }}
             />
             
@@ -149,7 +149,7 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
               tickLine={false}
               axisLine={false}
               tickFormatter={(val) => `${val}h`}
-              tick={{ fontFamily: "monaco, monospace", fill: "#ffffff40" }}
+              tick={{ fontFamily: "var(--font-mono)", fill: "#ffffff40", fontSize: 10 }}
               domain={[0, 'dataMax + 10']}
             />
             
@@ -179,8 +179,8 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
       </div>
 
       <div className="mt-6 flex justify-between items-center relative z-10 border-t border-white/5 pt-6">
-        <p className="text-[9px] font-black text-zinc-600 tracking-[0.4em] uppercase">ARCHIVE_TYPE: STEAM_LIBRARY</p>
-        <p className="text-[9px] font-black text-primary/40 tracking-[0.4em] uppercase">SYSTEM_STABLE // 100%_SYNC</p>
+        <p className="text-[9px] font-black text-zinc-600 tracking-[0.4em] uppercase">REALM_ACCESS: MULTI-VERSE</p>
+        <p className="text-[9px] font-black text-primary/40 tracking-[0.4em] uppercase">SYNCHRONIZED_WITH_VALHALLA // 100%</p>
       </div>
     </motion.div>
   );

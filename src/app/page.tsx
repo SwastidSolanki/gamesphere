@@ -1,27 +1,252 @@
 "use client";
 
-import { useLenis } from "@/hooks/useLenis";
-import Navbar from "@/components/Navbar";
-import ConnectModal from "@/components/ConnectModal";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, 
   LayoutDashboard, 
   Trophy, 
-  Sword, 
+  Swords, 
   User, 
-  ChevronRight,
+  Zap, 
   ShieldCheck,
-  Zap,
-  Lock
+  TrendingUp,
+  Gamepad2,
+  Clock,
+  ChevronRight,
+  Terminal,
+  Camera,
+  ExternalLink
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
+import ConnectModal from "@/components/ConnectModal";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// --- RETRO TYPEWRITER COMPONENT ---
+function Typewriter({ text, delay = 100, onComplete }: { text: string, delay?: number, onComplete?: () => void }) {
+  const [displayed, setDisplayed] = useState("");
+  const [complete, setComplete] = useState(false);
+
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      setDisplayed(text.slice(0, i + 1));
+      i++;
+      if (i >= text.length) {
+        clearInterval(timer);
+        setComplete(true);
+        if (onCompleteRef.current) onCompleteRef.current();
+      }
+    }, delay);
+    return () => clearInterval(timer);
+  }, [text, delay]);
+
+  return (
+    <span className="inline-flex items-center">
+      {displayed}
+      <span className="ml-1 w-2.5 h-8 md:h-12 bg-primary inline-block align-middle animate-cursor-blink" />
+    </span>
+  );
+}
+
+// --- LEADERBOARD ITEM COMPONENT ---
+function LeaderboardItem({ rank, name, score, status, color }: any) {
+  return (
+    <motion.div 
+      initial={{ x: -20, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      className={cn(
+        "flex items-center justify-between p-6 bg-black/40 border-l-4 backdrop-blur-sm group hover:bg-white/5 transition-all cursor-default",
+        color
+      )}
+    >
+      <div className="flex items-center gap-8">
+        <span className="text-2xl font-black text-zinc-700 font-mono tracking-tighter w-8">{rank}</span>
+        <div>
+          <h4 className="text-lg font-black tracking-widest text-white group-hover:text-primary transition-colors">{name}</h4>
+          <p className="text-[10px] font-mono text-zinc-500 tracking-[0.2em] uppercase">{status} // [RANK_ID]</p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className="text-2xl font-black tracking-tighter text-white font-mono">{score}</p>
+        <p className="text-[9px] font-mono text-zinc-600 tracking-widest uppercase">LEGACY_POINTS</p>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [heroStep, setHeroStep] = useState(0);
+  const [isLeaping, setIsLeaping] = useState(false);
   const router = useRouter();
-  useLenis();
+
+  useEffect(() => {
+    // 1. HERO TITLE KINETIC SPLIT
+    gsap.to(".gsap-hero-split-left", {
+        scrollTrigger: {
+            trigger: ".gsap-hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        },
+        x: -400,
+        opacity: 0,
+        ease: "none"
+    });
+
+    gsap.to(".gsap-hero-split-right", {
+        scrollTrigger: {
+            trigger: ".gsap-hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        },
+        x: 400,
+        opacity: 0,
+        ease: "none"
+    });
+
+    // 2. DASHBOARD FEATURE GHOST TEXT
+    gsap.to(".gsap-ghost-text", {
+        scrollTrigger: {
+            trigger: ".gsap-dashboard-section",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+        },
+        x: -200,
+        opacity: 0.1,
+        ease: "none"
+    });
+
+    // 3. STAT CARDS STAGGER
+    gsap.from(".gsap-stat-card", {
+        scrollTrigger: {
+            trigger: ".gsap-dashboard-section",
+            start: "top 70%",
+        },
+        y: 100,
+        scale: 0.9,
+        opacity: 0,
+        duration: 1.2,
+        ease: "expo.out",
+        stagger: 0.2
+    });
+
+    // 4. LEGEND ASCENSION DUEL
+    gsap.to(".gsap-warrior-frame", {
+        scrollTrigger: {
+            trigger: ".gsap-compare-section",
+            start: "top 70%",
+        },
+        scale: 1,
+        rotate: 0,
+        duration: 2,
+        ease: "expo.out",
+        stagger: 0.5
+    });
+
+    gsap.to(".gsap-warrior-image", {
+        scrollTrigger: {
+            trigger: ".gsap-compare-section",
+            start: "top 70%",
+        },
+        opacity: 1,
+        scale: 1,
+        duration: 1.5,
+        ease: "power2.out",
+        delay: 0.5,
+        stagger: 0.5
+    });
+
+    gsap.to(".gsap-warrior-info", {
+        scrollTrigger: {
+            trigger: ".gsap-compare-section",
+            start: "top 70%",
+        },
+        opacity: 1,
+        y: -10,
+        duration: 1,
+        ease: "power2.out",
+        delay: 1,
+        stagger: 0.5
+    });
+
+    // 5. HUD CARD MECHANICAL REVEAL
+    gsap.to(".gsap-hud-icon", {
+        scrollTrigger: {
+            trigger: ".gsap-dashboard-section",
+            start: "top 70%",
+        },
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "expo.out",
+        stagger: 0.1
+    });
+
+    gsap.to(".gsap-hud-label", {
+        scrollTrigger: {
+            trigger: ".gsap-dashboard-section",
+            start: "top 70%",
+        },
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        ease: "expo.out",
+        delay: 0.2,
+        stagger: 0.1
+    });
+
+    gsap.to(".gsap-hud-value", {
+        scrollTrigger: {
+            trigger: ".gsap-dashboard-section",
+            start: "top 70%",
+        },
+        opacity: 1,
+        duration: 1,
+        ease: "none",
+        delay: 0.4,
+        stagger: 0.1
+    });
+
+    // 6. SWORDS ICON IGNITE
+    gsap.from(".gsap-swords-icon", {
+        scrollTrigger: {
+            trigger: ".gsap-compare-section",
+            start: "top 60%",
+        },
+        scale: 0,
+        rotate: 360,
+        duration: 1.5,
+        ease: "back.out(1.7)"
+    });
+    // 7. COMPARISON GAUGES
+    gsap.fromTo(".gsap-gauge-container", 
+        { opacity: 0, y: 30 },
+        {
+            scrollTrigger: {
+                trigger: ".gsap-compare-section",
+                start: "top 60%",
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "expo.out",
+            stagger: 0.2
+        }
+    );
+  }, []);
 
   const handleConnect = (platform: string, id: string) => {
     if (platform === "steam") {
@@ -30,173 +255,380 @@ export default function LandingPage() {
     router.push("/dashboard");
   };
 
+  const handleEnterGallery = () => {
+    const steamId = typeof window !== "undefined" ? localStorage.getItem("gamesphere_steam_id") : null;
+    if (steamId) {
+      setIsLeaping(true);
+      setTimeout(() => router.push("/dashboard"), 1500);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
   return (
-    <main className="min-h-screen text-foreground font-heading overflow-x-hidden bg-[#0d0e12]">
+    <main className="min-h-screen bg-[#050608] text-white overflow-x-hidden relative">
       <Navbar />
+      
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-        {/* Cinematic Background */}
+      {/* 1. HERO SECTION */}
+      <section className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden gsap-hero-section">
+        {/* Animated Background Orbs */}
         <div className="absolute inset-0 z-0">
-            <img 
-                src="https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYcg7Oi0q.png" 
-                alt="Fimbulwinter Vault" 
-                className="w-full h-full object-cover opacity-60 scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d0e12]/40 to-[#0d0e12]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0d0e12_80%)]" />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.05, 0.1, 0.05],
+            }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px]" 
+          />
         </div>
-
-        {/* HUD Scanner Line */}
-        <motion.div 
-            animate={{ top: ["0%", "100%", "0%"] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute left-0 right-0 h-[1px] bg-primary/20 z-10 shadow-[0_0_20px_rgba(160,192,208,0.3)]"
-        />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2 }}
-          className="relative z-20 max-w-6xl px-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="relative z-20 max-w-5xl"
         >
-          <div className="flex items-center justify-center gap-4 mb-12">
-            <div className="h-[1px] w-12 bg-primary/40" />
-            <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/40">GAMESPHERE_VERCEL_STABLE</span>
-            </div>
-            <a 
-              href="https://gamesphere-ascent.vercel.app" 
-              target="_blank"
-              className="text-[8px] font-black uppercase tracking-[0.2em] text-primary hover:text-white transition-colors"
-            >
-              UPLINK_LIVE
-            </a>
-            <div className="h-[1px] w-12 bg-primary/40" />
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-12">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[10px] font-bold tracking-[0.4em] text-primary/80 uppercase font-mono">Connection Established // 100% Sync</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-[8rem] font-black mb-10 leading-[0.9] tracking-tighter uppercase break-words">
-            <span className="block text-zinc-600 opacity-50">MASTER</span>
-            <motion.span 
-                animate={{ opacity: [0.9, 1, 0.9], x: [0, 2, -2, 0] }}
-                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 5 }}
-                className="block text-white"
-            >
-                THY_LEGACY
-            </motion.span>
-          </h1>
-
-          <p className="text-xs md:text-sm text-zinc-500 font-heading uppercase tracking-[0.3em] mb-16 leading-relaxed px-4 text-center">
-            The fimbulwinter of fragmented data is over. <br className="hidden md:block" />
-            Synchronize thy Steam archives into a single high-fidelity HUD. <br className="hidden md:block" />
-            Command thy legacy.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto group relative px-10 md:px-16 py-5 md:py-7 bg-white text-black font-black hover:bg-primary transition-all active:scale-95 text-xs md:text-sm tracking-[0.4em] uppercase overflow-hidden"
-            >
-              <div className="relative z-10 flex items-center justify-center gap-4">
-                BIND_IDENTITY <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-              </div>
-              <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </button>
-            <button 
-              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="w-full sm:w-auto px-10 md:px-16 py-5 md:py-7 bg-white/5 border border-white/10 text-white font-black hover:bg-white hover:text-black transition-all active:scale-95 text-xs md:text-sm tracking-[0.4em] uppercase"
-            >
-              EXPLORE_VAULT
-            </button>
+          {/* Title Area */}
+          <div className="relative group gsap-hero-title">
+            <h1 className="text-[12vw] md:text-[14rem] font-sans font-black tracking-tight mb-4 md:mb-8 leading-[0.7] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 select-none">
+              <span className="gsap-hero-split-left inline-block">
+                <Typewriter text="GAME" delay={150} />
+              </span>
+              <span className="gsap-hero-split-right inline-block text-primary">
+                <Typewriter text="SPHERE" delay={150} onComplete={() => setHeroStep(1)} />
+              </span>
+            </h1>
           </div>
+
+          {/* Subtitle with fade-in */}
+          <AnimatePresence>
+            {heroStep >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-12 md:mb-16 px-4"
+              >
+                <p className="text-sm md:text-xl font-black text-primary/60 tracking-[0.4em] md:tracking-[0.8em] uppercase leading-relaxed">
+                   Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white">Transcended.</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* CTAs */}
+          <AnimatePresence>
+            {heroStep >= 1 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-8"
+              >
+                <button 
+                  onClick={handleEnterGallery}
+                  className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 bg-primary text-black font-black text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] uppercase hover:bg-white transition-all flex items-center justify-center gap-4 rounded-lg group shadow-[0_0_30px_rgba(255,51,51,0.2)]"
+                >
+                  Enter Gallery <ArrowRight className="w-5 h-5 group-hover:translate-x-3 transition-transform" />
+                </button>
+                <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 bg-transparent border border-white/20 text-white font-black text-[10px] md:text-xs tracking-widest uppercase hover:bg-white/10 transition-all rounded-lg"
+                >
+                  Forge Identity
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
-        {/* Status Ticker */}
-        <div className="absolute bottom-0 left-0 right-0 py-4 bg-primary/5 border-t border-primary/10 backdrop-blur-md z-30">
-            <div className="max-w-7xl mx-auto px-6 flex justify-between items-center text-[8px] font-black tracking-[0.5em] text-primary/60 uppercase">
-                <div className="flex items-center gap-4">
-                    <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                    SYSTEM_STABLE // ARCHIVE_READY
-                </div>
-                <div className="hidden md:flex gap-12">
-                    <span>UPLINK: ACTIVE</span>
-                    <span>VAULT: SECURE</span>
-                    <span>LAST_SYNC: {new Date().toLocaleTimeString()}</span>
-                </div>
-                <div>EST_VER: 1.2.4-BETA</div>
+        {/* Scroll Protocol Indicator */}
+        <motion.div 
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-12 flex flex-col items-center gap-4 opacity-40"
+        >
+          <span className="text-[10px] uppercase font-bold tracking-[0.4em] font-mono">Explore Dashboard</span>
+          <div className="w-[1px] h-12 bg-primary" />
+        </motion.div>
+      </section>
+
+      {/* 2. DASHBOARD FEATURE */}
+      <section className="py-48 px-6 border-y border-white/5 bg-[#07080a] gsap-dashboard-section relative overflow-hidden">
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
+          <div className="space-y-10 gsap-dashboard-text">
+            <h2 className="text-4xl md:text-8xl font-sans font-black tracking-tight leading-[0.85] uppercase text-white mix-blend-difference mb-12">
+            YOUR GAMING <br /> <span className="text-primary">LEGACY</span>
+          </h2>
+            <p className="text-zinc-500 text-lg leading-relaxed max-w-xl font-bold tracking-tight">
+              "Every journey has a story." Map your progress across the multi-verse of gaming history. From the peaks of high fantasy to the depths of sci-fi, your legacy is eternal.
+            </p>
+            <div className="pt-6">
+                <button onClick={() => router.push("/dashboard")} className="group flex items-center gap-5 text-sm font-bold text-primary tracking-widest uppercase hover:text-white transition-all">
+                  Access Dashboard <ChevronRight className="w-5 h-5 group-hover:translate-x-3 transition-all" />
+                </button>
             </div>
+          </div>
+
+          <div className="gsap-stats-container grid grid-cols-1 sm:grid-cols-2 gap-8 relative items-stretch">
+            <div className="absolute -inset-20 bg-primary/10 blur-[140px] pointer-events-none" />
+            <div className="gsap-stat-card flex flex-col">
+              <MockHUDCard icon={<Clock className="w-10 h-10" />} label="Service Hours // [LOG]" value="1.2K+" color="text-primary" />
+            </div>
+            <div className="gsap-stat-card flex flex-col">
+              <MockHUDCard icon={<Gamepad2 className="w-10 h-10" />} label="Manifest Titles" value="86" color="text-zinc-500" />
+            </div>
+            <div className="sm:col-span-2 gsap-stat-card mt-8 flex flex-col">
+                <MockHUDCard 
+                    icon={<TrendingUp className="w-12 h-12" />} 
+                    label="Active Engagement // [FOCUS]" 
+                    value="GHOST_OF_TSUSHIMA" 
+                    color="text-primary"
+                    wide 
+                />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-64 px-6 max-w-7xl mx-auto relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-32 w-[1px] bg-gradient-to-b from-primary/40 to-transparent" />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
-          <FeatureSection 
-            icon={<LayoutDashboard className="w-8 h-8" />}
-            title="WAR_COUNCIL"
-            desc="A cinematic overview of thy entire digital empire. Track total playtime and live status across all realms."
-            link="/dashboard"
-          />
-          <FeatureSection 
-            icon={<Sword className="w-8 h-8" />}
-            title="VALIANT_COMPARISON"
-            desc="Pit thy records against any seeker. Measure Steam levels and library depth side-by-side."
-            link="/compare"
-          />
-          <FeatureSection 
-            icon={<Trophy className="w-8 h-8" />}
-            title="LEADERBORD_ASCENSION"
-            desc="See where thou standest among the legends. Real-time ranking based on verified record archives."
-            link="/leaderboard"
-          />
-          <FeatureSection 
-            icon={<User className="w-8 h-8" />}
-            title="SEEKER_VAULT"
-            desc="Thy identity, forged in data. A unified archive of thy achievements across the gaming multiverse."
-            link="/profile"
-          />
+      {/* 3. COMPARE FEATURE */}
+      <section className="py-48 px-6 relative bg-black gsap-compare-section overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-40 gsap-compare-header">
+            <h2 className="text-5xl md:text-[8.5rem] font-sans font-black tracking-tight uppercase leading-[0.8] text-white">
+              Player <br /> <span className="text-primary">Comparison</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-center max-w-5xl mx-auto">
+             <div className="gsap-warrior-left">
+                <MockWarrior 
+                  name="KRATOS" 
+                  level="100" 
+                  image="/kratos_portrait.png"
+                />
+             </div>
+             <motion.div 
+               className="flex flex-col items-center gap-10"
+             >
+                <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center gsap-swords-icon">
+                    <Swords className="w-10 h-10 text-primary" />
+                </div>
+             </motion.div>
+             <div className="gsap-warrior-right">
+                <MockWarrior 
+                  name="ELLIE" 
+                  level="100" 
+                  image="/ellie_portrait.png"
+                />
+             </div>
+          </div>
+
+          <div className="mt-24 max-w-xl mx-auto space-y-8">
+            <ComparisonGauge label="Trophy Manifest" v1={85} v2={40} />
+            <ComparisonGauge label="Skill Legacy" v1={60} v2={95} />
+          </div>
         </div>
       </section>
+
+      {/* 4. LEADERBOARD SECTION */}
+      <section className="py-48 px-6 relative bg-[#050608]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-end justify-between mb-32 gap-10">
+            <div className="space-y-6">
+              <p className="text-primary text-[10px] font-bold tracking-[0.6em] uppercase font-mono">CHAMPION_TIERS // [GLOBAL_RANKINGS]</p>
+              <h2 className="text-4xl md:text-7xl font-sans font-black tracking-tight uppercase leading-[0.85] text-white">
+                HALL_OF <br /> <span className="text-primary">ETERNITY</span>
+              </h2>
+            </div>
+            <p className="text-zinc-500 text-lg font-bold tracking-tight max-w-md opacity-60">
+              Only the most resonant legends ascend to the Archive. Verification pending for current champions.
+            </p>
+          </div>
+
+          <div className="gsap-leaderboard-container space-y-4">
+            <div className="gsap-leaderboard-item">
+              <LeaderboardItem rank={1} name="KRATOS_REBORN" score="12,450" status="ELITE" color="border-red-500/30" />
+            </div>
+            <div className="gsap-leaderboard-item">
+              <LeaderboardItem rank={2} name="WOLF_SHADOW" score="11,920" status="VETERAN" color="border-primary/30" />
+            </div>
+            <div className="gsap-leaderboard-item">
+              <LeaderboardItem rank={3} name="ELLIE_X" score="10,840" status="SURVIVOR" color="border-green-500/30" />
+            </div>
+            <div className="gsap-leaderboard-item">
+              <LeaderboardItem rank={4} name="DRAKE_V" score="9,210" status="EXPLORER" color="border-blue-400/30" />
+            </div>
+            <div className="gsap-leaderboard-item">
+              <LeaderboardItem rank={5} name="GHOST_J" score="8,760" status="LEGENDARY" color="border-zinc-500/30" />
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer className="py-40 px-6 border-t border-white/10 bg-[#020304] relative">
+        <div className="max-w-7xl mx-auto">
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-end mb-32">
+              <div className="space-y-8">
+                  <h3 className="text-4xl md:text-5xl font-bold tracking-tight uppercase text-white">Contact Terminal</h3>
+                  <p className="text-zinc-500 text-lg font-medium tracking-wide leading-relaxed max-w-md">
+                     System nodes are active. Interface with the architect to expand the archive.
+                  </p>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                  <SocialLink href="https://instagram.com/swastidsolankii" icon={<Camera className="w-5 h-5" />} label="Instagram" />
+                  <SocialLink href="https://www.linkedin.com/in/swastidsolanki/" icon={<ExternalLink className="w-5 h-5" />} label="LinkedIn" />
+                  <SocialLink href="https://github.com/SwastidSolanki" icon={<Terminal className="w-5 h-5" />} label="GitHub" />
+              </div>
+           </div>
+
+           <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
+              <p className="text-xs font-bold tracking-widest uppercase">GameSphere © 2026 // Distributed Intelligence</p>
+              <div className="flex items-center gap-4">
+                 <ShieldCheck className="w-4 h-4 text-primary" />
+                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-mono">Encryption established</span>
+              </div>
+           </div>
+        </div>
+      </footer>
+
+      {/* Leap of Faith Transition */}
+      <AnimatePresence>
+        {isLeaping && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center gap-8"
+          >
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 1, 0.5]
+              }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-32 h-32 rounded-full border-2 border-primary/50 flex items-center justify-center"
+            >
+              <div className="w-24 h-24 rounded-full border border-primary animate-ping" />
+            </motion.div>
+            <div className="text-center space-y-8 w-full max-w-lg px-6">
+              <h3 className="text-4xl md:text-5xl font-black tracking-tight uppercase text-white leading-tight">
+                Leaping in <br className="md:hidden" /> <span className="text-primary italic">faith</span>
+              </h3>
+              
+              <div className="w-64 h-1 bg-white/10 rounded-full overflow-hidden relative mx-auto">
+                <motion.div 
+                   initial={{ width: "0%" }}
+                   animate={{ width: "100%" }}
+                   transition={{ duration: 1.5, ease: "easeInOut" }}
+                   className="h-full bg-primary"
+                />
+                <motion.div 
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   transition={{ delay: 1.3, duration: 0.2 }}
+                   className="absolute inset-0 bg-green-500"
+                />
+              </div>
+
+              <p className="text-primary/60 text-[10px] font-mono tracking-[0.4em] uppercase animate-pulse">Initializing synchronization</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <ConnectModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         onConnect={handleConnect}
       />
-
-      <footer className="py-20 border-t border-white/5 text-center">
-        <p className="text-[10px] font-black tracking-[0.8em] text-zinc-600 uppercase">Thy Legacy is Eternal</p>
-      </footer>
     </main>
   );
 }
 
-function FeatureSection({ icon, title, desc, link }: { icon: React.ReactNode, title: string, desc: string, link: string }) {
-  const router = useRouter();
+// --- HUMAN-CRAFTED COMPONENTS ---
+
+function MockHUDCard({ icon, label, value, color, wide = false }: any) {
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      className="group p-16 bg-[#0d0e12] hover:bg-primary/5 border-l border-white/5 hover:border-primary/40 transition-all cursor-pointer relative overflow-hidden"
-      onClick={() => router.push(link)}
+    <div
+      className={cn(
+        "relative p-8 bg-white/[0.03] border border-white/10 hover:border-primary/40 transition-all group overflow-hidden rounded-xl",
+        wide && "sm:col-span-2"
+      )}
     >
-      <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Zap className="w-4 h-4 text-primary/40" />
+      <div className={cn("mb-8 transition-transform group-hover:scale-110 opacity-0 gsap-hud-icon", color)}>{icon}</div>
+      <div className="space-y-2">
+        <p className="text-[11px] font-bold tracking-widest text-zinc-500 uppercase font-mono group-hover:text-zinc-400 transition-colors opacity-0 gsap-hud-label">{label}</p>
+        <p className="text-3xl font-bold tracking-tight uppercase group-hover:text-white transition-colors opacity-0 gsap-hud-value">{value}</p>
       </div>
-      <div className="mb-12 text-primary group-hover:scale-110 transition-transform origin-left">
-        {icon}
+    </div>
+  );
+}
+
+function MockWarrior({ name, level, image }: any) {
+  return (
+    <div
+      className="flex flex-col items-center gap-8"
+    >
+      <div className="w-40 h-52 md:w-56 md:h-72 bg-zinc-950 border border-white/10 relative group rounded-2xl overflow-hidden shadow-2xl scale-0 gsap-warrior-frame">
+         <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors z-10" />
+         {image ? (
+           <img src={image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-100 scale-100 gsap-warrior-image" alt={name} />
+         ) : (
+           <User className="absolute inset-0 m-auto w-12 h-12 text-zinc-800" />
+         )}
+         <div className="absolute inset-0 border-[0.5px] border-white/5 rounded-2xl pointer-events-none z-20" />
       </div>
-      <h3 className="text-2xl font-black mb-6 tracking-widest text-white transition-colors uppercase">{title}</h3>
-      <p className="text-zinc-500 text-xs mb-12 leading-relaxed tracking-wider group-hover:text-zinc-300 transition-colors uppercase font-bold">
-        {desc}
-      </p>
-      <div className="flex items-center gap-3 font-black text-[10px] tracking-[0.4em] text-primary transition-all uppercase">
-        ACCESS_ARCHIVE <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+      <div className="text-center opacity-0 gsap-warrior-info">
+         <h4 className="text-xl font-bold tracking-tight mb-3 uppercase">{name}</h4>
+         <span className="px-4 py-1 bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold tracking-[0.3em] uppercase font-mono">Level {level}</span>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+function ComparisonGauge({ label, v1, v2 }: any) {
+  return (
+    <div 
+      className="space-y-4 opacity-0 gsap-gauge-container"
+    >
+       <p className="text-xs font-bold text-center text-zinc-500 uppercase tracking-widest">{label}</p>
+       <div className="flex items-center gap-1 h-2.5 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ flex: 0 }}
+            whileInView={{ flex: v1 }}
+            viewport={{ once: true }}
+            className="h-full bg-primary" 
+          />
+          <div className="w-[1px] h-full bg-white/20" />
+          <motion.div 
+            initial={{ flex: 0 }}
+            whileInView={{ flex: v2 }}
+            viewport={{ once: true }}
+            className="h-full bg-red-600/40" 
+          />
+       </div>
+    </div>
+  );
+}
+
+function SocialLink({ href, icon, label }: any) {
+  return (
+    <motion.a
+      href={href}
+      target="_blank"
+      whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.08)" }}
+      className="flex items-center gap-5 px-8 py-5 bg-white/5 border border-white/5 text-white/60 hover:text-white transition-all group rounded-xl"
+    >
+      <span className="group-hover:text-primary transition-colors">{icon}</span>
+      <span className="text-sm font-bold tracking-wider uppercase">{label}</span>
+    </motion.a>
   );
 }

@@ -1,4 +1,4 @@
-import { getSteamProfile, getSteamOwnedGames, resolveSteamVanityURL, getSteamFriends, getSteamLevel } from "./steam";
+import { getSteamProfile, getSteamOwnedGames, resolveSteamVanityURL, getSteamFriends, getSteamLevel, getSteamTheme, getSteamBans } from "./steam";
 
 export async function fetchUnifiedData(steamIdentifier: string, unusedRiotName: string = "", unusedRiotTag: string = "") {
   let steamId = steamIdentifier;
@@ -8,10 +8,12 @@ export async function fetchUnifiedData(steamIdentifier: string, unusedRiotName: 
     steamId = await resolveSteamVanityURL(steamIdentifier);
   }
 
-  const [steamProfile, steamGames, steamLevel] = await Promise.all([
+  const [steamProfile, steamGames, steamLevel, steamTheme, steamBans] = await Promise.all([
     getSteamProfile(steamId),
     getSteamOwnedGames(steamId),
-    getSteamLevel(steamId)
+    getSteamLevel(steamId),
+    getSteamTheme(steamId),
+    getSteamBans(steamId)
   ]);
 
   return {
@@ -19,7 +21,9 @@ export async function fetchUnifiedData(steamIdentifier: string, unusedRiotName: 
       profile: steamProfile || {},
       library: steamGames?.games || [],
       totalPlaytime: (steamGames?.games || []).reduce((acc: number, g: any) => acc + g.playtime_forever, 0) / 60,
-      level: steamLevel
+      level: steamLevel,
+      theme: steamTheme,
+      bans: steamBans
     }
   };
 }

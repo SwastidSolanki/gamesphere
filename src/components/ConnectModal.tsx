@@ -91,16 +91,16 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-[#0a0a0d] border border-white/10 rounded-sm overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)]"
+            className="relative w-full max-w-xl bg-[#0a0a0d] border border-white/10 rounded-xl overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)]"
           >
             {/* HUD Scan Line animation */}
             <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent animate-hud-scan z-20" />
 
             <div className="p-8 sm:p-12">
               <div className="flex justify-between items-center mb-12">
-                <div className="space-y-1">
-                  <h2 className="text-3xl sm:text-5xl font-heading tracking-tighter text-white font-black italic underline decoration-primary/30 decoration-4 underline-offset-8">ACCOUNT_UPLINK</h2>
-                  <p className="text-[9px] font-black text-primary/50 tracking-[0.5em] uppercase">Steam Network // Secure Handshake</p>
+                <div className="space-y-2">
+                  <h2 className="text-3xl sm:text-5xl font-heading font-bold tracking-tighter text-white leading-none uppercase">System Uplink</h2>
+                  <p className="text-[9px] font-bold text-primary/40 tracking-[0.6em] uppercase font-mono">Network // 0xPROTO_0</p>
                 </div>
                 <button 
                   onClick={onClose} 
@@ -113,11 +113,11 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
               {mode === "input" ? (
                 <div className="space-y-10">
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                      <div className="flex justify-between items-center border-b border-white/10 pb-2">
                        <label className="text-[11px] font-black text-white/50 uppercase tracking-[0.4em]">
-                        IDENTITY_RESOLVER
+                        Identity Resolver
                       </label>
-                      <span className="text-[10px] font-mono text-primary animate-pulse uppercase">ready_for_uplink</span>
+                      <span className="text-[10px] font-mono text-primary animate-pulse uppercase">ready for connection</span>
                     </div>
 
                     <div className="relative group">
@@ -129,8 +129,8 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && identifier && handleVerify()}
-                        placeholder="ENTER STEAM NAME OR VANITY ID..."
-                        className="w-full bg-white/[0.03] border border-white/10 focus:border-primary/50 py-6 pl-16 pr-8 text-lg focus:outline-none font-heading tracking-widest text-white placeholder:text-zinc-700 transition-all italic"
+                        placeholder="Input protocol identifier..."
+                        className="w-full bg-white/[0.03] border border-white/10 focus:border-primary/50 py-6 pl-16 pr-8 text-sm focus:outline-none font-mono tracking-wider text-white placeholder:text-zinc-800 transition-all rounded-lg uppercase"
                       />
                     </div>
                     
@@ -148,13 +148,13 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                     <button 
                         onClick={handleVerify}
                         disabled={isLoading || !identifier}
-                        className="w-full py-6 bg-white text-black font-heading text-lg font-black tracking-[0.2em] hover:bg-primary transition-all disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 group"
+                        className="w-full py-6 bg-primary text-black font-bold text-xs tracking-[0.3em] uppercase hover:bg-white transition-all disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 group rounded-lg"
                     >
                         {isLoading ? (
                           <Loader2 className="w-6 h-6 animate-spin" />
                         ) : (
                           <>
-                            RESOLVE IDENTITY
+                            Resolve Identity
                             <ShieldCheck className="w-5 h-5 transition-transform group-hover:scale-110" />
                           </>
                         )}
@@ -163,16 +163,16 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
 
                   <div className="relative py-4">
                     <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                    <div className="relative flex justify-center text-[9px] uppercase font-black text-zinc-600 tracking-[0.6em] bg-[#0a0a0d] px-4 italic">OR DIRECT_HANDSHAKE</div>
+                    <div className="relative flex justify-center text-[9px] uppercase font-black text-zinc-600 tracking-[0.6em] bg-[#0a0a0d] px-4 italic">OR DIRECT CONNECTION</div>
                   </div>
 
                   <button
                     onClick={() => { window.location.href = "/api/auth/steam"; }}
-                    className="w-full py-8 bg-[#171a21] text-white font-heading text-2xl tracking-[0.2em] hover:bg-[#2a475e] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-2xl relative overflow-hidden"
+                    className="w-full py-8 bg-[#171a21] text-white font-heading text-2xl tracking-tight hover:bg-[#2a475e] transition-all flex items-center justify-between px-10 border border-white/10 group shadow-2xl relative overflow-hidden rounded-xl"
                   >
                     <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <span className="font-black italic relative z-10">LOGIN_WITH_STEAM</span>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam" className="w-14 h-14 opacity-50 group-hover:opacity-100 transition-all filter invert transform group-hover:rotate-12" />
+                    <span className="font-bold relative z-10 uppercase text-sm tracking-widest">Access Node // Steam</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam" className="w-12 h-12 opacity-30 group-hover:opacity-60 transition-all filter invert transform group-hover:rotate-6" />
                   </button>
                 </div>
               ) : (
@@ -182,53 +182,57 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                   className="space-y-8"
                 >
                   <div className="border-l-4 border-primary pl-6 py-2 bg-primary/5">
-                    <h3 className="text-2xl font-black font-heading tracking-widest text-primary italic">IDENTITIES_DISCOVERED</h3>
-                    <p className="text-[10px] font-black opacity-60 uppercase tracking-[0.4em] mt-1">SEARCH_QUERY: "{identifier.toUpperCase()}"</p>
+                    <h3 className="text-2xl font-black font-heading tracking-widest text-primary italic">Identities Discovered</h3>
+                    <p className="text-[10px] font-black opacity-60 uppercase tracking-[0.4em] mt-1">Search Query: "{identifier}"</p>
                   </div>
 
-                  <div className="flex flex-col gap-3 max-h-[360px] overflow-y-auto pr-4 custom-scrollbar">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[360px] overflow-y-auto pr-4 custom-scrollbar">
                     {results.map((player, idx) => (
                       <motion.div 
                           key={player.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: idx * 0.05 }}
                           onClick={() => handleSelect(player)}
-                          className="group flex items-center gap-6 p-5 bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer rounded-sm relative overflow-hidden"
+                          className="group relative flex flex-col items-center gap-4 p-6 bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer rounded-xl overflow-hidden text-center"
                       >
-                        <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <CheckCircle2 className="w-5 h-5 text-primary" />
                         </div>
-                        <div className="w-16 h-16 rounded-full border-2 border-white/5 p-1 group-hover:border-primary/60 transition-all transform group-hover:scale-105">
-                          {player.avatar ? (
-                              <img src={player.avatar} alt="PFP" className="w-full h-full rounded-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all border border-white/10" />
-                          ) : (
-                              <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center"><User className="w-6 h-6 text-white/20" /></div>
-                          )}
+                        
+                        <div className="relative">
+                          <div className="w-20 h-20 rounded-full border-2 border-white/5 p-1 group-hover:border-primary/60 transition-all transform group-hover:scale-110 relative z-10">
+                            {player.avatar ? (
+                                <img src={player.avatar} alt="PFP" className="w-full h-full rounded-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all border border-white/10" />
+                            ) : (
+                                <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center"><User className="w-8 h-8 text-white/20" /></div>
+                            )}
+                          </div>
+                          {/* Pulse effect */}
+                          <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-0 group-hover:opacity-100" />
                         </div>
-                        <div className="flex-1 text-left">
-                          <p className="font-heading text-xl group-hover:text-white transition-colors tracking-tight font-black italic">{player.name.toUpperCase()}</p>
-                          <p className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase flex items-center gap-2">
-                             ARCHIVE: <span className="text-zinc-600 font-bold">{player.id}</span>
-                          </p>
+
+                        <div className="space-y-1">
+                          <p className="font-heading text-lg group-hover:text-white transition-colors tracking-tight font-bold truncate max-w-[120px]">{player.name}</p>
+                          <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest group-hover:text-primary transition-colors">ID: {player.id.slice(0, 8)}...</p>
                         </div>
                       </motion.div>
                     ))}
                     
                     {results.length === 0 && (
-                       <div className="py-20 text-center border border-dashed border-white/10 rounded-sm">
-                          <AlertCircle className="w-10 h-10 text-zinc-700 mx-auto mb-4" />
-                          <p className="text-xs font-black text-zinc-600 uppercase tracking-widest">No matching archives found</p>
-                       </div>
+                       <div className="flex items-center gap-3 px-3 py-1 bg-white/5 border border-white/10 rounded-md">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                        <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-400 uppercase font-mono">VALHALLA_GATE: ACTIVE</span>
+                    </div>
                     )}
                   </div>
 
-                   <div className="flex gap-4">
+                    <div className="flex gap-4">
                     <button
                       onClick={reset}
                       className="flex-1 py-5 bg-white/5 hover:bg-white/10 text-zinc-500 hover:text-white font-heading text-[10px] font-black tracking-[0.3em] transition-all uppercase border border-white/10 italic"
                     >
-                      ABORT & SEARCH_AGAIN
+                      Abort & Search Again
                     </button>
                    </div>
                 </motion.div>

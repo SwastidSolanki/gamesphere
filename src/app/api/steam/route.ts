@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const endpoint = searchParams.get("endpoint");
   const steamid = searchParams.get("steamid");
   const vanityurl = searchParams.get("vanityurl");
+  const q = searchParams.get("q");
 
   let url = "";
 
@@ -27,8 +28,15 @@ export async function GET(request: Request) {
     url = `${STEAM_API_BASE}/IPlayerService/GetSteamLevel/v1/?key=${API_KEY}&steamid=${steamid}`;
   } else if (endpoint === "badges") {
     url = `${STEAM_API_BASE}/IPlayerService/GetBadges/v1/?key=${API_KEY}&steamid=${steamid}`;
+  } else if (endpoint === "bans") {
+    url = `${STEAM_API_BASE}/ISteamUser/GetPlayerBans/v1/?key=${API_KEY}&steamids=${steamid}`;
+  } else if (endpoint === "theme") {
+    // We need to fetch the HTML profile page to get the background and frame
+    url = `https://steamcommunity.com/profiles/${steamid}`;
+  } else if (endpoint === "stats") {
+    const appid = searchParams.get("appid");
+    url = `${STEAM_API_BASE}/ISteamUserStats/GetUserStatsForGame/v0002/?key=${API_KEY}&steamid=${steamid}&appid=${appid}`;
   } else if (endpoint === "search") {
-    const q = searchParams.get("q");
     // Use the official Steam community search AJAX
     url = `https://steamcommunity.com/search/SearchCommunityAjax?text=${q}&type=users&sessionid=&filter=users`;
   } else {
@@ -78,7 +86,56 @@ export async function GET(request: Request) {
         });
       }
 
+      // Prioritize exact matches (case-sensitive first, then insensitive)
+      const query = q || "";
+      results.sort((a, b) => {
+        const aName = a.name;
+        const bName = b.name;
+        const aId = a.id;
+        const bId = b.id;
+
+        // Exact case-sensitive match
+        const aExact = aName === query || aId === query;
+        const bExact = bName === query || bId === query;
+        if (aExact && !bExact) return -1;
+        if (!aExact && bExact) return 1;
+
+        // Exact case-insensitive match
+        const aLower = aName.toLowerCase() === query.toLowerCase() || aId.toLowerCase() === query.toLowerCase();
+        const bLower = bName.toLowerCase() === query.toLowerCase() || bId.toLowerCase() === query.toLowerCase();
+        if (aLower && !bLower) return -1;
+        if (!aLower && bLower) return 1;
+
+        return 0;
+      });
+
       return NextResponse.json({ success: true, results: results.slice(0, 5) });
+    }
+
+    if (endpoint === "theme") {
+      const html = await response.text();
+      
+      // Extract Background
+      // Steam usually has a script tag with g_rgProfileData or background-image in styles
+      const bgRegex = /background-image: url\( '(.*?)' \)/;
+      const bgMatch = html.match(bgRegex);
+      const background = bgMatch ? bgMatch[1] : null;
+
+      // Extract Avatar Frame
+      const frameRegex = /<div class="profile_header_avatar_frame">[\s\S]*?<img src="(.*?)"/;
+      const frameMatch = html.match(frameRegex);
+      const frame = frameMatch ? frameMatch[1] : null;
+
+      // Extract Theme Primary Color or Class
+      const themeRegex = /<div class="profile_page (.*?)">/;
+      const themeMatch = html.match(themeRegex);
+      const themeClass = themeMatch ? themeMatch[1] : "";
+
+      return NextResponse.json({ 
+        background, 
+        frame,
+        themeClass
+      });
     }
 
     const data = await response.json();

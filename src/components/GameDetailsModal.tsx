@@ -91,14 +91,14 @@ export default function GameDetailsModal({ game, onClose, steamId }: GameDetails
 
                         <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
                             <div>
-                                <h1 className="text-3xl sm:text-5xl font-heading font-black tracking-widest text-white shadow-black drop-shadow-lg leading-none mb-2">
+                                <h1 className="text-3xl sm:text-5xl font-heading font-bold tracking-tight text-white shadow-black drop-shadow-lg leading-tight mb-3">
                                     {game.name}
                                 </h1>
                                 <div className="flex gap-3 items-center">
-                                    <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-[10px] uppercase font-black tracking-[0.3em] rounded-sm">
-                                        STEAM_ARCHIVE
+                                    <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-[10px] uppercase font-bold tracking-[0.3em] rounded-md font-mono">
+                                        SYSTEM_DATA
                                     </span>
-                                    <span className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-widest shadow-black drop-shadow-md">
+                                    <span className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider shadow-black drop-shadow-md">
                                         {playHours} HOURS LOGGED
                                     </span>
                                 </div>
@@ -119,8 +119,8 @@ export default function GameDetailsModal({ game, onClose, steamId }: GameDetails
                                 {data?.details && (
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div className="md:col-span-2">
-                                            <h3 className="text-[10px] font-black text-primary/60 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
-                                                <Info className="w-3 h-3" /> Intel Brief
+                                            <h3 className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.4em] mb-3 flex items-center gap-2 font-mono">
+                                                <Info className="w-3 h-3" /> DATA_SUMMARY
                                             </h3>
                                             <p className="text-zinc-400 text-sm leading-relaxed font-body">
                                                 {cleanDesc || "No intelligence report available for this asset."}
@@ -138,7 +138,7 @@ export default function GameDetailsModal({ game, onClose, steamId }: GameDetails
                                             </div>
                                             <div>
                                                 <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest block mb-1">Metacritic</span>
-                                                <span className="text-green-400 text-xl font-black font-heading tracking-widest">
+                                                <span className="text-green-400 text-xl font-bold font-heading tracking-tight">
                                                     {data.details.metacritic?.score || "N/A"}
                                                 </span>
                                             </div>
@@ -150,39 +150,39 @@ export default function GameDetailsModal({ game, onClose, steamId }: GameDetails
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                     <div className="bg-white/5 border border-white/5 p-4 rounded-xl flex flex-col items-center text-center">
                                         <Users className="w-5 h-5 text-zinc-400 mb-2" />
-                                        <span className="text-2xl font-black font-heading text-white">{data?.currentPlayers?.toLocaleString() || 0}</span>
-                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Active Global Players</span>
+                                        <span className="text-2xl font-bold font-heading text-white">{data?.currentPlayers?.toLocaleString() || 0}</span>
+                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Active Global</span>
                                     </div>
                                     
                                     <div className="bg-white/5 border border-white/5 p-4 rounded-xl flex flex-col items-center text-center">
                                         <Trophy className="w-5 h-5 text-yellow-500/80 mb-2" />
-                                        <span className="text-2xl font-black font-heading text-white">
+                                        <span className="text-2xl font-bold font-heading text-white">
                                             {data?.userAchievements ? data.userAchievements.length : 0}
                                         </span>
-                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Unlocked Achievements</span>
+                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Unlocked</span>
                                     </div>
-
+ 
                                     <div className="bg-white/5 border border-white/5 p-4 rounded-xl flex flex-col items-center text-center">
                                         <Target className="w-5 h-5 text-primary/80 mb-2" />
-                                        <span className="text-2xl font-black font-heading text-white">
+                                        <span className="text-2xl font-bold font-heading text-white">
                                             {data?.userStats?.length || 0}
                                         </span>
-                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Tracked Metrics</span>
+                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Metrics</span>
                                     </div>
-
+ 
                                     <div className="bg-white/5 border border-white/5 p-4 rounded-xl flex flex-col items-center text-center">
                                         <Calendar className="w-5 h-5 text-purple-500/80 mb-2" />
-                                        <span className="text-2xl font-black font-heading text-white">
+                                        <span className="text-2xl font-bold font-heading text-white">
                                             {(playHours / 24).toFixed(1)}
                                         </span>
-                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Total Days Played</span>
+                                        <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold mt-1">Days Played</span>
                                     </div>
                                 </div>
 
                                 {/* Raw Stats Table */}
                                 {data?.userStats && data.userStats.length > 0 && (
-                                    <div>
-                                        <h3 className="text-[10px] font-black text-primary/60 uppercase tracking-[0.4em] mb-4">Raw Performance Metrics</h3>
+                                    <div className="relative z-10">
+                                        <h3 className="text-[10px] font-black text-primary/60 uppercase tracking-[0.6em] mb-6">SYSTEM_TELEMETRY // RAW</h3>
                                         <div className="bg-zinc-950 border border-white/10 rounded-xl overflow-hidden max-h-60 overflow-y-auto custom-scrollbar">
                                             <table className="w-full text-left text-sm">
                                                 <thead className="bg-white/5 text-[9px] uppercase tracking-[0.3em] text-zinc-500 sticky top-0 backdrop-blur-md">
@@ -197,7 +197,7 @@ export default function GameDetailsModal({ game, onClose, steamId }: GameDetails
                                                             <td className="p-3 pl-4 font-mono text-zinc-300 text-[10px] break-all">
                                                                 {stat.name.replace(/_/g, " ").toUpperCase()}
                                                             </td>
-                                                            <td className="p-3 pr-4 font-black font-heading text-right text-primary">
+                                                            <td className="p-3 pr-4 font-bold font-heading text-right text-primary">
                                                                 {stat.value.toLocaleString()}
                                                             </td>
                                                         </tr>

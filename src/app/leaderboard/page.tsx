@@ -67,13 +67,13 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-5xl mx-auto px-6 pt-32 pb-12">
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12">
         <div className="flex items-center gap-3 mb-4 opacity-50">
           <span className="w-10 h-[1px] bg-primary" />
-          <p className="text-xs font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
+          <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
         </div>
-        <h1 className="text-4xl md:text-7xl font-black tracking-widest text-white mb-3 leading-none">
-          PLATFORM_LADDER
+        <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
+          Platform Ladder
         </h1>
         <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">
           Steam Network // Real-time data
@@ -118,115 +118,117 @@ export default function LeaderboardPage() {
           </div>
         ) : (
           <AnimatePresence mode="popLayout">
-            <div className="space-y-3">
-              {ranked.map((player, i) => {
-                const tier = getRankTier(player.score);
-                const top3 = i < 3 ? TOP3_STYLES[i] : null;
-                const metricVal = player[metric] ?? 0;
-                const displayVal = metric === "score"
-                  ? metricVal.toLocaleString()
-                  : `${metricVal.toLocaleString()}${currentMetric.unit}`;
+            <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+              <div className="min-w-[600px] space-y-3">
+                {ranked.map((player, i) => {
+                  const tier = getRankTier(player.score);
+                  const top3 = i < 3 ? TOP3_STYLES[i] : null;
+                  const metricVal = player[metric] ?? 0;
+                  const displayVal = metric === "score"
+                    ? metricVal.toLocaleString()
+                    : `${metricVal.toLocaleString()}${currentMetric.unit}`;
 
-                return (
-                  <motion.div
-                    key={player.steamid || player.name}
-                    layout
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.97 }}
-                    transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
-                    className={cn(
-                      "group flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-300",
-                      "hover:bg-white/3 cursor-default",
-                      top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/30",
-                      player.isSelf && "ring-1 ring-primary/30"
-                    )}
-                  >
-                    {/* Rank number */}
-                    <div className={cn(
-                      "w-10 text-center font-black text-xl flex-shrink-0",
-                      top3 ? top3.num : "text-zinc-600"
-                    )}>
-                      {i < 3 ? (
-                        <Trophy className={cn("w-6 h-6 mx-auto", top3?.num)} />
-                      ) : (
-                        <span className="text-base">{player.position}</span>
+                  return (
+                    <motion.div
+                      key={player.steamid || player.name}
+                      layout
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
+                      className={cn(
+                        "group flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-300",
+                        "hover:bg-white/3 cursor-default",
+                        top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/30",
+                        player.isSelf && "ring-1 ring-primary/30"
                       )}
-                    </div>
-
-                    {/* Avatar */}
-                    <div className="w-12 h-12 rounded-lg border border-white/10 overflow-hidden bg-zinc-900 flex-shrink-0">
-                      {player.avatar ? (
-                        <img
-                          src={player.avatar}
-                          alt={player.name}
-                          className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-zinc-600" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Name + badges */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-bold text-base tracking-wider text-white truncate">
-                          {player.name}
-                        </h3>
-                        {player.isSelf && (
-                          <span className="px-2 py-0.5 bg-primary/15 border border-primary/30 rounded text-[9px] font-black text-primary tracking-widest uppercase flex-shrink-0">
-                            YOU
-                          </span>
+                    >
+                      {/* Rank number */}
+                      <div className={cn(
+                        "w-10 text-center font-black text-xl flex-shrink-0",
+                        top3 ? top3.num : "text-zinc-600"
+                      )}>
+                        {i < 3 ? (
+                          <Trophy className={cn("w-6 h-6 mx-auto", top3?.num)} />
+                        ) : (
+                          <span className="text-base">{player.position}</span>
                         )}
-                        {/* Rank Tier Badge */}
-                        <span className={cn("hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[9px] font-black tracking-widest uppercase flex-shrink-0", tier.bg, tier.color)}>
-                          <ShieldCheck className="w-2.5 h-2.5" />
-                          {tier.label}
-                        </span>
                       </div>
-                      <div className="flex items-center gap-3 mt-0.5">
-                        {/* Steam Level badge */}
-                        <div className="flex items-center gap-1 px-2 py-0.5 bg-[#1a5fa8]/30 border border-[#4a90d9]/30 rounded text-[10px] font-black text-[#7ab8f5]">
-                          Lvl {player.level}
+
+                      {/* Avatar */}
+                      <div className="w-12 h-12 rounded-lg border border-white/10 overflow-hidden bg-zinc-900 flex-shrink-0">
+                        {player.avatar ? (
+                          <img
+                            src={player.avatar}
+                            alt={player.name}
+                            className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-zinc-600" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Name + badges */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-bold text-sm tracking-wider text-white truncate">
+                            {player.name}
+                          </h3>
+                          {player.isSelf && (
+                            <span className="px-2 py-0.5 bg-primary/15 border border-primary/30 rounded text-[8px] font-black text-primary tracking-widest uppercase flex-shrink-0">
+                              YOU
+                            </span>
+                          )}
+                          {/* Rank Tier Badge */}
+                          <span className={cn("hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase flex-shrink-0", tier.bg, tier.color)}>
+                            <ShieldCheck className="w-2.5 h-2.5" />
+                            {tier.label}
+                          </span>
                         </div>
-                        <span className={cn("text-[10px] font-mono", player.status === "Online" ? "text-green-500" : "text-zinc-600")}>
-                          {player.status}
-                        </span>
+                        <div className="flex items-center gap-3 mt-0.5">
+                          {/* Steam Level badge */}
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-[#1a5fa8]/30 border border-[#4a90d9]/30 rounded text-[9px] font-black text-[#7ab8f5]">
+                            Lvl {player.level}
+                          </div>
+                          <span className={cn("text-[9px] font-mono", player.status === "Online" ? "text-green-500" : "text-zinc-600")}>
+                            {player.status}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* All 3 metrics — small */}
-                    <div className="hidden lg:flex items-center gap-6 text-right flex-shrink-0">
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Score</p>
-                        <p className={cn("text-sm font-black", metric === "score" ? "text-primary" : "text-zinc-400")}>
-                          {player.score.toLocaleString()}
-                        </p>
+                      {/* All 3 metrics — small */}
+                      <div className="hidden lg:flex items-center gap-6 text-right flex-shrink-0">
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Score</p>
+                          <p className={cn("text-xs font-black", metric === "score" ? "text-primary" : "text-zinc-400")}>
+                            {player.score.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Hours</p>
+                          <p className={cn("text-xs font-black", metric === "hours" ? "text-primary" : "text-zinc-400")}>
+                            {player.hours.toLocaleString()}h
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Games</p>
+                          <p className={cn("text-xs font-black", metric === "games" ? "text-primary" : "text-zinc-400")}>
+                            {player.games}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Hours</p>
-                        <p className={cn("text-sm font-black", metric === "hours" ? "text-primary" : "text-zinc-400")}>
-                          {player.hours.toLocaleString()}h
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 mb-0.5">Games</p>
-                        <p className={cn("text-sm font-black", metric === "games" ? "text-primary" : "text-zinc-400")}>
-                          {player.games}
-                        </p>
-                      </div>
-                    </div>
 
-                    {/* Primary metric (mobile-visible, highlighted) */}
-                    <div className="flex-shrink-0 text-right lg:hidden">
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-500 mb-0.5">{currentMetric.label}</p>
-                      <p className="text-lg font-black text-primary">{displayVal}</p>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                      {/* Primary metric (mobile-visible, highlighted) */}
+                      <div className="flex-shrink-0 text-right lg:hidden">
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-500 mb-0.5">{currentMetric.label}</p>
+                        <p className="text-base font-black text-primary">{displayVal}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
           </AnimatePresence>
         )}

@@ -67,3 +67,39 @@ export async function resolveSteamVanityURL(vanityUrl: string) {
   const data = await response.json();
   return data.response.steamid;
 }
+
+export async function getSteamTheme(steamId: string) {
+  try {
+    const response = await fetch(`/api/steam?endpoint=theme&steamid=${steamId}`);
+    const html = await response.text();
+
+    // Extract Avatar Frame
+    const frameRegex = /<div class="profile_header_avatar_frame">[\s\S]*?<img src="(.*?)"/;
+    const frameMatch = html.match(frameRegex);
+    const frame = frameMatch ? frameMatch[1] : null;
+
+    // Extract Background
+    const backgroundRegex = /<div class="profile_background_image_details" style="background-image: url\((.*?)\)">/;
+    const backgroundMatch = html.match(backgroundRegex);
+    const background = backgroundMatch ? backgroundMatch[1] : null;
+
+    // Extract Theme Class
+    const themeClassRegex = /<body class="v6 (.*?) "[\s\S]*?>/;
+    const themeClassMatch = html.match(themeClassRegex);
+    const themeClass = themeClassMatch ? themeClassMatch[1] : "";
+
+    return { background, frame, themeClass };
+  } catch {
+    return { background: null, frame: null, themeClass: "" };
+  }
+}
+
+export async function getSteamBans(steamId: string) {
+  try {
+    const response = await fetch(`/api/steam?endpoint=bans&steamid=${steamId}`);
+    const data = await response.json();
+    return data.players[0] || null;
+  } catch {
+    return null;
+  }
+}
