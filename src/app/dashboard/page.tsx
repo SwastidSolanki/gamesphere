@@ -240,10 +240,8 @@ function DashboardContent() {
                     dashboardMode === "riot" ? "bg-[#d13639] text-white border-[#d13639] shadow-[0_0_40px_rgba(209,54,57,0.3)]" : "bg-black/40 text-white/40 border-white/5 hover:border-white/20"
                 )}
             >
-                <img 
-                    src="https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt6f17666299b90848/66068e6e84d72d6226f30d0a/Riot_Games_Fist.png" 
-                    alt="Riot" 
-                    className={cn("w-6 h-6 transition-all", dashboardMode === "riot" ? "brightness-200" : "opacity-40 grayscale")}
+                <RiotFistIcon 
+                    className={cn("w-6 h-6 transition-all", dashboardMode === "riot" ? "text-white" : "text-white/40")}
                 />
                 RIOT_NEXUS
                 {dashboardMode === "riot" && <motion.div layoutId="mode-glint" className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
