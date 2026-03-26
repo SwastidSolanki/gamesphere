@@ -76,8 +76,8 @@ export default function ProfilePage() {
   
         <div className="relative z-10">
             {/* Profile Banner */}
-            <div className="pt-32 pb-8 relative">
-                <div className="relative max-w-[1850px] mx-auto px-10 pt-32 pb-6 flex flex-col md:flex-row items-center md:items-end gap-10">
+            <div className="pb-8 relative">
+                <div className="relative max-w-[1850px] mx-auto px-10 pt-10 pb-6 flex flex-col md:flex-row items-center md:items-end gap-10">
                 {/* Avatar Container with Frame */}
                 <div className="relative flex-shrink-0 group">
                     <div className="w-40 h-40 md:w-52 md:h-52 overflow-hidden shadow-2xl relative">

@@ -67,7 +67,7 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12 relative overflow-hidden">
+      <div className="max-w-5xl mx-auto px-6 pb-12 relative overflow-hidden">
         {/* Background Watermark */}
         <div className="absolute -top-10 -left-10 text-[12rem] md:text-[20rem] font-black text-white/[0.05] select-none pointer-events-none uppercase tracking-tighter">
           Rankings
@@ -78,7 +78,7 @@ export default function LeaderboardPage() {
             <span className="w-10 h-[1px] bg-primary" />
             <p className="text-[10px] font-bold text-primary tracking-[0.6em] uppercase">Platform Rankings</p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tight text-white mb-3 leading-none uppercase">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-3 leading-none uppercase font-heading">
             Platform Ladder
           </h1>
           <p className="text-sm font-mono text-primary/50 tracking-widest uppercase">

@@ -36,6 +36,12 @@ export async function GET(request: Request) {
   } else if (endpoint === "stats") {
     const appid = searchParams.get("appid");
     url = `${STEAM_API_BASE}/ISteamUserStats/GetUserStatsForGame/v0002/?key=${API_KEY}&steamid=${steamid}&appid=${appid}`;
+  } else if (endpoint === "achievements") {
+    const appid = searchParams.get("appid");
+    url = `${STEAM_API_BASE}/ISteamUserStats/GetPlayerAchievements/v0001/?key=${API_KEY}&steamid=${steamid}&appid=${appid}&l=en`;
+  } else if (endpoint === "schema") {
+    const appid = searchParams.get("appid");
+    url = `${STEAM_API_BASE}/ISteamUserStats/GetSchemaForGame/v2/?key=${API_KEY}&appid=${appid}`;
   } else if (endpoint === "search") {
     // Use the official Steam community search AJAX
     url = `https://steamcommunity.com/search/SearchCommunityAjax?text=${q}&type=users&sessionid=&filter=users`;

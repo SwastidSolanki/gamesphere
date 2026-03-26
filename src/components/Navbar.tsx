@@ -57,7 +57,7 @@ export default function Navbar() {
             )}
           >
             <item.icon className="w-4 h-4 md:w-5 md:h-5" />
-            <span className="text-[10px] md:text-[11px] font-sans tracking-[0.2em] md:tracking-[0.3em] font-black uppercase hidden lg:inline-block">
+            <span className="text-[10px] md:text-[11px] font-heading tracking-[0.2em] md:tracking-[0.3em] font-black uppercase hidden lg:inline-block">
               {item.name}
             </span>
           </Link>
