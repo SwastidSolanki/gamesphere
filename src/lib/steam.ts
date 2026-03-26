@@ -43,16 +43,20 @@ export async function getSteamFriends(steamId: string) {
   const response = await fetch(`/api/steam?endpoint=friends&steamid=${steamId}`);
   const data = await response.json();
   
-  if (!data.response?.friendslist) {
+  // GetFriendList does NOT have a .response wrapper
+  const friendslist = data.friendslist;
+  
+  if (!friendslist) {
     console.warn("STEAM_FRIENDS_RESTRICTED: PROFILE MAY BE PRIVATE");
     return [];
   }
   
-  const friends = data.response.friendslist.friends;
+  const friends = friendslist.friends;
   if (!friends || friends.length === 0) return [];
   
-  // Fetch summaries for all friends
-  const friendIds = friends.map((f: any) => f.steamid).join(",");
+  // Limit to top 25 friends to avoid URL length issues and stay within summary limits
+  const limitedFriends = friends.slice(0, 25);
+  const friendIds = limitedFriends.map((f: any) => f.steamid).join(",");
   const summariesResponse = await fetch(`/api/steam?endpoint=summaries&steamids=${friendIds}`);
   const summariesData = await summariesResponse.json();
   return summariesData.response?.players || [];

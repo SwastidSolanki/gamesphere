@@ -63,25 +63,34 @@ export async function fetchLeaderboardData(platform: "steam", identifier: string
   const friendEntries = await Promise.all(
     friends.map(async (p: any) => {
       try {
-        const [gamesData, level] = await Promise.all([
+        // Try to fetch games and level, but don't fail the whole user if one fails
+        const [gamesRes, levelRes] = await Promise.allSettled([
           getSteamOwnedGames(p.steamid),
           getSteamLevel(p.steamid),
         ]);
-        const hours = Math.round(
-          ((gamesData?.games || []).reduce((a: number, g: any) => a + g.playtime_forever, 0)) / 60
-        );
+
+        const gamesData = gamesRes.status === "fulfilled" ? gamesRes.value : null;
+        const level = levelRes.status === "fulfilled" ? levelRes.value : 0;
+
+        const hours = gamesData?.games 
+          ? Math.round((gamesData.games.reduce((a: number, g: any) => a + g.playtime_forever, 0)) / 60)
+          : 0;
+        
+        const gamesCount = gamesData?.games ? gamesData.games.length : 0;
+
         return {
           steamid: p.steamid,
           name: p.personaname || "Unknown",
           avatar: p.avatarfull || "",
           status: p.personastate === 1 ? "Online" : "Offline",
           hours,
-          games: (gamesData?.games || []).length,
+          games: gamesCount,
           level,
-          score: Math.round(hours * 0.5 + level * 2 + (gamesData?.games || []).length * 0.2),
+          score: Math.round(hours * 0.5 + level * 2 + gamesCount * 0.2),
           isSelf: false,
         };
-      } catch {
+      } catch (err) {
+        console.error(`Error fetching friend ${p.steamid}:`, err);
         return {
           steamid: p.steamid,
           name: p.personaname || "Unknown",
