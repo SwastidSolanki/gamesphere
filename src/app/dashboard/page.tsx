@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,23 +10,22 @@ import AnalyticsVisuals from "@/components/AnalyticsVisuals";
 import { AnimatePresence } from "framer-motion";
 import { fetchUnifiedData } from "@/lib/dataFetcher";
 import { cn } from "@/lib/utils";
-import { 
-  Gamepad2, 
-  Clock, 
+import {
+  Gamepad2,
+  Clock,
   LogOut,
   Star,
-  Award,
   Swords,
   Loader2,
   TrendingUp,
-  ShieldCheck
+  ShieldCheck,
+  BarChart3
 } from "lucide-react";
 
-// Fade-in slide-up variant
 const containerVariant = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, staggerChildren: 0.1 }
   }
@@ -51,12 +50,9 @@ export default function Dashboard() {
         const steamAuth = searchParams.get("steam_auth");
         if (steamAuth) {
           localStorage.setItem("gamesphere_steam_id", steamAuth);
-          const newUrl = window.location.pathname;
-          window.history.replaceState({}, "", newUrl);
+          window.history.replaceState({}, "", window.location.pathname);
         }
-        
         const steamId = localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki";
-        // Passing empty strings for riot to maintain backwards compatibility with fetchUnifiedData temporarily
         const unifiedData = await fetchUnifiedData(steamId, "", "");
         setData(unifiedData);
       } catch (err) {
@@ -66,7 +62,6 @@ export default function Dashboard() {
         setIsLoading(false);
       }
     }
-
     loadData();
   }, [searchParams]);
 
@@ -75,296 +70,284 @@ export default function Dashboard() {
     router.push("/");
   };
 
-  if (isLoading) {
-    return <DashboardLoading />;
-  }
+  if (isLoading) return <DashboardLoading />;
 
   const steamProfile = data?.steam?.profile;
   const rawLibrary = data?.steam?.library || [];
-  
-  // Process Data â€” strictly real Steam data, no synthetic values
-  const filteredLibrary = rawLibrary.filter((game: any) => game.playtime_forever >= 60);
+  const steamLevel = data?.steam?.level ?? 0;
+
+  const filteredLibrary = rawLibrary.filter((g: any) => g.playtime_forever >= 60);
+  const sortedLibrary = [...filteredLibrary].sort((a: any, b: any) => b.playtime_forever - a.playtime_forever);
 
   const totalHours = Math.round(data?.steam?.totalPlaytime || 0);
   const totalGames = rawLibrary.length;
-  // Achievements: we can only get per-game achievements on demand; show 0 until fetched
   const totalAchievements = 0;
-
-  const sortedLibrary = [...filteredLibrary].sort((a: any, b: any) => b.playtime_forever - a.playtime_forever);
-  const favoriteGame = sortedLibrary.length > 0 ? sortedLibrary[0] : null;
+  const favoriteGame = sortedLibrary[0] || null;
   const top5Games = sortedLibrary.slice(0, 5);
 
-  // Player Score formula: (Hours * 0.5) + (Achievements * 0.3) + (Games * 0.2)
+  // Player Score: (Hours * 0.5) + (Achievements * 0.3) + (Games * 0.2)
   const playerScore = Math.round((totalHours * 0.5) + (totalAchievements * 0.3) + (totalGames * 0.2));
   const playerRank = playerScore >= 3000 ? "PLATINUM" : playerScore >= 1500 ? "GOLD" : playerScore >= 500 ? "SILVER" : "BRONZE";
   const rankConfig: Record<string, { color: string; glow: string; border: string; badge: string }> = {
-    PLATINUM: { color: "text-cyan-300", glow: "hover:shadow-[0_0_30px_rgba(103,232,249,0.3)]", border: "hover:border-cyan-400/50", badge: "bg-cyan-400/20 border-cyan-400/40 text-cyan-300" },
-    GOLD:     { color: "text-yellow-300", glow: "hover:shadow-[0_0_30px_rgba(253,224,71,0.3)]", border: "hover:border-yellow-400/50", badge: "bg-yellow-400/20 border-yellow-400/40 text-yellow-300" },
-    SILVER:   { color: "text-zinc-300", glow: "hover:shadow-[0_0_30px_rgba(212,212,216,0.3)]", border: "hover:border-zinc-400/50", badge: "bg-zinc-400/10 border-zinc-400/30 text-zinc-300" },
-    BRONZE:   { color: "text-orange-400", glow: "hover:shadow-[0_0_30px_rgba(251,146,60,0.3)]", border: "hover:border-orange-400/50", badge: "bg-orange-400/20 border-orange-400/40 text-orange-400" },
+    PLATINUM: { color: "text-cyan-300",   glow: "hover:shadow-[0_0_30px_rgba(103,232,249,0.3)]",  border: "hover:border-cyan-400/50",   badge: "bg-cyan-400/20 border-cyan-400/40 text-cyan-300"   },
+    GOLD:     { color: "text-yellow-300", glow: "hover:shadow-[0_0_30px_rgba(253,224,71,0.3)]",   border: "hover:border-yellow-400/50", badge: "bg-yellow-400/20 border-yellow-400/40 text-yellow-300" },
+    SILVER:   { color: "text-zinc-300",   glow: "hover:shadow-[0_0_30px_rgba(212,212,216,0.3)]",  border: "hover:border-zinc-400/50",   badge: "bg-zinc-400/10 border-zinc-400/30 text-zinc-300"   },
+    BRONZE:   { color: "text-orange-400", glow: "hover:shadow-[0_0_30px_rgba(251,146,60,0.3)]",   border: "hover:border-orange-400/50", badge: "bg-orange-400/20 border-orange-400/40 text-orange-400" },
   };
   const rank = rankConfig[playerRank];
+
+  const rankDesc: Record<string, string> = {
+    PLATINUM: "Elite Tier - Top 1%",
+    GOLD:     "Score >= 1500 - Advanced",
+    SILVER:   "Score >= 500 - Intermediate",
+    BRONZE:   "Score < 500 - Developing",
+  };
 
   return (
     <main className="min-h-screen bg-[#0d0e12] text-white p-4 md:p-8 font-heading overflow-x-hidden relative selection:bg-primary/30">
       <Navbar />
-      
-      {/* HUD HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10 max-w-7xl mx-auto">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-6 opacity-40">
-            <span className="w-12 h-[1px] bg-primary"></span>
-            <h2 className="text-[10px] font-bold text-primary tracking-[0.8em] uppercase font-heading">WAR_ARCHIVES // STEAM</h2>
-          </div>
 
+      {/* HUD HEADER */}
+      <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10 max-w-7xl mx-auto pt-6">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-5 opacity-50">
+            <span className="w-12 h-[1px] bg-primary"></span>
+            <p className="text-xs font-bold text-primary tracking-[0.6em] uppercase">WAR_ARCHIVES // STEAM</p>
+          </div>
           <h1 className="text-5xl md:text-8xl font-heading font-black tracking-widest text-white leading-none mb-4">
             STEAM_VAULT
           </h1>
-          <p className="text-primary/60 font-mono text-xs tracking-widest uppercase">
+          <p className="text-primary/70 font-mono text-sm tracking-widest uppercase">
             {steamProfile?.personaname} // VERIFIED UPLINK
           </p>
         </div>
-        
-        <div className="flex flex-col items-end gap-6 pt-4">
+
+        <div className="flex flex-col items-end gap-5 pt-4">
           {steamProfile && (
-              <GlassCard className="p-4 border-white/10 flex items-center gap-4 group cursor-pointer hover:border-primary/40 transition-all bg-black/40 backdrop-blur-md">
-                  <div className="w-12 h-12 rounded-sm bg-zinc-950 border border-primary/20 overflow-hidden relative">
-                      <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" />
-                      <div className={cn("absolute bottom-0 right-0 w-3 h-3 border-2 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500" : "bg-zinc-600")} />
+            <GlassCard className="p-4 border-white/10 flex items-center gap-4 group cursor-pointer hover:border-primary/40 transition-all bg-black/40 backdrop-blur-md">
+              <div className="w-14 h-14 rounded-sm bg-zinc-950 border border-primary/20 overflow-hidden relative flex-shrink-0">
+                <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" />
+                <div className={cn("absolute bottom-0 right-0 w-3 h-3 border-2 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500" : "bg-zinc-600")} />
+              </div>
+              <div className="pr-2">
+                <p className="text-sm font-black text-white uppercase tracking-widest mb-1">{steamProfile.personaname}</p>
+                {/* Real Steam Level Badge */}
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/20 shadow-[0_0_8px_rgba(74,144,217,0.5)]">
+                    <span className="text-white font-black text-xs leading-none">Level {steamLevel}</span>
                   </div>
-                  <div className="pr-4">
-                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">{steamProfile.personaname}</p>
-                      <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">LVL: {data?.steam?.level ?? "N/A"} // {steamProfile.loccountrycode || "GLB"}</p>
-                  </div>
-              </GlassCard>
+                </div>
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{steamProfile.loccountrycode || "GLOBAL"}</p>
+              </div>
+            </GlassCard>
           )}
 
-          <div className="flex gap-4">
-            <button 
-                onClick={() => router.push('/compare')}
-                className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm text-[10px] font-bold tracking-widest hover:bg-primary hover:text-black transition-all font-heading uppercase"
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push("/compare")}
+              className="flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-sm text-xs font-bold tracking-widest hover:bg-primary hover:text-black transition-all font-heading uppercase"
             >
-                <Swords className="w-3 h-3" /> Compare
+              <Swords className="w-3.5 h-3.5" /> Compare
             </button>
-            <button 
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-red-950/20 border border-red-900/40 rounded-sm text-[10px] font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all font-heading uppercase"
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-5 py-2.5 bg-red-950/20 border border-red-900/40 rounded-sm text-xs font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all font-heading uppercase"
             >
-                <LogOut className="w-3 h-3" /> Disconnect
+              <LogOut className="w-3.5 h-3.5" /> Disconnect
             </button>
           </div>
         </div>
       </div>
 
-      <motion.div 
-        variants={containerVariant} 
-        initial="hidden" 
+      <motion.div
+        variants={containerVariant}
+        initial="hidden"
         animate="visible"
-        className="max-w-7xl mx-auto space-y-24 relative z-10"
+        className="max-w-7xl mx-auto space-y-20 relative z-10"
       >
-        {/* PREMIUM HERO STATS */}
+        {/* OVERALL CAREER STATS */}
         <section>
-            <div className="flex items-center gap-4 mb-8">
-                <div className="w-8 h-[2px] bg-primary/40"></div>
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Overall Career</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <HeroStatCard 
-                    icon={<Clock className="w-8 h-8" />} 
-                    label="Total Hours" 
-                    value={`${totalHours}H`} 
-                    color="from-blue-500/20 to-cyan-500/5"
-                    borderColor="hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                />
-                <HeroStatCard 
-                    icon={<Gamepad2 className="w-8 h-8" />} 
-                    label="Library Size" 
-                    value={totalGames} 
-                    color="from-purple-500/20 to-fuchsia-500/5"
-                    borderColor="hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
-                />
-                <HeroStatCard 
-                    icon={<Star className="w-8 h-8" />} 
-                    label="Favorite Game" 
-                    value={favoriteGame?.name || "N/A"} 
-                    subValue={favoriteGame ? `${Math.round(favoriteGame.playtime_forever / 60)} Hours` : undefined}
-                    color="from-emerald-500/20 to-green-500/5"
-                    borderColor="hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]"
-                />
-            </div>
+          <SectionHeader title="Overall Career" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <HeroStatCard
+              icon={<Clock className="w-8 h-8" />}
+              label="Total Hours"
+              value={`${totalHours.toLocaleString()}H`}
+              color="from-blue-500/20 to-cyan-500/5"
+              borderColor="hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+            />
+            <HeroStatCard
+              icon={<Gamepad2 className="w-8 h-8" />}
+              label="Library Size"
+              value={totalGames}
+              color="from-purple-500/20 to-fuchsia-500/5"
+              borderColor="hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+            />
+            <HeroStatCard
+              icon={<Star className="w-8 h-8" />}
+              label="Favorite Game"
+              value={favoriteGame?.name || "N/A"}
+              subValue={favoriteGame ? `${Math.round(favoriteGame.playtime_forever / 60)} hours played` : undefined}
+              color="from-emerald-500/20 to-green-500/5"
+              borderColor="hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+            />
+            <HeroStatCard
+              icon={<BarChart3 className="w-8 h-8" />}
+              label="Steam Level"
+              value={`Level ${steamLevel}`}
+              color="from-blue-600/20 to-sky-500/5"
+              borderColor="hover:border-blue-400/50 hover:shadow-[0_0_30px_rgba(74,144,217,0.3)]"
+            />
+          </div>
         </section>
 
         {/* PLAYER SCORE + RANK */}
         <section>
-            <div className="flex items-center gap-4 mb-8">
-                <div className="w-8 h-[2px] bg-primary/40"></div>
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Player Score</h2>
-            </div>
-
-            <motion.div
-                variants={itemVariant}
-                className={cn(
-                    "relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 p-8 backdrop-blur-sm transition-all duration-500 group",
-                    rank.glow, rank.border
-                )}
-            >
-                {/* BG glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent pointer-events-none" />
-
-                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                            <TrendingUp className="w-10 h-10 text-white/80" />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 mb-1">Composite Score</p>
-                            <div className={cn("text-6xl font-black tracking-widest font-heading leading-none", rank.color)}>
-                                {playerScore.toLocaleString()}
-                            </div>
-                            <p className="text-[10px] font-mono text-zinc-600 mt-2 tracking-wider">
-                                ({totalHours}h Ã— 0.5) + ({totalAchievements} acv Ã— 0.3) + ({totalGames} games Ã— 0.2)
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-start md:items-end gap-3">
-                        <div className={cn("inline-flex items-center gap-2 px-5 py-2 rounded-sm border text-sm font-black tracking-[0.3em] uppercase", rank.badge)}>
-                            <ShieldCheck className="w-4 h-4" />
-                            {playerRank}
-                        </div>
-                        <div className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest text-right">
-                            {playerRank === "PLATINUM" && "Elite Tier â€” Top 1%"}
-                            {playerRank === "GOLD" && "Score â‰¥ 1500 â€” Advanced"}
-                            {playerRank === "SILVER" && "Score â‰¥ 500 â€” Intermediate"}
-                            {playerRank === "BRONZE" && "Score < 500 â€” Developing"}
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </section>
-
-        {/* ANALYTICS SECTION */}
-        <section>
-            <div className="flex items-center gap-4 mb-8">
-                <div className="w-8 h-[2px] bg-primary/40"></div>
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Analytics</h2>
-            </div>
-            {sortedLibrary.length > 0 && (
-                <AnalyticsVisuals library={sortedLibrary} />
+          <SectionHeader title="Player Score" />
+          <motion.div
+            variants={itemVariant}
+            className={cn(
+              "relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 p-8 md:p-10 backdrop-blur-sm transition-all duration-500 group",
+              rank.glow, rank.border
             )}
-        </section>
-
-        {/* TOP GAMES SECTION */}
-        <section>
-            <div className="flex items-center gap-4 mb-10">
-                <div className="w-8 h-[2px] bg-primary/40"></div>
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Top 5 Most Played</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                {top5Games.map((game: any, index: number) => {
-                    const hours = Math.round(game.playtime_forever / 60);
-                    const imageSrc = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`;
-                    
-                    return (
-                        <motion.div 
-                            key={game.appid}
-                            variants={itemVariant}
-                            whileHover={{ scale: 1.05, y: -10 }}
-                            onClick={() => setSelectedGame(game)}
-                            className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,229,255,0.15)]"
-                        >
-                            <div className="aspect-[4/3] w-full relative overflow-hidden bg-zinc-900">
-                                <img 
-                                    src={imageSrc} 
-                                    alt={game.name}
-                                    onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_616x353.jpg`;
-                                    }}
-                                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] via-[#0d0e12]/50 to-transparent" />
-                                
-                                <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center font-black text-xs text-primary shadow-lg">
-                                    #{index + 1}
-                                </div>
-                            </div>
-                            
-                            <div className="p-5 relative z-10 -mt-6">
-                                <h3 className="text-sm font-bold tracking-widest uppercase mb-1 line-clamp-1 group-hover:text-primary transition-colors text-white/90">
-                                    {game.name}
-                                </h3>
-                                <p className="text-xs font-mono text-zinc-500 tracking-widest group-hover:text-zinc-300 transition-colors">
-                                    {hours} HOURS
-                                </p>
-                            </div>
-                            
-                            {/* Bottom active line */}
-                            <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-500 ease-out" />
-                        </motion.div>
-                    );
-                })}
-            </div>
-        </section>
-
-        {/* FULL LIBRARY SECTION */}
-        <section>
-            <div className="flex items-center gap-4 mb-10">
-                <div className="w-8 h-[2px] bg-primary/40"></div>
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.3em] uppercase text-white/90">Full Arsenal</h2>
-                <div className="ml-auto text-xs font-mono text-zinc-500 tracking-widest uppercase">
-                    {sortedLibrary.length} Titles Logged ({">"}1H)
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+              <div className="flex items-center gap-6">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <TrendingUp className="w-10 h-10 text-white/80" />
                 </div>
+                <div>
+                  <p className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400 mb-2">Composite Score</p>
+                  <div className={cn("text-6xl md:text-7xl font-black tracking-widest font-heading leading-none", rank.color)}>
+                    {playerScore.toLocaleString()}
+                  </div>
+                  <p className="text-xs font-mono text-zinc-500 mt-3 tracking-wider">
+                    ({totalHours}h x 0.5) + ({totalAchievements} achievements x 0.3) + ({totalGames} games x 0.2)
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col items-start md:items-end gap-3">
+                <div className={cn("inline-flex items-center gap-2 px-6 py-2.5 rounded-sm border text-sm font-black tracking-[0.3em] uppercase", rank.badge)}>
+                  <ShieldCheck className="w-4 h-4" />
+                  {playerRank}
+                </div>
+                <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest text-right">
+                  {rankDesc[playerRank]}
+                </p>
+              </div>
             </div>
+          </motion.div>
+        </section>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                {sortedLibrary.map((game: any) => {
-                    const hours = Math.round(game.playtime_forever / 60);
-                    const imageSrc = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`;
-                    
-                    return (
-                        <motion.div 
-                            key={`lib-${game.appid}`}
-                            variants={itemVariant}
-                            whileHover={{ scale: 1.05 }}
-                            onClick={() => setSelectedGame(game)}
-                            className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all hover:border-primary/30"
-                        >
-                            <div className="aspect-[16/9] w-full relative overflow-hidden bg-zinc-900">
-                                <img 
-                                    src={imageSrc} 
-                                    alt={game.name}
-                                    onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_616x353.jpg`;
-                                    }}
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] to-transparent" />
-                            </div>
-                            
-                            <div className="p-4 relative z-10 -mt-4">
-                                <h3 className="text-xs font-bold tracking-widest uppercase mb-1 line-clamp-1 group-hover:text-primary transition-colors text-white/80">
-                                    {game.name}
-                                </h3>
-                                <p className="text-[10px] font-mono text-zinc-500 tracking-widest group-hover:text-zinc-400">
-                                    {hours}H
-                                </p>
-                            </div>
-                        </motion.div>
-                    );
-                })}
+        {/* ANALYTICS */}
+        <section>
+          <SectionHeader title="Analytics" />
+          {sortedLibrary.length > 0 && <AnalyticsVisuals library={sortedLibrary} />}
+        </section>
+
+        {/* TOP 5 MOST PLAYED */}
+        <section>
+          <SectionHeader title="Top 5 Most Played" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {top5Games.map((game: any, index: number) => {
+              const hours = Math.round(game.playtime_forever / 60);
+              const imageSrc = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`;
+              return (
+                <motion.div
+                  key={game.appid}
+                  variants={itemVariant}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                  onClick={() => setSelectedGame(game)}
+                  className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,229,255,0.15)]"
+                >
+                  <div className="aspect-[4/3] w-full relative overflow-hidden bg-zinc-900">
+                    <img
+                      src={imageSrc}
+                      alt={game.name}
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/header.jpg`; }
+                        else img.style.display = "none";
+                      }}
+                      className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] via-[#0d0e12]/50 to-transparent" />
+                    <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center font-black text-xs text-primary shadow-lg">
+                      #{index + 1}
+                    </div>
+                  </div>
+                  <div className="p-5 relative z-10 -mt-6">
+                    <h3 className="text-sm font-bold tracking-wider uppercase mb-1.5 line-clamp-2 group-hover:text-primary transition-colors text-white/90 leading-snug">
+                      {game.name}
+                    </h3>
+                    <p className="text-xs font-mono text-zinc-400 tracking-widest group-hover:text-zinc-200 transition-colors">
+                      {hours} HOURS
+                    </p>
+                  </div>
+                  <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-500 ease-out" />
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* FULL ARSENAL */}
+        <section>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-8 h-[2px] bg-primary/40"></div>
+            <h2 className="text-2xl md:text-3xl font-black tracking-[0.2em] uppercase text-white/90">Full Arsenal</h2>
+            <div className="ml-auto text-sm font-mono text-zinc-500 tracking-widest uppercase">
+              {sortedLibrary.length} Titles (&gt;1H)
             </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+            {sortedLibrary.map((game: any) => {
+              const hours = Math.round(game.playtime_forever / 60);
+              const imageSrc = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`;
+              return (
+                <motion.div
+                  key={`lib-${game.appid}`}
+                  variants={itemVariant}
+                  whileHover={{ scale: 1.04 }}
+                  onClick={() => setSelectedGame(game)}
+                  className="group relative rounded-lg overflow-hidden border border-white/5 bg-black/40 cursor-pointer transition-all hover:border-primary/30"
+                >
+                  <div className="aspect-[16/9] w-full relative overflow-hidden bg-zinc-900">
+                    <img
+                      src={imageSrc}
+                      alt={game.name}
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/header.jpg`; }
+                        else img.style.display = "none";
+                      }}
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12] to-transparent" />
+                  </div>
+                  <div className="p-3.5 relative z-10 -mt-4">
+                    <h3 className="text-xs font-bold tracking-wider uppercase mb-1 line-clamp-1 group-hover:text-primary transition-colors text-white/80">
+                      {game.name}
+                    </h3>
+                    <p className="text-xs font-mono text-zinc-500 group-hover:text-zinc-400">
+                      {hours}H
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </section>
       </motion.div>
 
       {/* GAME DETAILS MODAL */}
       <AnimatePresence>
         {selectedGame && (
-          <GameDetailsModal 
-              game={selectedGame} 
-              steamId={localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki"} 
-              onClose={() => setSelectedGame(null)} 
+          <GameDetailsModal
+            game={selectedGame}
+            steamId={localStorage.getItem("gamesphere_steam_id") || "SwastidSolanki"}
+            onClose={() => setSelectedGame(null)}
           />
         )}
       </AnimatePresence>
@@ -372,34 +355,41 @@ export default function Dashboard() {
   );
 }
 
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-8">
+      <div className="w-8 h-[2px] bg-primary/40"></div>
+      <h2 className="text-2xl md:text-3xl font-black tracking-[0.2em] uppercase text-white/90">{title}</h2>
+    </div>
+  );
+}
+
 function HeroStatCard({ icon, label, value, subValue, color, borderColor }: any) {
-    return (
-        <motion.div 
-            variants={itemVariant}
-            className={cn(
-                "relative overflow-hidden rounded-xl border border-white/5 bg-black/40 p-8 backdrop-blur-sm transition-all duration-500 cursor-default group h-full",
-                borderColor
-            )}
-        >
-            <div className={cn("absolute inset-0 bg-gradient-to-br opacity-50 group-hover:opacity-100 transition-opacity duration-500", color)} />
-            
-            <div className="relative z-10">
-                <div className="mb-6 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-white/80 group-hover:text-white transition-colors shadow-lg">
-                    {icon}
-                </div>
-                
-                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 mb-2 group-hover:text-zinc-300 transition-colors">{label}</h3>
-                <div className="text-3xl lg:text-4xl font-black tracking-widest text-white/90 truncate group-hover:text-white transition-colors shadow-white">
-                    {value}
-                </div>
-                {subValue && (
-                    <div className="mt-2 text-[10px] font-mono tracking-[0.2em] text-primary/80 uppercase">
-                        {subValue}
-                    </div>
-                )}
-            </div>
-        </motion.div>
-    );
+  return (
+    <motion.div
+      variants={itemVariant}
+      className={cn(
+        "relative overflow-hidden rounded-xl border border-white/5 bg-black/40 p-8 backdrop-blur-sm transition-all duration-500 cursor-default group h-full",
+        borderColor
+      )}
+    >
+      <div className={cn("absolute inset-0 bg-gradient-to-br opacity-50 group-hover:opacity-100 transition-opacity duration-500", color)} />
+      <div className="relative z-10">
+        <div className="mb-5 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-white/80 group-hover:text-white transition-colors shadow-lg">
+          {icon}
+        </div>
+        <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400 mb-3 group-hover:text-zinc-200 transition-colors">{label}</h3>
+        <div className="text-3xl lg:text-4xl font-black tracking-widest text-white truncate group-hover:text-white transition-colors leading-tight">
+          {value}
+        </div>
+        {subValue && (
+          <p className="mt-2.5 text-xs font-mono tracking-widest text-primary/70 uppercase">
+            {subValue}
+          </p>
+        )}
+      </div>
+    </motion.div>
+  );
 }
 
 function DashboardLoading() {
@@ -408,11 +398,10 @@ function DashboardLoading() {
       <div className="text-center">
         <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto mb-6" />
         <h2 className="text-3xl font-black tracking-[0.5em] mb-4 text-white">ACCESSING_VAULT</h2>
-        <p className="text-primary text-[10px] uppercase font-mono tracking-widest animate-pulse">
-            SYNCHRONIZING_STEAM_ARCHIVES...
+        <p className="text-primary text-sm uppercase font-mono tracking-widest animate-pulse">
+          SYNCHRONIZING_STEAM_ARCHIVES...
         </p>
       </div>
     </div>
   );
 }
-
