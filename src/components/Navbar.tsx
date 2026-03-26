@@ -31,7 +31,7 @@ export default function Navbar() {
             )}
           >
             <item.icon className="w-4 h-4" />
-            <span className="text-[10px] sm:text-xs font-heading tracking-[0.2em] font-bold uppercase hidden sm:inline-block">{item.name}</span>
+            <span className="text-xs font-heading tracking-[0.2em] font-bold uppercase hidden sm:inline-block">{item.name}</span>
           </Link>
         ))}
       </div>

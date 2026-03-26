@@ -38,7 +38,7 @@ export default function GameBanner({ appid, name }: GameBannerProps) {
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#a0c0d0_1px,transparent_1px)] [background-size:20px_20px]" />
             <div className="relative text-center p-4">
                 <Gamepad2 className="w-12 h-12 text-primary/20 mx-auto mb-2" />
-                <p className="text-[10px] font-black text-primary/40 tracking-[0.3em] uppercase">{name}</p>
+                <p className="text-xs font-black text-primary/40 tracking-[0.3em] uppercase">{name}</p>
             </div>
         </div>
     );
