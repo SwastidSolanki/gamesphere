@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowRight, 
-  LayoutDashboard, 
-  Trophy, 
-  Swords, 
-  User, 
-  Zap, 
+import {
+  ArrowRight,
+  LayoutDashboard,
+  Trophy,
+  Swords,
+  User,
+  Zap,
   ShieldCheck,
   TrendingUp,
   Gamepad2,
@@ -60,7 +60,7 @@ function Typewriter({ text, delay = 100, onComplete }: { text: string, delay?: n
 // --- LEADERBOARD ITEM COMPONENT ---
 function LeaderboardItem({ rank, name, score, status, color }: any) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ x: -20, opacity: 0 }}
       whileInView={{ x: 0, opacity: 1 }}
       viewport={{ once: true }}
@@ -93,164 +93,152 @@ export default function LandingPage() {
   useEffect(() => {
     // 1. HERO TITLE KINETIC SPLIT
     gsap.to(".gsap-hero-split-left", {
-        scrollTrigger: {
-            trigger: ".gsap-hero-section",
-            start: "top top",
-            end: "bottom top",
-            scrub: true
-        },
-        x: -400,
-        opacity: 0,
-        ease: "none"
+      scrollTrigger: {
+        trigger: ".gsap-hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      },
+      x: -400,
+      opacity: 0,
+      ease: "none"
     });
 
     gsap.to(".gsap-hero-split-right", {
-        scrollTrigger: {
-            trigger: ".gsap-hero-section",
-            start: "top top",
-            end: "bottom top",
-            scrub: true
-        },
-        x: 400,
-        opacity: 0,
-        ease: "none"
+      scrollTrigger: {
+        trigger: ".gsap-hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      },
+      x: 400,
+      opacity: 0,
+      ease: "none"
     });
 
-    // 2. DASHBOARD FEATURE GHOST TEXT
-    gsap.to(".gsap-ghost-text", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true
-        },
-        x: -200,
-        opacity: 0.1,
-        ease: "none"
-    });
 
     // 3. STAT CARDS STAGGER
     gsap.from(".gsap-stat-card", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top 70%",
-        },
-        y: 100,
-        scale: 0.9,
-        opacity: 0,
-        duration: 1.2,
-        ease: "expo.out",
-        stagger: 0.2
+      scrollTrigger: {
+        trigger: ".gsap-dashboard-section",
+        start: "top 70%",
+      },
+      y: 100,
+      scale: 0.9,
+      opacity: 0,
+      duration: 1.2,
+      ease: "expo.out",
+      stagger: 0.2
     });
 
     // 4. LEGEND ASCENSION DUEL
     gsap.to(".gsap-warrior-frame", {
-        scrollTrigger: {
-            trigger: ".gsap-compare-section",
-            start: "top 70%",
-        },
-        scale: 1,
-        rotate: 0,
-        duration: 2,
-        ease: "expo.out",
-        stagger: 0.5
+      scrollTrigger: {
+        trigger: ".gsap-compare-section",
+        start: "top 70%",
+      },
+      scale: 1,
+      rotate: 0,
+      duration: 2,
+      ease: "expo.out",
+      stagger: 0.5
     });
 
     gsap.to(".gsap-warrior-image", {
-        scrollTrigger: {
-            trigger: ".gsap-compare-section",
-            start: "top 70%",
-        },
-        opacity: 1,
-        scale: 1,
-        duration: 1.5,
-        ease: "power2.out",
-        delay: 0.5,
-        stagger: 0.5
+      scrollTrigger: {
+        trigger: ".gsap-compare-section",
+        start: "top 70%",
+      },
+      opacity: 1,
+      scale: 1,
+      duration: 1.5,
+      ease: "power2.out",
+      delay: 0.5,
+      stagger: 0.5
     });
 
     gsap.to(".gsap-warrior-info", {
-        scrollTrigger: {
-            trigger: ".gsap-compare-section",
-            start: "top 70%",
-        },
-        opacity: 1,
-        y: -10,
-        duration: 1,
-        ease: "power2.out",
-        delay: 1,
-        stagger: 0.5
+      scrollTrigger: {
+        trigger: ".gsap-compare-section",
+        start: "top 70%",
+      },
+      opacity: 1,
+      y: -10,
+      duration: 1,
+      ease: "power2.out",
+      delay: 1,
+      stagger: 0.5
     });
 
     // 5. HUD CARD MECHANICAL REVEAL
     gsap.to(".gsap-hud-icon", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top 70%",
-        },
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "expo.out",
-        stagger: 0.1
+      scrollTrigger: {
+        trigger: ".gsap-dashboard-section",
+        start: "top 70%",
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "expo.out",
+      stagger: 0.1
     });
 
     gsap.to(".gsap-hud-label", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top 70%",
-        },
-        opacity: 1,
-        x: 0,
-        duration: 0.8,
-        ease: "expo.out",
-        delay: 0.2,
-        stagger: 0.1
+      scrollTrigger: {
+        trigger: ".gsap-dashboard-section",
+        start: "top 70%",
+      },
+      opacity: 1,
+      x: 0,
+      duration: 0.8,
+      ease: "expo.out",
+      delay: 0.2,
+      stagger: 0.1
     });
 
     gsap.to(".gsap-hud-value", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top 70%",
-        },
-        opacity: 1,
-        duration: 1,
-        ease: "none",
-        delay: 0.4,
-        stagger: 0.1
+      scrollTrigger: {
+        trigger: ".gsap-dashboard-section",
+        start: "top 70%",
+      },
+      opacity: 1,
+      duration: 1,
+      ease: "none",
+      delay: 0.4,
+      stagger: 0.1
     });
 
     gsap.to(".gsap-swords-icon", {
-        scrollTrigger: {
-            trigger: ".gsap-compare-section",
-            start: "top 60%",
-        },
-        opacity: 1,
-        scale: 1,
-        rotate: 0,
-        duration: 2,
-        ease: "expo.out"
+      scrollTrigger: {
+        trigger: ".gsap-compare-section",
+        start: "top 60%",
+      },
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+      duration: 2,
+      ease: "expo.out"
     });
     // 7. COMPARISON GAUGES
-    gsap.fromTo(".gsap-gauge-container", 
-        { opacity: 0, y: 30 },
-        {
-            scrollTrigger: {
-                trigger: ".gsap-compare-section",
-                start: "top 60%",
-            },
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: "expo.out",
-            stagger: 0.2
-        }
+    gsap.fromTo(".gsap-gauge-container",
+      { opacity: 0, y: 30 },
+      {
+        scrollTrigger: {
+          trigger: ".gsap-compare-section",
+          start: "top 60%",
+        },
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "expo.out",
+        stagger: 0.2
+      }
     );
   }, []);
 
   const handleConnect = (platform: string, id: string) => {
     if (platform === "steam") {
-        localStorage.setItem(`gamesphere_${platform}_id`, id);
+      localStorage.setItem(`gamesphere_${platform}_id`, id);
     }
     router.push("/dashboard");
   };
@@ -270,16 +258,16 @@ export default function LandingPage() {
       <Navbar isVisible={!isModalOpen} />
 
       {/* 1. HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-start pt-32 text-center px-6 overflow-hidden gsap-hero-section">
+      <section className="relative h-screen flex flex-col items-center justify-center pt-10 md:pt-0 text-center px-6 overflow-hidden gsap-hero-section">
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 z-0">
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               scale: [1, 1.1, 1],
               opacity: [0.05, 0.1, 0.05],
             }}
             transition={{ duration: 8, repeat: Infinity }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px]" 
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px]"
           />
         </div>
 
@@ -287,17 +275,17 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative z-20 max-w-5xl"
+          className="relative z-20 max-w-5xl -mt-[15vh] md:-mt-[15vh] flex flex-col items-center justify-center w-full"
         >
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-12">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-8 md:mb-12">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             <span className="text-[10px] font-bold tracking-[0.4em] text-primary/80 uppercase font-mono">Connection Established // 100% Sync</span>
           </div>
 
           {/* Title Area */}
-          <div className="relative group gsap-hero-title">
-            <h1 className="text-[12vw] md:text-[14rem] font-heading font-black tracking-tight mb-4 md:mb-8 leading-[0.7] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 select-none">
+          <div className="relative group gsap-hero-title w-full flex justify-center">
+            <h1 className="text-[22vw] sm:text-[16vw] md:text-[14rem] font-heading font-black tracking-tighter mb-8 md:mb-12 leading-[0.75] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 select-none">
               <span className="gsap-hero-split-left inline-block">
                 <Typewriter text="GAME" delay={150} />
               </span>
@@ -313,10 +301,10 @@ export default function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-12 md:mb-16 px-4"
+                className="mb-10 md:mb-20 px-4"
               >
-                <p className="text-sm md:text-xl font-black text-primary/60 tracking-[0.4em] md:tracking-[0.8em] uppercase leading-relaxed">
-                   Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white">Transcended.</span>
+                <p className="text-base sm:text-lg md:text-xl font-black text-primary/60 tracking-[0.5em] md:tracking-[0.8em] uppercase leading-relaxed md:leading-relaxed">
+                  Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white mt-4 block md:inline">Transcended.</span>
                 </p>
               </motion.div>
             )}
@@ -329,15 +317,15 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-8"
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg px-6"
               >
-                <button 
+                <button
                   onClick={handleEnterGallery}
                   className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 bg-primary text-black font-black text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] uppercase hover:bg-white transition-all flex items-center justify-center gap-4 rounded-lg group shadow-[0_0_30px_rgba(255,51,51,0.2)]"
                 >
                   Enter Gallery <ArrowRight className="w-5 h-5 group-hover:translate-x-3 transition-transform" />
                 </button>
-                <button 
+                <button
                   onClick={() => setIsModalOpen(true)}
                   className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 bg-transparent border border-white/20 text-white font-black text-[10px] md:text-xs tracking-widest uppercase hover:bg-white/10 transition-all rounded-lg"
                 >
@@ -349,16 +337,16 @@ export default function LandingPage() {
         </motion.div>
 
         {/* Scroll Protocol Indicator */}
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-12 flex flex-col items-center gap-4 opacity-40"
         >
           <span className="text-[10px] uppercase font-bold tracking-[0.4em] font-mono opacity-80">Explore Dashboard</span>
-          <motion.div 
+          <motion.div
             animate={{ y: [0, 5, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-4" 
+            className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-4"
           />
         </motion.div>
       </section>
@@ -369,15 +357,15 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
           <div className="space-y-10 gsap-dashboard-text">
             <h2 className="text-4xl md:text-8xl font-sans font-black tracking-tight leading-[0.85] uppercase text-white mix-blend-difference mb-12">
-            YOUR GAMING <br /> <span className="text-primary">LEGACY</span>
-          </h2>
+              YOUR GAMING <br /> <span className="text-primary">LEGACY</span>
+            </h2>
             <p className="text-zinc-500 text-lg leading-relaxed max-w-xl font-bold tracking-tight">
               "Every journey has a story." Map your progress across the multi-verse of gaming history. From the peaks of high fantasy to the depths of sci-fi, your legacy is eternal.
             </p>
             <div className="pt-6">
-                <button onClick={() => router.push("/dashboard")} className="group flex items-center gap-5 text-sm font-bold text-primary tracking-widest uppercase hover:text-white transition-all">
-                  Access Dashboard <ChevronRight className="w-5 h-5 group-hover:translate-x-3 transition-all" />
-                </button>
+              <button onClick={() => router.push("/dashboard")} className="group flex items-center gap-5 text-sm font-bold text-primary tracking-widest uppercase hover:text-white transition-all">
+                Access Dashboard <ChevronRight className="w-5 h-5 group-hover:translate-x-3 transition-all" />
+              </button>
             </div>
           </div>
 
@@ -390,13 +378,13 @@ export default function LandingPage() {
               <MockHUDCard icon={<Gamepad2 className="w-10 h-10" />} label="Manifest Titles" value="86" color="text-zinc-500" />
             </div>
             <div className="sm:col-span-2 gsap-stat-card mt-8 flex flex-col">
-                <MockHUDCard 
-                    icon={<TrendingUp className="w-12 h-12" />} 
-                    label="Active Engagement // [FOCUS]" 
-                    value="GHOST_OF_TSUSHIMA" 
-                    color="text-primary"
-                    wide 
-                />
+              <MockHUDCard
+                icon={<TrendingUp className="w-12 h-12" />}
+                label="Active Engagement // [FOCUS]"
+                value="GHOST_OF_TSUSHIMA"
+                color="text-primary"
+                wide
+              />
             </div>
           </div>
         </div>
@@ -412,28 +400,29 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-center max-w-5xl mx-auto">
-             <div className="gsap-warrior-left">
-                <MockWarrior 
-                  name="KRATOS" 
-                  level="999" 
-                  image="/assets/kratos_og.png"
-                />
-             </div>
-             <motion.div 
-               className="flex flex-col items-center gap-6"
-             >
-                <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center gsap-swords-icon">
-                    <Swords className="w-10 h-10 text-primary" />
-                </div>
-                <span className="text-4xl font-black text-primary font-mono tracking-[0.5em] uppercase italic opacity-0 gsap-swords-icon">VS</span>
-             </motion.div>
-             <div className="gsap-warrior-right">
-                <MockWarrior 
-                  name="ELLIE" 
-                  level="67" 
-                  image="/assets/ellie_og.png"
-                />
-             </div>
+            <div className="gsap-warrior-left">
+              <MockWarrior
+                name="KRATOS"
+                level="999"
+                image="/assets/kratos_og.png"
+                isWinner={true}
+              />
+            </div>
+            <motion.div
+              className="flex flex-col items-center gap-6"
+            >
+              <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center gsap-swords-icon">
+                <Swords className="w-10 h-10 text-primary" />
+              </div>
+              <span className="text-4xl font-black text-primary font-mono tracking-[0.5em] uppercase italic opacity-0 gsap-swords-icon">VS</span>
+            </motion.div>
+            <div className="gsap-warrior-right">
+              <MockWarrior
+                name="ELLIE"
+                level="67"
+                image="/assets/ellie_og.png"
+              />
+            </div>
           </div>
 
           <div className="mt-24 max-w-xl mx-auto space-y-12">
@@ -481,28 +470,28 @@ export default function LandingPage() {
         </div>
       </section>
       <footer className="py-40 px-6 border-t border-white/10 bg-transparent relative">
-         <div className="max-w-[1850px] mx-auto px-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-end mb-32">
-              <div className="space-y-8">
-                  <h3 className="text-4xl md:text-5xl font-bold tracking-tight uppercase text-white">Contact Terminal</h3>
-                  <p className="text-zinc-500 text-lg font-medium tracking-wide leading-relaxed max-w-md">
-                     System nodes are active. Interface with the architect to expand the archive.
-                  </p>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                  <SocialLink href="https://instagram.com/swastidsolankii" icon={<Camera className="w-5 h-5" />} label="Instagram" />
-                  <SocialLink href="https://www.linkedin.com/in/swastidsolanki/" icon={<ExternalLink className="w-5 h-5" />} label="LinkedIn" />
-                  <SocialLink href="https://github.com/SwastidSolanki" icon={<Terminal className="w-5 h-5" />} label="GitHub" />
-              </div>
-           </div>
+        <div className="max-w-[1850px] mx-auto px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-end mb-32">
+            <div className="space-y-8">
+              <h3 className="text-4xl md:text-5xl font-bold tracking-tight uppercase text-white">Let's Connect</h3>
+              <p className="text-zinc-500 text-lg font-medium tracking-wide leading-relaxed max-w-md">
+                Have a question or want to collaborate? Feel free to reach out through any of these channels.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              <SocialLink href="https://instagram.com/swastidsolankii" icon={<Camera className="w-5 h-5" />} label="Instagram" />
+              <SocialLink href="https://www.linkedin.com/in/swastidsolanki/" icon={<ExternalLink className="w-5 h-5" />} label="LinkedIn" />
+              <SocialLink href="https://github.com/SwastidSolanki" icon={<Terminal className="w-5 h-5" />} label="GitHub" />
+            </div>
+          </div>
 
-           <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
-              <p className="text-xs font-bold tracking-widest uppercase">GameSphere © 2026 // Distributed Intelligence</p>
-              <div className="flex items-center gap-4">
-                 <ShieldCheck className="w-4 h-4 text-primary" />
-                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-mono">Encryption established</span>
-              </div>
-           </div>
+          <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
+            <p className="text-xs font-bold tracking-widest uppercase">GameSphere © 2026 // Distributed Intelligence</p>
+            <div className="flex items-center gap-4">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-mono">Encryption established</span>
+            </div>
+          </div>
         </div>
       </footer>
 
@@ -516,7 +505,7 @@ export default function LandingPage() {
             className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center gap-8"
           >
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.5, 1, 0.5]
               }}
@@ -529,13 +518,13 @@ export default function LandingPage() {
               <h3 className="text-4xl md:text-5xl font-black tracking-tight uppercase text-white leading-tight">
                 Leaping in <br className="md:hidden" /> <span className="text-primary italic">faith</span>
               </h3>
-              
+
               <div className="w-64 h-1 bg-white/10 rounded-full overflow-hidden relative mx-auto">
-                <motion.div 
-                   initial={{ width: "0%" }}
-                   animate={{ width: "100%" }}
-                   transition={{ duration: 1.5, ease: "easeInOut" }}
-                   className="h-full bg-primary"
+                <motion.div
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                  className="h-full bg-primary"
                 />
               </div>
 
@@ -545,9 +534,9 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
-      <ConnectModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <ConnectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onConnect={handleConnect}
       />
     </main>
@@ -573,23 +562,24 @@ function MockHUDCard({ icon, label, value, color, wide = false }: any) {
   );
 }
 
-function MockWarrior({ name, level, image }: any) {
+function MockWarrior({ name, level, image, isWinner = false }: any) {
   return (
-    <div
-      className="flex flex-col items-center gap-8"
-    >
-      <div className="w-40 h-52 md:w-56 md:h-72 bg-zinc-950 border border-white/10 relative group rounded-2xl overflow-hidden shadow-2xl scale-0 gsap-warrior-frame">
-         <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors z-10" />
-         {image ? (
-           <img src={image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-100 scale-100 gsap-warrior-image" alt={name} />
-         ) : (
-           <User className="absolute inset-0 m-auto w-12 h-12 text-zinc-800" />
-         )}
-         <div className="absolute inset-0 border-[0.5px] border-white/5 rounded-2xl pointer-events-none z-20" />
+    <div className="flex flex-col items-center gap-8">
+      <div className={cn(
+        "w-40 h-52 md:w-56 md:h-72 bg-zinc-950 relative group rounded-2xl overflow-hidden scale-0 gsap-warrior-frame border-2 md:border",
+        isWinner ? "border-primary/50 md:border-white/10 shadow-[0_0_40px_rgba(0,229,255,0.2)] md:shadow-2xl" : "border-white/10 shadow-2xl"
+      )}>
+        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors z-10" />
+        {image ? (
+          <img src={image} className="w-full h-full object-cover transition-all opacity-100 scale-100 gsap-warrior-image" alt={name} />
+        ) : (
+          <User className="absolute inset-0 m-auto w-12 h-12 text-zinc-800" />
+        )}
+        <div className="absolute inset-0 border-[0.5px] border-white/5 rounded-2xl pointer-events-none z-20" />
       </div>
       <div className="text-center opacity-0 gsap-warrior-info">
-         <h4 className="text-xl font-bold tracking-tight mb-3 uppercase">{name}</h4>
-         <span className="px-4 py-1 bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold tracking-[0.3em] uppercase font-mono">Level {level}</span>
+        <h4 className="text-xl font-bold tracking-tight mb-3 uppercase">{name}</h4>
+        <span className="px-4 py-1 bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold tracking-[0.3em] uppercase font-mono">Level {level}</span>
       </div>
     </div>
   );
@@ -597,25 +587,25 @@ function MockWarrior({ name, level, image }: any) {
 
 function ComparisonGauge({ label, v1, v2 }: any) {
   return (
-    <div 
+    <div
       className="space-y-4 opacity-0 gsap-gauge-container"
     >
-       <p className="text-xs font-bold text-center text-zinc-500 uppercase tracking-widest">{label}</p>
-       <div className="flex items-center gap-1 h-2.5 rounded-full overflow-hidden">
-          <motion.div 
-            initial={{ flex: 0 }}
-            whileInView={{ flex: v1 }}
-            viewport={{ once: true }}
-            className="h-full bg-primary" 
-          />
-          <div className="w-[1px] h-full bg-white/20" />
-          <motion.div 
-            initial={{ flex: 0 }}
-            whileInView={{ flex: v2 }}
-            viewport={{ once: true }}
-            className="h-full bg-red-600/40" 
-          />
-       </div>
+      <p className="text-xs font-bold text-center text-zinc-500 uppercase tracking-widest">{label}</p>
+      <div className="flex items-center gap-1 h-2.5 rounded-full overflow-hidden">
+        <motion.div
+          initial={{ flex: 0 }}
+          whileInView={{ flex: v1 }}
+          viewport={{ once: true }}
+          className="h-full bg-primary"
+        />
+        <div className="w-[1px] h-full bg-white/20" />
+        <motion.div
+          initial={{ flex: 0 }}
+          whileInView={{ flex: v2 }}
+          viewport={{ once: true }}
+          className="h-full bg-red-600/40"
+        />
+      </div>
     </div>
   );
 }
