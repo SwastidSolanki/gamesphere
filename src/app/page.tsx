@@ -275,7 +275,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative z-20 max-w-5xl -mt-24 md:-mt-10"
+          className="relative z-20 max-w-5xl -mt-16 md:-mt-10 flex flex-col items-center justify-center w-full"
         >
           {/* Status Badge */}
           <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-8 md:mb-12">
@@ -284,8 +284,8 @@ export default function LandingPage() {
           </div>
 
           {/* Title Area */}
-          <div className="relative group gsap-hero-title">
-            <h1 className="text-[12vw] md:text-[14rem] font-heading font-black tracking-tight mb-4 md:mb-8 leading-[0.7] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 select-none">
+          <div className="relative group gsap-hero-title w-full flex justify-center">
+            <h1 className="text-[22vw] sm:text-[16vw] md:text-[14rem] font-heading font-black tracking-tighter mb-8 md:mb-12 leading-[0.75] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 select-none">
               <span className="gsap-hero-split-left inline-block">
                 <Typewriter text="GAME" delay={150} />
               </span>
@@ -301,10 +301,10 @@ export default function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-12 md:mb-16 px-4"
+                className="mb-16 md:mb-20 px-4"
               >
-                <p className="text-sm md:text-xl font-black text-primary/60 tracking-[0.4em] md:tracking-[0.8em] uppercase leading-relaxed">
-                   Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white">Transcended.</span>
+                <p className="text-base sm:text-lg md:text-xl font-black text-primary/60 tracking-[0.5em] md:tracking-[0.8em] uppercase leading-relaxed md:leading-relaxed">
+                   Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white mt-4 block md:inline">Transcended.</span>
                 </p>
               </motion.div>
             )}
@@ -317,7 +317,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-8"
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg px-6"
               >
                 <button 
                   onClick={handleEnterGallery}
