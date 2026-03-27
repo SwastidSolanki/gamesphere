@@ -275,7 +275,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative z-20 max-w-5xl -mt-[15vh] md:-mt-10 flex flex-col items-center justify-center w-full"
+          className="relative z-20 max-w-5xl -mt-[15vh] md:-mt-[15vh] flex flex-col items-center justify-center w-full"
         >
           {/* Status Badge */}
           <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-8 md:mb-12">

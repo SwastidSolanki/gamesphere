@@ -321,7 +321,7 @@ export default function ComparePage() {
   return (
     <main className="min-h-screen bg-[#0d0f14] text-white selection:bg-primary/30 selection:text-black overflow-x-hidden">
       <Navbar />
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 pt-20 pb-20">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-12 pt-24 md:pt-36 pb-20">
 
         {/* Header */}
         <div className="relative z-10 mb-16 font-heading text-center flex flex-col items-center">
