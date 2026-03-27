@@ -10,10 +10,10 @@ import { fetchLeaderboardData, fetchVerifiedElites } from "@/lib/dataFetcher";
 type Metric = "score" | "hours" | "games" | "achievements";
 
 const RANK_TIERS = [
-  { min: 3000, label: "PLATINUM", color: "text-cyan-300",   bg: "bg-cyan-400/10 border-cyan-400/30"   },
-  { min: 1500, label: "GOLD",     color: "text-yellow-300", bg: "bg-yellow-400/10 border-yellow-400/30" },
-  { min: 500,  label: "SILVER",   color: "text-zinc-300",   bg: "bg-zinc-400/10 border-zinc-400/20"   },
-  { min: 0,    label: "BRONZE",   color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/30" },
+  { min: 3000, label: "PLATINUM", color: "text-cyan-300", bg: "bg-cyan-400/10 border-cyan-400/30" },
+  { min: 1500, label: "GOLD", color: "text-yellow-300", bg: "bg-yellow-400/10 border-yellow-400/30" },
+  { min: 500, label: "SILVER", color: "text-zinc-300", bg: "bg-zinc-400/10 border-zinc-400/20" },
+  { min: 0, label: "BRONZE", color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/30" },
 ];
 
 function getRankTier(score: number) {
@@ -21,16 +21,16 @@ function getRankTier(score: number) {
 }
 
 const TOP3_STYLES = [
-  { border: "border-yellow-400/40", glow: "shadow-[0_0_20px_rgba(250,204,21,0.12)]",  num: "text-yellow-400",  bg: "bg-yellow-400/5"  }, // #1 gold
-  { border: "border-zinc-400/30",   glow: "shadow-[0_0_16px_rgba(212,212,216,0.08)]", num: "text-zinc-300",    bg: "bg-zinc-400/5"    }, // #2 silver
-  { border: "border-orange-400/30", glow: "shadow-[0_0_16px_rgba(251,146,60,0.08)]",  num: "text-orange-400",  bg: "bg-orange-400/5"  }, // #3 bronze
+  { border: "border-yellow-400/40", glow: "shadow-[0_0_20px_rgba(250,204,21,0.12)]", num: "text-yellow-400", bg: "bg-yellow-400/5" }, // #1 gold
+  { border: "border-zinc-400/30", glow: "shadow-[0_0_16px_rgba(212,212,216,0.08)]", num: "text-zinc-300", bg: "bg-zinc-400/5" }, // #2 silver
+  { border: "border-orange-400/30", glow: "shadow-[0_0_16px_rgba(251,146,60,0.08)]", num: "text-orange-400", bg: "bg-orange-400/5" }, // #3 bronze
 ];
 
 const METRIC_OPTIONS: { key: Metric; label: string; icon: React.ReactNode; unit: string }[] = [
-  { key: "score",  label: "Player Score",  icon: <TrendingUp className="w-3.5 h-3.5" />, unit: "pts" },
-  { key: "hours",  label: "Hours Played",  icon: <Clock className="w-3.5 h-3.5" />,      unit: "h"   },
-  { key: "games",  label: "Games Owned",   icon: <Gamepad2 className="w-3.5 h-3.5" />,   unit: ""    },
-  { key: "achievements", label: "Achievements", icon: <Trophy className="w-3.5 h-3.5" />,   unit: ""    },
+  { key: "score", label: "Player Score", icon: <TrendingUp className="w-3.5 h-3.5" />, unit: "pts" },
+  { key: "hours", label: "Hours Played", icon: <Clock className="w-3.5 h-3.5" />, unit: "h" },
+  { key: "games", label: "Games Owned", icon: <Gamepad2 className="w-3.5 h-3.5" />, unit: "" },
+  { key: "achievements", label: "Achievements", icon: <Trophy className="w-3.5 h-3.5" />, unit: "" },
 ];
 
 export default function LeaderboardPage() {
@@ -48,14 +48,14 @@ export default function LeaderboardPage() {
       try {
         const id = localStorage.getItem("gamesphere_steam_id");
         if (!id) return;
-        
+
         // TODO: re-enable global scope when ready
         // if (scope === "global") {
         //   const data = await fetchVerifiedElites(id);
         //   setRawPlayers(data);
         // } else {
-          const data = await fetchLeaderboardData("steam", id);
-          setRawPlayers(data);
+        const data = await fetchLeaderboardData("steam", id);
+        setRawPlayers(data);
         // }
       } catch (err) {
         console.error(err);
@@ -87,12 +87,12 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-[1850px] mx-auto px-10 pb-12 pt-8 md:pt-20 relative overflow-hidden">
+      <div className="max-w-[1850px] mx-auto px-6 md:px-10 pb-12 pt-0 md:pt-0 relative overflow-hidden">
         {/* Background Watermark */}
         <div className="absolute -top-20 -left-10 text-[15rem] md:text-[25rem] font-black text-white/[0.03] select-none pointer-events-none uppercase tracking-tighter">
           Rankings
         </div>
-        
+
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-end gap-10">
           <div>
             <div className="flex items-center gap-3 mb-6 opacity-50">
@@ -188,116 +188,116 @@ export default function LeaderboardPage() {
         ) : (
           <AnimatePresence mode="popLayout">
             <div className="w-full space-y-4">
-                {ranked.slice((page - 1) * playersPerPage, page * playersPerPage).map((player, i) => {
-                  const tier = getRankTier(player.score);
-                  // Global position is page-aware
-                  const globalPos = (page - 1) * playersPerPage + i + 1;
-                  const top3 = globalPos <= 3 ? TOP3_STYLES[globalPos - 1] : null;
+              {ranked.slice((page - 1) * playersPerPage, page * playersPerPage).map((player, i) => {
+                const tier = getRankTier(player.score);
+                // Global position is page-aware
+                const globalPos = (page - 1) * playersPerPage + i + 1;
+                const top3 = globalPos <= 3 ? TOP3_STYLES[globalPos - 1] : null;
 
-                  return (
-                    <motion.div
-                      key={player.steamid || player.name}
-                      layout
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.97 }}
-                      transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
-                      className={cn(
-                        "group flex flex-col sm:flex-row items-center gap-6 md:gap-12 p-5 md:p-8 rounded-2xl border transition-all duration-300",
-                        "hover:bg-white/[0.03] cursor-default w-full relative overflow-hidden",
-                        top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/40",
-                        player.isSelf && "ring-2 ring-primary/40 shadow-[0_0_30px_rgba(0,229,255,0.1)]"
-                      )}
-                    >
-                      {/* Left: Rank & Profile */}
-                      <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6 md:gap-12 min-w-0 flex-1 w-full">
-                        <div className="w-12 md:w-20 shrink-0 flex flex-col items-center">
-                          {globalPos <= 3 ? (
-                            <Trophy className={cn("w-8 h-8 md:w-12 md:h-12 drop-shadow-2xl", top3?.num)} />
+                return (
+                  <motion.div
+                    key={player.steamid || player.name}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35 }}
+                    className={cn(
+                      "group flex flex-col sm:flex-row items-center gap-6 md:gap-12 p-5 md:p-8 rounded-2xl border transition-all duration-300",
+                      "hover:bg-white/[0.03] cursor-default w-full relative overflow-hidden",
+                      top3 ? `${top3.border} ${top3.glow} ${top3.bg}` : "border-white/5 bg-black/40",
+                      player.isSelf && "ring-2 ring-primary/40 shadow-[0_0_30px_rgba(0,229,255,0.1)]"
+                    )}
+                  >
+                    {/* Left: Rank & Profile */}
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6 md:gap-12 min-w-0 flex-1 w-full">
+                      <div className="w-12 md:w-20 shrink-0 flex flex-col items-center">
+                        {globalPos <= 3 ? (
+                          <Trophy className={cn("w-8 h-8 md:w-12 md:h-12 drop-shadow-2xl", top3?.num)} />
+                        ) : (
+                          <span className="text-2xl md:text-4xl font-black text-zinc-700 font-mono tracking-tighter italic">#{globalPos}</span>
+                        )}
+                      </div>
+
+                      <div className="relative group shrink-0">
+                        <div className={cn(
+                          "w-16 h-16 md:w-24 md:h-24 rounded-2xl border-2 overflow-hidden bg-zinc-950 transition-all duration-500 group-hover:scale-105 group-hover:border-primary/50",
+                          top3 ? top3.border : "border-white/10"
+                        )}>
+                          {player.avatar ? (
+                            <img src={player.avatar} alt={player.name} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700" />
                           ) : (
-                            <span className="text-2xl md:text-4xl font-black text-zinc-700 font-mono tracking-tighter italic">#{globalPos}</span>
+                            <div className="w-full h-full flex items-center justify-center">
+                              <User className="w-10 h-10 text-zinc-800" />
+                            </div>
                           )}
                         </div>
+                      </div>
 
-                        <div className="relative group shrink-0">
-                          <div className={cn(
-                            "w-16 h-16 md:w-24 md:h-24 rounded-2xl border-2 overflow-hidden bg-zinc-950 transition-all duration-500 group-hover:scale-105 group-hover:border-primary/50",
-                            top3 ? top3.border : "border-white/10"
+                      <div className="min-w-0 flex-1 w-full sm:w-auto">
+                        <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
+                          <h4 className={cn(
+                            "text-xl md:text-4xl font-black tracking-tighter uppercase truncate leading-none",
+                            player.isSelf ? "text-primary" : "text-white group-hover:text-primary transition-colors"
                           )}>
-                            {player.avatar ? (
-                              <img src={player.avatar} alt={player.name} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <User className="w-10 h-10 text-zinc-800" />
-                              </div>
-                            )}
+                            {player.name}
+                          </h4>
+                          {player.isSelf && (
+                            <span className="text-[10px] font-mono px-3 py-1 bg-primary text-black font-black tracking-widest rounded-sm shadow-[0_0_15px_rgba(0,229,255,0.4)]">YOU</span>
+                          )}
+                          <div className={cn("px-3 py-1 rounded-sm text-[10px] font-black tracking-widest border font-mono uppercase", tier.bg, tier.color)}>
+                            {tier.label}
                           </div>
+                          <a
+                            href={`https://steamcommunity.com/profiles/${player.steamid}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/5 border border-white/10 rounded-sm hover:border-primary/40 hover:text-primary transition-all group"
+                            title="View Steam Profile"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100" />
+                          </a>
                         </div>
-
-                        <div className="min-w-0 flex-1 w-full sm:w-auto">
-                          <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
-                            <h4 className={cn(
-                              "text-xl md:text-4xl font-black tracking-tighter uppercase truncate leading-none",
-                              player.isSelf ? "text-primary" : "text-white group-hover:text-primary transition-colors"
-                            )}>
-                              {player.name}
-                            </h4>
-                            {player.isSelf && (
-                              <span className="text-[10px] font-mono px-3 py-1 bg-primary text-black font-black tracking-widest rounded-sm shadow-[0_0_15px_rgba(0,229,255,0.4)]">YOU</span>
-                            )}
-                            <div className={cn("px-3 py-1 rounded-sm text-[10px] font-black tracking-widest border font-mono uppercase", tier.bg, tier.color)}>
-                              {tier.label}
-                            </div>
-                            <a 
-                              href={`https://steamcommunity.com/profiles/${player.steamid}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 bg-white/5 border border-white/10 rounded-sm hover:border-primary/40 hover:text-primary transition-all group"
-                              title="View Steam Profile"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100" />
-                            </a>
+                        <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-6 mt-3 flex-wrap">
+                          <div className="flex items-center gap-2 px-3 py-1 bg-[#1a5fa8]/20 border border-[#4a90d9]/20 rounded-sm">
+                            <span className="text-[10px] font-black text-[#7ab8f5] tracking-widest uppercase">LVL {player.level || 0}</span>
                           </div>
-                          <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-6 mt-3 flex-wrap">
-                             <div className="flex items-center gap-2 px-3 py-1 bg-[#1a5fa8]/20 border border-[#4a90d9]/20 rounded-sm">
-                                <span className="text-[10px] font-black text-[#7ab8f5] tracking-widest uppercase">LVL {player.level || 0}</span>
-                             </div>
-                             <div className="w-1 h-1 rounded-full bg-zinc-800 hidden sm:block" />
-                             <p className="text-[10px] font-mono text-zinc-600 tracking-[0.4em] font-black uppercase">Identity Verified</p>
-                          </div>
+                          <div className="w-1 h-1 rounded-full bg-zinc-800 hidden sm:block" />
+                          <p className="text-[10px] font-mono text-zinc-600 tracking-[0.4em] font-black uppercase">Identity Verified</p>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Right: Telemetry Grid */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 shrink-0 pt-4 md:pt-0 border-t md:border-t-0 border-white/5 w-full md:w-auto">
-                        <div className="text-right">
-                          <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Score</p>
-                          <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "score" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
-                            {Math.round(player.score).toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Hours</p>
-                          <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "hours" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
-                            {Math.round(player.hours || 0).toLocaleString()}H
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Games</p>
-                          <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "games" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
-                            {player.games || 0}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black underline decoration-primary/30 underline-offset-4">Achievements</p>
-                          <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "achievements" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
-                            {player.achievements || 0}
-                          </p>
-                        </div>
+                    {/* Right: Telemetry Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 shrink-0 pt-4 md:pt-0 border-t md:border-t-0 border-white/5 w-full md:w-auto">
+                      <div className="text-right">
+                        <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Score</p>
+                        <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "score" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
+                          {Math.round(player.score).toLocaleString()}
+                        </p>
                       </div>
-                    </motion.div>
-                  );
-                })}
+                      <div className="text-right">
+                        <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Hours</p>
+                        <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "hours" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
+                          {Math.round(player.hours || 0).toLocaleString()}H
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black">Games</p>
+                        <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "games" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
+                          {player.games || 0}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-mono text-zinc-600 tracking-[0.3em] uppercase mb-1 font-black underline decoration-primary/30 underline-offset-4">Achievements</p>
+                        <p className={cn("text-2xl md:text-3xl font-black tracking-tighter font-mono italic", metric === "achievements" ? "text-primary drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]" : "text-white/60")}>
+                          {player.achievements || 0}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </AnimatePresence>
         )}
@@ -305,7 +305,7 @@ export default function LeaderboardPage() {
         {/* Pagination Controls */}
         {!isLoading && ranked.length > playersPerPage && (
           <div className="mt-20 flex items-center justify-center gap-10">
-            <button 
+            <button
               disabled={page === 1}
               onClick={() => setPage(p => p - 1)}
               className="px-10 py-5 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black tracking-widest uppercase disabled:opacity-20 hover:bg-white/10 transition-all hover:border-primary/40 text-primary"
@@ -316,7 +316,7 @@ export default function LeaderboardPage() {
               <span className="text-[10px] font-mono text-zinc-600 mb-1">PAGE</span>
               <span className="text-2xl font-black text-white font-mono">{page} <span className="text-zinc-700">/</span> {Math.ceil(ranked.length / playersPerPage)}</span>
             </div>
-            <button 
+            <button
               disabled={page >= Math.ceil(ranked.length / playersPerPage)}
               onClick={() => setPage(p => p + 1)}
               className="px-10 py-5 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black tracking-widest uppercase disabled:opacity-20 hover:bg-white/10 transition-all hover:border-primary/40 text-primary"
