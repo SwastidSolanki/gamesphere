@@ -399,21 +399,24 @@ export default function ComparePage() {
 
                 {/* Middle: VS + Combat Stats */}
                 <div className="lg:col-span-3 space-y-8">
-                  {/* VS Center piece */}
-                  <div className="flex flex-col items-center gap-3 py-6 md:py-12">
-                    <div className="relative mt-8 md:mt-0">
-                      <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.9)]">
-                        <Swords className="w-8 h-8 md:w-12 md:h-12 text-red-500" />
+                  {/* Hidden on Mobile: VS Center Piece + Basic Metrics */}
+                  <div className="hidden md:block">
+                    {/* VS Center piece */}
+                    <div className="flex flex-col items-center gap-3 py-6 md:py-12">
+                      <div className="relative mt-8 md:mt-0">
+                        <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.9)]">
+                          <Swords className="w-8 h-8 md:w-12 md:h-12 text-red-500" />
+                        </div>
+                        <div className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 text-lg md:text-2xl font-black text-primary tracking-[0.8em] font-mono italic">VS</div>
                       </div>
-                      <div className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 text-lg md:text-2xl font-black text-primary tracking-[0.8em] font-mono italic">VS</div>
                     </div>
-                  </div>
 
-                  {/* Metric Comparisons */}
-                  <div className="space-y-3 pt-4">
-                    <MetricComp label="Total Logged Hours" val1={Math.round(results.p1.steam.totalPlaytime)} val2={Math.round(results.p2.steam.totalPlaytime)} unit="H" />
-                    <MetricComp label="Game Manifest Count" val1={results.p1.steam.library.length} val2={results.p2.steam.library.length} />
-                    <MetricComp label="Account Level" val1={results.p1.steam.level || 0} val2={results.p2.steam.level || 0} prefix="LVL " />
+                    {/* Metric Comparisons */}
+                    <div className="space-y-3 pt-4">
+                      <MetricComp label="Total Logged Hours" val1={Math.round(results.p1.steam.totalPlaytime)} val2={Math.round(results.p2.steam.totalPlaytime)} unit="H" />
+                      <MetricComp label="Game Manifest Count" val1={results.p1.steam.library.length} val2={results.p2.steam.library.length} />
+                      <MetricComp label="Account Level" val1={results.p1.steam.level || 0} val2={results.p2.steam.level || 0} prefix="LVL " />
+                    </div>
                   </div>
 
                   {/* Combat Matrix */}
