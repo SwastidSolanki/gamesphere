@@ -87,7 +87,7 @@ export default function LeaderboardPage() {
       <Navbar />
 
       {/* Page header */}
-      <div className="max-w-[1850px] mx-auto px-10 pb-12 pt-20 relative overflow-hidden">
+      <div className="max-w-[1850px] mx-auto px-10 pb-12 pt-8 md:pt-20 relative overflow-hidden">
         {/* Background Watermark */}
         <div className="absolute -top-20 -left-10 text-[15rem] md:text-[25rem] font-black text-white/[0.03] select-none pointer-events-none uppercase tracking-tighter">
           Rankings
@@ -210,7 +210,7 @@ export default function LeaderboardPage() {
                       )}
                     >
                       {/* Left: Rank & Profile */}
-                      <div className="flex items-center gap-6 md:gap-12 min-w-0 flex-1">
+                      <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6 md:gap-12 min-w-0 flex-1 w-full">
                         <div className="w-12 md:w-20 shrink-0 flex flex-col items-center">
                           {globalPos <= 3 ? (
                             <Trophy className={cn("w-8 h-8 md:w-12 md:h-12 drop-shadow-2xl", top3?.num)} />
@@ -234,8 +234,8 @@ export default function LeaderboardPage() {
                           </div>
                         </div>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-4 flex-wrap">
+                        <div className="min-w-0 flex-1 w-full sm:w-auto">
+                          <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
                             <h4 className={cn(
                               "text-xl md:text-4xl font-black tracking-tighter uppercase truncate leading-none",
                               player.isSelf ? "text-primary" : "text-white group-hover:text-primary transition-colors"
@@ -258,11 +258,11 @@ export default function LeaderboardPage() {
                               <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100" />
                             </a>
                           </div>
-                          <div className="flex items-center gap-6 mt-3">
+                          <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-6 mt-3 flex-wrap">
                              <div className="flex items-center gap-2 px-3 py-1 bg-[#1a5fa8]/20 border border-[#4a90d9]/20 rounded-sm">
                                 <span className="text-[10px] font-black text-[#7ab8f5] tracking-widest uppercase">LVL {player.level || 0}</span>
                              </div>
-                             <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                             <div className="w-1 h-1 rounded-full bg-zinc-800 hidden sm:block" />
                              <p className="text-[10px] font-mono text-zinc-600 tracking-[0.4em] font-black uppercase">Identity Verified</p>
                           </div>
                         </div>

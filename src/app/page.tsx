@@ -116,18 +116,6 @@ export default function LandingPage() {
         ease: "none"
     });
 
-    // 2. DASHBOARD FEATURE GHOST TEXT
-    gsap.to(".gsap-ghost-text", {
-        scrollTrigger: {
-            trigger: ".gsap-dashboard-section",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true
-        },
-        x: -200,
-        opacity: 0.1,
-        ease: "none"
-    });
 
     // 3. STAT CARDS STAGGER
     gsap.from(".gsap-stat-card", {
@@ -270,7 +258,7 @@ export default function LandingPage() {
       <Navbar isVisible={!isModalOpen} />
 
       {/* 1. HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-start pt-32 text-center px-6 overflow-hidden gsap-hero-section">
+      <section className="relative h-screen flex flex-col items-center justify-center pt-10 md:pt-0 text-center px-6 overflow-hidden gsap-hero-section">
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 z-0">
           <motion.div 
@@ -290,7 +278,7 @@ export default function LandingPage() {
           className="relative z-20 max-w-5xl"
         >
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-12">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-8 md:mb-12">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             <span className="text-[10px] font-bold tracking-[0.4em] text-primary/80 uppercase font-mono">Connection Established // 100% Sync</span>
           </div>

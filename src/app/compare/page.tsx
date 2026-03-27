@@ -239,7 +239,7 @@ function PlayerSearchBox({
                   <User className="w-4 h-4 text-zinc-600" />
                 </div>
               )}
-              <span className="font-black text-sm text-white tracking-wider uppercase truncate font-mono group-hover:text-primary transition-colors">{f.name}</span>
+              <span className="font-black text-sm text-white tracking-wider uppercase truncate font-mono group-hover:text-primary transition-colors min-w-0 flex-1">{f.name}</span>
               <ChevronRight className="w-4 h-4 ml-auto text-zinc-700 group-hover:text-primary transition-colors shrink-0" />
             </button>
           ))}
@@ -399,12 +399,12 @@ export default function ComparePage() {
                 {/* Middle: VS + Combat Stats */}
                 <div className="lg:col-span-3 space-y-8">
                   {/* VS Center piece */}
-                  <div className="flex flex-col items-center gap-3 py-12">
-                    <div className="relative">
-                      <div className="w-28 h-28 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.9)]">
-                        <Swords className="w-12 h-12 text-red-500" />
+                  <div className="flex flex-col items-center gap-3 py-6 md:py-12">
+                    <div className="relative mt-8 md:mt-0">
+                      <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.9)]">
+                        <Swords className="w-8 h-8 md:w-12 md:h-12 text-red-500" />
                       </div>
-                      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-2xl font-black text-primary tracking-[0.8em] font-mono italic">VS</div>
+                      <div className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 text-lg md:text-2xl font-black text-primary tracking-[0.8em] font-mono italic">VS</div>
                     </div>
                   </div>
 
