@@ -275,7 +275,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative z-20 max-w-5xl -mt-16 md:-mt-10 flex flex-col items-center justify-center w-full"
+          className="relative z-20 max-w-5xl -mt-[15vh] md:-mt-10 flex flex-col items-center justify-center w-full"
         >
           {/* Status Badge */}
           <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/60 backdrop-blur-md border border-primary/20 rounded-md mb-8 md:mb-12">
@@ -301,7 +301,7 @@ export default function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-16 md:mb-20 px-4"
+                className="mb-10 md:mb-20 px-4"
               >
                 <p className="text-base sm:text-lg md:text-xl font-black text-primary/60 tracking-[0.5em] md:tracking-[0.8em] uppercase leading-relaxed md:leading-relaxed">
                    Your Journey. Your Legacy. <br className="md:hidden" /> <span className="text-white mt-4 block md:inline">Transcended.</span>
@@ -405,6 +405,7 @@ export default function LandingPage() {
                   name="KRATOS" 
                   level="999" 
                   image="/assets/kratos_og.png"
+                  isWinner={true}
                 />
              </div>
              <motion.div 
@@ -561,15 +562,16 @@ function MockHUDCard({ icon, label, value, color, wide = false }: any) {
   );
 }
 
-function MockWarrior({ name, level, image }: any) {
+function MockWarrior({ name, level, image, isWinner = false }: any) {
   return (
-    <div
-      className="flex flex-col items-center gap-8"
-    >
-      <div className="w-40 h-52 md:w-56 md:h-72 bg-zinc-950 border border-white/10 relative group rounded-2xl overflow-hidden shadow-2xl scale-0 gsap-warrior-frame">
+    <div className="flex flex-col items-center gap-8">
+      <div className={cn(
+        "w-40 h-52 md:w-56 md:h-72 bg-zinc-950 relative group rounded-2xl overflow-hidden scale-0 gsap-warrior-frame border-2 md:border",
+        isWinner ? "border-primary/50 md:border-white/10 shadow-[0_0_40px_rgba(0,229,255,0.2)] md:shadow-2xl" : "border-white/10 shadow-2xl"
+      )}>
          <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors z-10" />
          {image ? (
-           <img src={image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-100 scale-100 gsap-warrior-image" alt={name} />
+           <img src={image} className="w-full h-full object-cover transition-all opacity-100 scale-100 gsap-warrior-image" alt={name} />
          ) : (
            <User className="absolute inset-0 m-auto w-12 h-12 text-zinc-800" />
          )}
