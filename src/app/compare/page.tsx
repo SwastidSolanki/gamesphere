@@ -324,15 +324,16 @@ export default function ComparePage() {
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 pt-20 pb-20">
 
         {/* Header */}
-        <div className="relative z-10 mb-16 font-heading">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="w-12 h-[1px] bg-primary opacity-60" />
-            <p className="text-[10px] font-bold tracking-[0.6em] text-red-500 uppercase">Competitive Arbitration // Data Comparison</p>
+        <div className="relative z-10 mb-16 font-heading text-center flex flex-col items-center">
+          <div className="flex items-center justify-center gap-3 mb-6 w-full">
+            <span className="w-8 h-[1px] md:w-12 bg-primary opacity-60" />
+            <p className="text-[9px] md:text-[10px] font-bold tracking-[0.4em] md:tracking-[0.6em] text-red-500 uppercase">Competitive Arbitration // Data Comparison</p>
+            <span className="w-8 h-[1px] md:w-12 bg-primary opacity-60" />
           </div>
-          <h1 className="text-6xl md:text-[10rem] font-black tracking-tighter mb-10 uppercase leading-[0.8]">
+          <h1 className="text-5xl sm:text-7xl md:text-[10rem] font-black tracking-tighter mb-8 md:mb-10 uppercase leading-[0.8] text-center">
             FATES <br /><span className="text-red-500">INTERTWINED</span>
           </h1>
-          <p className="text-zinc-500 max-w-3xl font-mono text-sm tracking-[0.2em] uppercase leading-relaxed opacity-70">
+          <p className="text-zinc-500 max-w-3xl mx-auto font-mono text-xs md:text-sm tracking-[0.2em] uppercase leading-relaxed opacity-70 text-center">
             Search any Steam player by username. Select from your friends list. Compare two profiles side-by-side.
           </p>
         </div>
@@ -392,7 +393,7 @@ export default function ComparePage() {
               {/* Player Cards + Stats Row */}
               <div className="grid grid-cols-1 lg:grid-cols-7 gap-8 items-start">
                 {/* Unit 01 Card */}
-                <div className="lg:col-span-2">
+                <div className={cn("lg:col-span-2", !p1Wins && "hidden lg:block")}>
                   <PlayerCompareCard player={results.p1} isWinner={p1Wins} />
                 </div>
 
@@ -417,9 +418,9 @@ export default function ComparePage() {
 
                   {/* Combat Matrix */}
                   <div className="pt-10 space-y-5">
-                    <div className="flex items-center gap-6">
-                      <div className="w-2 h-12 bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.6)]" />
-                      <h3 className="text-5xl font-black uppercase tracking-tighter italic font-heading">Performance Matrix</h3>
+                    <div className="flex items-center gap-4 md:gap-6">
+                      <div className="w-2 h-8 md:h-12 bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.6)]" />
+                      <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter italic font-heading">Performance Matrix</h3>
                     </div>
 
                     {/* Battle breakdown per stat */}
@@ -448,16 +449,21 @@ export default function ComparePage() {
                             const w2 = cat.v2 > cat.v1;
                             return (
                               <div key={i} className="bg-black/50 border border-white/5 rounded-xl p-6 group hover:border-white/10 transition-all">
-                                <div className="flex items-center justify-between mb-4">
-                                  <span className={cn("text-xl font-black font-mono", w1 ? "text-primary" : "text-zinc-600")}>
-                                    {cat.v1.toLocaleString()}{cat.suffix}
-                                    {w1 && <span className="ml-2 text-[10px] bg-primary text-black px-2 py-0.5 rounded-sm font-black">WIN</span>}
-                                  </span>
-                                  <p className="text-[11px] font-mono text-zinc-500 tracking-[0.3em] uppercase font-black">{cat.label}</p>
-                                  <span className={cn("text-xl font-black font-mono text-right", w2 ? "text-primary" : "text-zinc-600")}>
-                                    {w2 && <span className="mr-2 text-[10px] bg-primary text-black px-2 py-0.5 rounded-sm font-black">WIN</span>}
-                                    {cat.v2.toLocaleString()}{cat.suffix}
-                                  </span>
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4 mb-4 text-center">
+                                  {/* Mobile label placed at top */}
+                                  <p className="text-[10px] md:text-[11px] font-mono text-zinc-500 tracking-[0.3em] md:hidden uppercase font-black mb-2">{cat.label}</p>
+                                  <div className="flex items-center justify-between w-full">
+                                    <span className={cn("text-base md:text-xl font-black font-mono flex items-center gap-1.5 md:gap-2", w1 ? "text-primary" : "text-zinc-600")}>
+                                      {cat.v1.toLocaleString()}{cat.suffix}
+                                      {w1 && <span className="text-[9px] bg-primary text-black px-1.5 py-0.5 rounded-sm font-black">WIN</span>}
+                                    </span>
+                                    {/* Desktop label placed in center */}
+                                    <p className="hidden md:block text-[11px] font-mono text-zinc-500 tracking-[0.3em] uppercase font-black mx-2">{cat.label}</p>
+                                    <span className={cn("text-base md:text-xl font-black font-mono flex items-center justify-end gap-1.5 md:gap-2 text-right", w2 ? "text-primary" : "text-zinc-600")}>
+                                      {w2 && <span className="text-[9px] bg-primary text-black px-1.5 py-0.5 rounded-sm font-black">WIN</span>}
+                                      {cat.v2.toLocaleString()}{cat.suffix}
+                                    </span>
+                                  </div>
                                 </div>
                                 <div className="flex gap-2 items-center">
                                   <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden flex justify-end">
@@ -521,7 +527,7 @@ export default function ComparePage() {
                 </div>
 
                 {/* Unit 02 Card */}
-                <div className="lg:col-span-2">
+                <div className={cn("lg:col-span-2", p1Wins && "hidden lg:block")}>
                   <PlayerCompareCard player={results.p2} isWinner={!p1Wins} />
                 </div>
               </div>
