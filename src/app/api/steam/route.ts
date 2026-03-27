@@ -92,29 +92,6 @@ export async function GET(request: Request) {
         });
       }
 
-      // Prioritize exact matches (case-sensitive first, then insensitive)
-      const query = q || "";
-      results.sort((a, b) => {
-        const aName = a.name;
-        const bName = b.name;
-        const aId = a.id;
-        const bId = b.id;
-
-        // Exact case-sensitive match
-        const aExact = aName === query || aId === query;
-        const bExact = bName === query || bId === query;
-        if (aExact && !bExact) return -1;
-        if (!aExact && bExact) return 1;
-
-        // Exact case-insensitive match
-        const aLower = aName.toLowerCase() === query.toLowerCase() || aId.toLowerCase() === query.toLowerCase();
-        const bLower = bName.toLowerCase() === query.toLowerCase() || bId.toLowerCase() === query.toLowerCase();
-        if (aLower && !bLower) return -1;
-        if (!aLower && bLower) return 1;
-
-        return 0;
-      });
-
       return NextResponse.json({ success: true, results: results.slice(0, 5) });
     }
 
