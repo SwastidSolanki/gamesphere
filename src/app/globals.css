@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0b0d;
+  --color-background: #0d0f14;
   --color-foreground: #e0e0e0;
   --color-primary: #a0c0d0;
   --color-primary-foreground: #0a0b0d;
@@ -30,7 +30,7 @@
     border-color: rgba(255, 255, 255, 0.05);
   }
   body {
-    @apply text-foreground antialiased font-body tracking-normal leading-relaxed min-h-screen overflow-x-hidden bg-[#050608];
+    @apply text-foreground antialiased font-body tracking-normal leading-relaxed min-h-screen overflow-x-hidden bg-[#0d0f14];
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-tight font-semibold text-white;

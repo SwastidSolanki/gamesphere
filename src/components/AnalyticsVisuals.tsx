@@ -10,7 +10,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell
+  Cell,
+  LabelList
 } from "recharts";
 
 interface AnalyticsVisualsProps {
@@ -113,35 +114,22 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
       </div>
 
       {/* Chart: Horizontal Layout */}
-      <div className="w-full h-[460px] relative z-10 -ml-4">
+      <div className="w-full h-[400px] md:h-[460px] relative z-10 -ml-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={barData}
             layout="vertical"
-            margin={{ top: 0, right: 30, left: 10, bottom: 20 }}
-            barCategoryGap="25%"
+            margin={{ top: 20, right: 40, left: 10, bottom: 20 }}
+            barCategoryGap={20}
           >
-            <CartesianGrid strokeDasharray="4 4" stroke="#ffffff08" horizontal={true} vertical={false} />
+            <CartesianGrid strokeDasharray="4 4" stroke="#ffffff08" horizontal={false} vertical={true} />
             
-            {/* Y-Axis for Names - Much clearer in horizontal layout */}
             <YAxis
               dataKey="name"
               type="category"
-              stroke="#ffffff30"
-              fontSize={13}
-              tickLine={false}
-              axisLine={false}
-              width={140}
-              tick={{ 
-                fontFamily: "var(--font-mono)", 
-                fill: "#ffffffa0", 
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                fontSize: 11
-              }}
+              hide
             />
             
-            {/* X-Axis for Hours */}
             <XAxis
               type="number"
               stroke="#ffffff20"
@@ -150,7 +138,7 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
               axisLine={false}
               tickFormatter={(val) => `${val}h`}
               tick={{ fontFamily: "var(--font-mono)", fill: "#ffffff40", fontSize: 10 }}
-              domain={[0, 'dataMax + 10']}
+              domain={[0, 'dataMax + 20']}
             />
             
             <Tooltip
@@ -160,11 +148,31 @@ export default function AnalyticsVisuals({ library }: AnalyticsVisualsProps) {
             
             <Bar
               dataKey="hours"
-              radius={[0, 8, 8, 0]}
+              radius={[0, 4, 4, 0]}
               animationDuration={2000}
               animationEasing="ease-in-out"
-              barSize={32}
+              barSize={20}
             >
+               <LabelList 
+                  dataKey="name" 
+                  position="top" 
+                  offset={10}
+                  fill="#ffffffa0" 
+                  fontSize={10} 
+                  fontFamily="var(--font-mono)"
+                  fontWeight={600}
+                  formatter={(label: any) => typeof label === 'string' ? label.toUpperCase() : label}
+               />
+               <LabelList 
+                  dataKey="hours" 
+                  position="right" 
+                  offset={10}
+                  fill="#ffffff" 
+                  fontSize={11} 
+                  fontFamily="var(--font-mono)"
+                  fontWeight={800}
+                  formatter={(label: any) => typeof label === 'number' ? `${label}H` : label}
+               />
               {barData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}

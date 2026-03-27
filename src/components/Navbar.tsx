@@ -9,25 +9,26 @@ import { LayoutDashboard, User, Trophy, Users2, Home } from "lucide-react";
 const NAV_ITEMS = [
   { name: "Home", path: "/", icon: Home },
   { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { name: "Profile", path: "/profile", icon: User },
   { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
   { name: "Compare", path: "/compare", icon: Users2 },
 ];
 
-export default function Navbar() {
+export default function Navbar({ isVisible: externalVisible = true }: { isVisible?: boolean }) {
   const pathname = usePathname();
-  const [visible, setVisible] = useState(true);
+  const [internalVisible, setInternalVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mounted, setMounted] = useState(false);
+
+  const visible = externalVisible && internalVisible;
 
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setVisible(false);
+        setInternalVisible(false);
       } else {
-        setVisible(true);
+        setInternalVisible(true);
       }
       setLastScrollY(currentScrollY);
     };

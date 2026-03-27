@@ -35,9 +35,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} ${jetBrainsMono.variable}`}>
-      <body className="font-mono bg-[#0a0a0b] text-white antialiased selection:bg-primary/30">
-        <Navbar />
-        <main className="relative z-10 pt-12 md:pt-16">{children}</main>
+      <body className="font-mono bg-[#0d0f14] text-white antialiased selection:bg-primary/30">
+        <main className="relative z-10 pt-28 md:pt-36">{children}</main>
       </body>
     </html>
   );

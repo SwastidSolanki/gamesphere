@@ -65,20 +65,20 @@ function LeaderboardItem({ rank, name, score, status, color }: any) {
       whileInView={{ x: 0, opacity: 1 }}
       viewport={{ once: true }}
       className={cn(
-        "flex items-center justify-between p-6 bg-black/40 border-l-4 backdrop-blur-sm group hover:bg-white/5 transition-all cursor-default",
+        "flex items-center justify-between p-4 md:p-6 bg-black/40 border-l-4 backdrop-blur-sm group hover:bg-white/5 transition-all cursor-default overflow-hidden",
         color
       )}
     >
-      <div className="flex items-center gap-8">
-        <span className="text-2xl font-black text-zinc-700 font-mono tracking-tighter w-8">{rank}</span>
-        <div>
-          <h4 className="text-lg font-black tracking-widest text-white group-hover:text-primary transition-colors">{name}</h4>
-          <p className="text-[10px] font-mono text-zinc-500 tracking-[0.2em] uppercase">{status} // [RANK_ID]</p>
+      <div className="flex items-center gap-4 md:gap-8 min-w-0">
+        <span className="text-xl md:text-2xl font-black text-zinc-700 font-mono tracking-tighter w-6 md:w-8 flex-shrink-0">{rank}</span>
+        <div className="min-w-0">
+          <h4 className="text-sm md:text-lg font-black tracking-widest text-white group-hover:text-primary transition-colors truncate">{name}</h4>
+          <p className="text-[8px] md:text-[10px] font-mono text-zinc-500 tracking-[0.2em] uppercase truncate">{status} // [RANK_ID]</p>
         </div>
       </div>
-      <div className="text-right">
-        <p className="text-2xl font-black tracking-tighter text-white font-mono">{score}</p>
-        <p className="text-[9px] font-mono text-zinc-600 tracking-widest uppercase">LEGACY_POINTS</p>
+      <div className="text-right flex-shrink-0 ml-4">
+        <p className="text-lg md:text-2xl font-black tracking-tighter text-white font-mono">{score}</p>
+        <p className="text-[8px] md:text-[9px] font-mono text-zinc-600 tracking-widest uppercase">LEGACY_POINTS</p>
       </div>
     </motion.div>
   );
@@ -220,16 +220,16 @@ export default function LandingPage() {
         stagger: 0.1
     });
 
-    // 6. SWORDS ICON IGNITE
-    gsap.from(".gsap-swords-icon", {
+    gsap.to(".gsap-swords-icon", {
         scrollTrigger: {
             trigger: ".gsap-compare-section",
             start: "top 60%",
         },
-        scale: 0,
-        rotate: 360,
-        duration: 1.5,
-        ease: "back.out(1.7)"
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        duration: 2,
+        ease: "expo.out"
     });
     // 7. COMPARISON GAUGES
     gsap.fromTo(".gsap-gauge-container", 
@@ -266,9 +266,8 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050608] text-white overflow-x-hidden relative">
-      <Navbar />
-      
+    <main className="min-h-screen bg-[#0d0f14] text-white selection:bg-primary/30 selection:text-black overflow-x-hidden">
+      <Navbar isVisible={!isModalOpen} />
 
       {/* 1. HERO SECTION */}
       <section className="relative h-screen flex flex-col items-center justify-start pt-32 text-center px-6 overflow-hidden gsap-hero-section">
@@ -355,13 +354,17 @@ export default function LandingPage() {
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-12 flex flex-col items-center gap-4 opacity-40"
         >
-          <span className="text-[10px] uppercase font-bold tracking-[0.4em] font-mono">Explore Dashboard</span>
-          <div className="w-[1px] h-12 bg-primary" />
+          <span className="text-[10px] uppercase font-bold tracking-[0.4em] font-mono opacity-80">Explore Dashboard</span>
+          <motion.div 
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-4" 
+          />
         </motion.div>
       </section>
 
       {/* 2. DASHBOARD FEATURE */}
-      <section className="py-48 px-6 border-y border-white/5 bg-[#07080a] gsap-dashboard-section relative overflow-hidden">
+      <section className="py-48 px-6 border-y border-white/5 bg-transparent gsap-dashboard-section relative overflow-hidden">
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
           <div className="space-y-10 gsap-dashboard-text">
@@ -400,7 +403,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3. COMPARE FEATURE */}
-      <section className="py-48 px-6 relative bg-black gsap-compare-section overflow-hidden">
+      <section className="py-48 px-6 relative bg-transparent gsap-compare-section overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-40 gsap-compare-header">
             <h2 className="text-5xl md:text-[8.5rem] font-sans font-black tracking-tight uppercase leading-[0.8] text-white">
@@ -412,35 +415,39 @@ export default function LandingPage() {
              <div className="gsap-warrior-left">
                 <MockWarrior 
                   name="KRATOS" 
-                  level="100" 
-                  image="/kratos_portrait.png"
+                  level="999" 
+                  image="/assets/kratos_og.png"
                 />
              </div>
              <motion.div 
-               className="flex flex-col items-center gap-10"
+               className="flex flex-col items-center gap-6"
              >
                 <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center gsap-swords-icon">
                     <Swords className="w-10 h-10 text-primary" />
                 </div>
+                <span className="text-4xl font-black text-primary font-mono tracking-[0.5em] uppercase italic opacity-0 gsap-swords-icon">VS</span>
              </motion.div>
              <div className="gsap-warrior-right">
                 <MockWarrior 
                   name="ELLIE" 
-                  level="100" 
-                  image="/ellie_portrait.png"
+                  level="67" 
+                  image="/assets/ellie_og.png"
                 />
              </div>
           </div>
 
-          <div className="mt-24 max-w-xl mx-auto space-y-8">
-            <ComparisonGauge label="Trophy Manifest" v1={85} v2={40} />
-            <ComparisonGauge label="Skill Legacy" v1={60} v2={95} />
+          <div className="mt-24 max-w-xl mx-auto space-y-12">
+            <ComparisonGauge label="Trophy Manifest" v1={98} v2={40} />
+            <ComparisonGauge label="Skill Legacy" v1={95} v2={60} />
+            <ComparisonGauge label="Combat Prowess" v1={99} v2={45} />
+            <ComparisonGauge label="Story Impact" v1={97} v2={70} />
+            <ComparisonGauge label="Universal Influence" v1={96} v2={30} />
           </div>
         </div>
       </section>
 
       {/* 4. LEADERBOARD SECTION */}
-      <section className="py-48 px-6 relative bg-[#050608]">
+      <section className="py-48 px-6 relative bg-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-end justify-between mb-32 gap-10">
             <div className="space-y-6">
@@ -473,9 +480,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <footer className="py-40 px-6 border-t border-white/10 bg-[#020304] relative">
-        <div className="max-w-7xl mx-auto">
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-end mb-32">
+      <footer className="py-40 px-6 border-t border-white/10 bg-transparent relative">
+         <div className="max-w-[1850px] mx-auto px-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-end mb-32">
               <div className="space-y-8">
                   <h3 className="text-4xl md:text-5xl font-bold tracking-tight uppercase text-white">Contact Terminal</h3>
                   <p className="text-zinc-500 text-lg font-medium tracking-wide leading-relaxed max-w-md">
@@ -529,12 +536,6 @@ export default function LandingPage() {
                    animate={{ width: "100%" }}
                    transition={{ duration: 1.5, ease: "easeInOut" }}
                    className="h-full bg-primary"
-                />
-                <motion.div 
-                   initial={{ opacity: 0 }}
-                   animate={{ opacity: 1 }}
-                   transition={{ delay: 1.3, duration: 0.2 }}
-                   className="absolute inset-0 bg-green-500"
                 />
               </div>
 
