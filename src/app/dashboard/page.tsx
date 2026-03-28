@@ -191,31 +191,37 @@ export default function DashboardPage() {
                   <div className={cn("absolute bottom-0 right-0 w-4 h-4 md:w-6 md:h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
                 </div>
                 <div className="space-y-2 md:space-y-4 text-center sm:text-left">
-                  <p className="text-2xl md:text-5xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-full font-heading drop-shadow-xl">{steamProfile.personaname}</p>
+                  <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-[300px] md:max-w-md font-heading drop-shadow-xl">{steamProfile.personaname}</h2>
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <div className="flex items-center gap-2 px-3 md:px-5 py-1.5 md:py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
                       <span className="text-white font-black text-base md:text-xl leading-none">Level {steamLevel}</span>
                     </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
-                    <div className="space-y-1">
-                      <p className="text-[10px] md:text-[12px] text-zinc-500 font-bold uppercase tracking-[0.4em] font-mono opacity-60">Status: {steamProfile.personastate === 1 ? "Online" : "Offline"}</p>
-                      <p className="text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-[0.5em] font-mono">{steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}</p>
+                  <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pt-4">
+                    <div className="space-y-1.5 text-left">
+                      <div className="flex items-center gap-2 text-zinc-500 font-bold uppercase tracking-[0.2em] font-mono opacity-80 text-[10px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                        STATUS: <span className={cn(steamProfile.personastate === 1 ? "text-green-500" : "text-zinc-500")}>{steamProfile.personastate === 1 ? "ONLINE" : "OFFLINE"}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-[0.2em] font-mono text-[9px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        {steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-3">
                       <a 
                         href={steamProfile.profileurl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="px-4 py-2 bg-white/5 border border-white/10 rounded-sm text-[9px] font-black tracking-widest text-zinc-400 hover:text-primary hover:border-primary/40 transition-all flex items-center gap-2 group/btn"
+                        className="px-5 py-2.5 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black tracking-widest text-zinc-400 hover:text-primary hover:border-primary/40 transition-all flex items-center gap-2 group/btn"
                       >
-                        VIEW STEAM_ID <ExternalLink className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+                        VIEW STEAM_ID <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                       </a>
                       <button 
                         onClick={handleDisconnect}
-                        className="px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-sm text-[9px] font-black tracking-widest text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex items-center gap-2 group/btn"
+                        className="px-5 py-2.5 bg-red-500/10 border border-red-500/20 rounded-sm text-[10px] font-black tracking-widest text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex items-center gap-2 group/btn"
                       >
-                        DISCONNECT PROFILE <LogOut className="w-3 h-3 group-hover/btn:-translate-x-1 transition-transform" />
+                        DISCONNECT PROFILE <LogOut className="w-3.5 h-3.5 group-hover/btn:-translate-x-1 transition-transform" />
                       </button>
                     </div>
                   </div>
