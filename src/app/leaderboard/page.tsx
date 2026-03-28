@@ -46,7 +46,7 @@ export default function LeaderboardPage() {
     async function load() {
       setIsLoading(true);
       try {
-        const id = localStorage.getItem("gamesphere_steam_id");
+        const id = localStorage.getItem("steamintel_steam_id");
         if (!id) return;
 
         // TODO: re-enable global scope when ready

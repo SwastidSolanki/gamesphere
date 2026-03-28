@@ -21,7 +21,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GameSphere | Unified Player Stats",
+  title: "SteamIntel | Unified Player Stats",
   description: "Connect your Steam account for deep player analytics.",
   icons: {
     icon: "/favicon.png",

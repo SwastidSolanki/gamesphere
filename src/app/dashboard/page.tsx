@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchIdentity = async () => {
-      let storedId = localStorage.getItem("gamesphere_steam_id");
+      let storedId = localStorage.getItem("steamintel_steam_id");
       if (!storedId) {
         setLoading(false);
         return;
@@ -102,7 +102,7 @@ export default function DashboardPage() {
     setGameStats(null);
     setShowAllAchievements(false); // Reset showAllAchievements when a new game is selected
     try {
-      const storedId = localStorage.getItem("gamesphere_steam_id");
+      const storedId = localStorage.getItem("steamintel_steam_id");
       let actualSteamId = storedId;
       if (storedId && !/^\d+$/.test(storedId)) {
          const v = await fetch(`/api/steam?endpoint=vanity&vanityurl=${storedId}`);
@@ -148,7 +148,7 @@ export default function DashboardPage() {
   };
 
   const handleDisconnect = () => {
-    localStorage.removeItem("gamesphere_steam_id");
+    localStorage.removeItem("steamintel_steam_id");
     window.location.href = "/";
   };
 

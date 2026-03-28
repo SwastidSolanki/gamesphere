@@ -261,7 +261,7 @@ export default function ComparePage() {
   const [savedId, setSavedId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const stored = localStorage.getItem("gamesphere_steam_id");
+    const stored = localStorage.getItem("steamintel_steam_id");
     if (stored) {
       setSavedId(stored);
       setId1(stored);

@@ -238,13 +238,13 @@ export default function LandingPage() {
 
   const handleConnect = (platform: string, id: string) => {
     if (platform === "steam") {
-      localStorage.setItem(`gamesphere_${platform}_id`, id);
+      localStorage.setItem(`steamintel_${platform}_id`, id);
     }
     router.push("/dashboard");
   };
 
   const handleEnterGallery = () => {
-    const steamId = typeof window !== "undefined" ? localStorage.getItem("gamesphere_steam_id") : null;
+    const steamId = typeof window !== "undefined" ? localStorage.getItem("steamintel_steam_id") : null;
     if (steamId) {
       setIsLeaping(true);
       setTimeout(() => router.push("/dashboard"), 1500);
@@ -287,10 +287,10 @@ export default function LandingPage() {
           <div className="relative group gsap-hero-title w-full flex justify-center">
             <h1 className="text-[22vw] sm:text-[16vw] md:text-[14rem] font-heading font-black tracking-tighter mb-8 md:mb-12 leading-[0.75] uppercase text-white flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 select-none">
               <span className="gsap-hero-split-left inline-block">
-                <Typewriter text="GAME" delay={150} />
+                <Typewriter text="STEAM" delay={150} />
               </span>
               <span className="gsap-hero-split-right inline-block text-primary">
-                <Typewriter text="SPHERE" delay={150} onComplete={() => setHeroStep(1)} />
+                <Typewriter text="INTEL" delay={150} onComplete={() => setHeroStep(1)} />
               </span>
             </h1>
           </div>
@@ -486,7 +486,7 @@ export default function LandingPage() {
           </div>
 
           <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
-            <p className="text-xs font-bold tracking-widest uppercase">GameSphere © 2026 // Distributed Intelligence</p>
+            <p className="text-xs font-bold tracking-widest uppercase">SteamIntel © 2026 // Distributed Intelligence</p>
             <div className="flex items-center gap-4">
               <ShieldCheck className="w-4 h-4 text-primary" />
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-mono">Encryption established</span>
