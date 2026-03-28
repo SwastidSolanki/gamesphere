@@ -24,7 +24,13 @@ export const metadata: Metadata = {
   title: "SteamIntel | Unified Player Stats",
   description: "Connect your Steam account for deep player analytics.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.ico?v=2" },
+      { url: "/favicon.png?v=2", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png?v=2" },
+    ],
   },
 };
 
