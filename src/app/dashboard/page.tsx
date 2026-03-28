@@ -186,7 +186,7 @@ export default function DashboardPage() {
 
             {steamProfile ? (
               <GlassCard className="p-6 md:p-10 border-white/20 border flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-10 hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full lg:max-w-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
+                <div className="w-28 h-28 md:w-36 md:h-36 rounded-xl bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
                   <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover hover:scale-105 transition-all duration-700" />
                   <div className={cn("absolute bottom-0 right-0 w-4 h-4 md:w-6 md:h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
                 </div>
