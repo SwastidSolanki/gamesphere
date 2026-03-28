@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   description: "Connect your Steam account for deep player analytics.",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2" },
-      { url: "/favicon.png?v=2", type: "image/png" },
+      { url: "/favicon.ico?v=3" },
+      { url: "/favicon.png?v=3", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-icon.png?v=2" },
+      { url: "/apple-icon.png?v=3" },
     ],
   },
 };
