@@ -55,6 +55,16 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchIdentity = async () => {
+      // Check for Steam Auth Redirect
+      const params = new URLSearchParams(window.location.search);
+      const authParam = params.get("steam_auth");
+      
+      if (authParam) {
+        localStorage.setItem("steamintel_steam_id", authParam);
+        // Clean the URL without reloading the page
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       let storedId = localStorage.getItem("steamintel_steam_id");
       if (!storedId) {
         setLoading(false);

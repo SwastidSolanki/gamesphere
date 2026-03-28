@@ -130,7 +130,7 @@ export default function ConnectModal({ isOpen, onClose, onConnect }: ConnectModa
                         onChange={(e) => setIdentifier(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && identifier && handleVerify()}
                         placeholder="Input protocol identifier..."
-                        className="w-full bg-white/[0.03] border border-white/10 focus:border-primary/50 py-6 pl-16 pr-8 text-sm focus:outline-none font-mono tracking-wider text-white placeholder:text-zinc-800 transition-all rounded-lg uppercase"
+                        className="w-full bg-white/[0.03] border border-white/10 focus:border-primary/50 py-6 pl-16 pr-8 text-sm focus:outline-none font-mono tracking-wider text-white placeholder:text-zinc-800 transition-all rounded-lg"
                       />
                     </div>
                     

@@ -43,52 +43,53 @@ export async function GET(request: Request) {
     const appid = searchParams.get("appid");
     url = `${STEAM_API_BASE}/ISteamUserStats/GetSchemaForGame/v2/?key=${API_KEY}&appid=${appid}`;
   } else if (endpoint === "search") {
-    // Use the official Steam community search AJAX
-    url = `https://steamcommunity.com/search/SearchCommunityAjax?text=${q}&type=users&sessionid=&filter=users`;
+    // URL will be constructed dynamically below to bypass WAF
+    url = "dynamic_search";
   } else {
     return NextResponse.json({ error: "Invalid endpoint" }, { status: 400 });
   }
 
   try {
-    const response = await fetch(url);
+    let finalUrl = url;
+    const headers: any = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Accept-Language": "en-US,en;q=0.9",
+    };
+
+    if (endpoint === "search") {
+      // 1. Visit main page to get a session cookie to bypass WAF
+      const initRes = await fetch("https://steamcommunity.com/", { cache: "no-store", headers });
+      const cookies = initRes.headers.get("set-cookie") || "";
+      const sessionMatch = cookies.match(/sessionid=([^;]+)/);
+      const sessionId = sessionMatch ? sessionMatch[1] : "";
+      
+      headers["Cookie"] = cookies;
+      finalUrl = `https://steamcommunity.com/search/SearchCommunityAjax?text=${q}&filter=users&sessionid=${sessionId}&steamid_user=false&page=1`;
+    }
+
+    const response = await fetch(finalUrl, { cache: "no-store", headers });
     
     // Special handling for search which returns HTML
     if (endpoint === "search") {
       const data = await response.json();
       const html = data.html || "";
       
-      // Basic regex to find SteamIDs and Names in the returned AJAX html
-      // Steam search results contain links like steamcommunity.com/profiles/[ID] or /id/[Vanity]
       const results: any[] = [];
-      const profileRegex = /<a class="searchPersonaName" href="https:\/\/steamcommunity\.com\/(id|profiles)\/(.*?)"/g;
-      const avatarRegex = /<div class="search_capsule"><img src="(.*?)"/g;
+      // Robust regex that groups avatar, id string, and name strictly within the same search_row definition
+      const rowRegex = /class="search_row"[\s\S]*?<img src="(.*?)"[\s\S]*?<a class="searchPersonaName" href="https:\/\/steamcommunity\.com\/(?:id|profiles)\/([^"]*?)">(.*?)<\/a>/g;
       
       let match;
-      const profiles: string[] = [];
-      const avatars: string[] = [];
-      
-      while ((match = profileRegex.exec(html)) !== null) {
-        profiles.push(match[2]);
-      }
-      
-      let avatarMatch;
-      while ((avatarMatch = avatarRegex.exec(html)) !== null) {
-        avatars.push(avatarMatch[1]);
-      }
-
-      // Also need to get names
-      const nameRegex = /<a class="searchPersonaName".*?>(.*?)<\/a>/g;
-      const names: string[] = [];
-      let nameMatch;
-      while ((nameMatch = nameRegex.exec(html)) !== null) {
-        names.push(nameMatch[1].replace(/<.*?>/g, ""));
-      }
-
-      for (let i = 0; i < profiles.length; i++) {
+      while ((match = rowRegex.exec(html)) !== null) {
+        let avatar = match[1];
+        // Clean trailing slash or query params
+        let idUrlPart = match[2].split('?')[0].replace(/\/$/, "");
+        // Clean spans matching the query e.g. `<span class="match">user</span>`
+        let nameHtml = match[3].replace(/<.*?>/g, "");
+        
         results.push({
-          id: profiles[i],
-          name: names[i] || "Unknown",
-          avatar: avatars[i] || ""
+          id: idUrlPart,
+          name: nameHtml,
+          avatar: avatar
         });
       }
 
