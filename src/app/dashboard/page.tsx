@@ -185,45 +185,48 @@ export default function DashboardPage() {
           </div>
 
             {steamProfile ? (
-              <GlassCard className="p-6 md:p-10 border-white/20 border flex flex-col sm:flex-row items-center gap-6 md:gap-10 group cursor-pointer hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full lg:max-w-xl shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-sm bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
-                  <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" />
+              <GlassCard className="p-6 md:p-10 border-white/20 border flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-10 hover:border-primary/40 transition-all bg-black/60 backdrop-blur-xl relative z-10 w-full lg:max-w-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-zinc-950 border-2 border-primary/30 overflow-hidden relative flex-shrink-0 shadow-2xl">
+                  <img src={steamProfile.avatarfull} alt="PFP" className="w-full h-full object-cover hover:scale-105 transition-all duration-700" />
                   <div className={cn("absolute bottom-0 right-0 w-4 h-4 md:w-6 md:h-6 border-4 border-[#0d0e12] rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : "bg-zinc-600")} />
                 </div>
-                <div className="space-y-2 md:space-y-4 text-center sm:text-left">
-                  <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none truncate max-w-[300px] md:max-w-md font-heading drop-shadow-xl">{steamProfile.personaname}</h2>
-                  <div className="flex items-center justify-center sm:justify-start gap-2">
-                    <div className="flex items-center gap-2 px-3 md:px-5 py-1.5 md:py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded border border-white/30 shadow-xl">
-                      <span className="text-white font-black text-base md:text-xl leading-none">Level {steamLevel}</span>
+                <div className="space-y-4 text-center sm:text-left w-full min-w-0">
+                  <div className="space-y-3">
+                    <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter transition-colors leading-none truncate font-heading drop-shadow-xl w-full">{steamProfile.personaname}</h2>
+                    <div className="flex flex-col xl:flex-row xl:items-center justify-center sm:justify-start gap-3 md:gap-4">
+                      <div className="flex items-center justify-center gap-2 px-3 md:px-5 py-1.5 md:py-2 bg-gradient-to-r from-[#4a90d9] to-[#1a5fa8] rounded-md border border-white/30 shadow-xl self-start sm:self-auto inline-flex">
+                        <span className="text-white font-black text-base md:text-xl leading-none">Level {steamLevel}</span>
+                      </div>
+                      <div className="flex items-center justify-center sm:justify-start gap-3 text-zinc-500 font-bold uppercase tracking-[0.2em] font-mono text-[10px]">
+                        <div className="flex items-center gap-2">
+                          <span className={cn("w-1.5 h-1.5 rounded-full", steamProfile.personastate === 1 ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-zinc-500")} />
+                          <span className={cn(steamProfile.personastate === 1 ? "text-green-500" : "text-zinc-500")}>
+                            {steamProfile.personastate === 1 ? "ONLINE" : "OFFLINE"}
+                          </span>
+                        </div>
+                        <div className="w-[1px] h-3 bg-white/20" />
+                        <div className="flex items-center gap-2 text-primary">
+                           {steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pt-4">
-                    <div className="space-y-1.5 text-left">
-                      <div className="flex items-center gap-2 text-zinc-500 font-bold uppercase tracking-[0.2em] font-mono opacity-80 text-[10px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
-                        STATUS: <span className={cn(steamProfile.personastate === 1 ? "text-green-500" : "text-zinc-500")}>{steamProfile.personastate === 1 ? "ONLINE" : "OFFLINE"}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-[0.2em] font-mono text-[9px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {steamProfile.loccountrycode || "GLOBAL_ARCHIVE"}
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3">
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3 pt-2">
                       <a 
                         href={steamProfile.profileurl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="px-5 py-2.5 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black tracking-widest text-zinc-400 hover:text-primary hover:border-primary/40 transition-all flex items-center gap-2 group/btn"
+                        className="w-full sm:w-auto px-5 py-3 bg-white/5 border border-white/10 rounded-md text-[10px] sm:text-xs font-black tracking-widest text-zinc-300 hover:text-primary hover:border-primary/40 hover:bg-white/10 transition-all flex items-center justify-center gap-2 group/btn whitespace-nowrap"
                       >
                         VIEW STEAM_ID <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                       </a>
                       <button 
                         onClick={handleDisconnect}
-                        className="px-5 py-2.5 bg-red-500/10 border border-red-500/20 rounded-sm text-[10px] font-black tracking-widest text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex items-center gap-2 group/btn"
+                        className="w-full sm:w-auto px-5 py-3 bg-red-500/10 border border-red-500/20 rounded-md text-[10px] sm:text-xs font-black tracking-widest text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex items-center justify-center gap-2 group/btn whitespace-nowrap"
                       >
                         DISCONNECT PROFILE <LogOut className="w-3.5 h-3.5 group-hover/btn:-translate-x-1 transition-transform" />
                       </button>
-                    </div>
                   </div>
                 </div>
               </GlassCard>
